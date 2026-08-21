@@ -23,7 +23,12 @@ No subscription, no account, no cloud: **everything stays in your browser's loca
 - **Provider report** — a one-tap printable summary (weight chart, injections, side
   effects, measurements) for appointments.
 - **Shot-day calendar** — download a repeating calendar event with a reminder (.ics).
-- **Insights** — side-effect timing around shot day, and weight pace at each dose.
+- **Daily check-in** — two taps (hunger, energy) on Home; feeds the cycle-pattern insight.
+- **Insights** — a dedicated Trends tab of cross-referenced patterns, each unlocking only once
+  there's enough data to be honest: milestones & goal ETA, pace/plateau detection, hunger &
+  energy across the shot cycle, tape vs. scale, shot-day water weight, side effects after dose
+  step-ups, active weeks vs. pace, injection-site rotation health, and schedule consistency —
+  plus side-effect timing and pace-at-each-dose on their own panels, and a per-cycle digest on Home.
 - **Activity** — quick-log walks/runs/rides/workouts or import a MapMyRun CSV export
   (deduplicated), with weekly active-minutes charting.
 - **Protein & water quick-log** — daily meters with tap-to-add on the home screen.

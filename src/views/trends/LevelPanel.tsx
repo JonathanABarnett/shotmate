@@ -5,7 +5,7 @@ import { levelAt } from "../../lib/pk";
 import { nextDueTs } from "../../lib/shots";
 import LevelChart from "../../components/charts/LevelChart";
 import EmptyState from "../../components/EmptyState";
-import ChartStats from "./ChartStats";
+import ChartStats from "../../components/ChartStats";
 
 export default function LevelPanel({ data }: { data: AppData }) {
   const med = medFor(data.settings);

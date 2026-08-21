@@ -1,4 +1,16 @@
-import type { ActivityEntry, AppData, EffectEntry, MeasurementEntry, PhotoEntry, Settings, Shot, WeightEntry, WinEntry } from "../types";
+import type {
+  ActivityEntry,
+  AppData,
+  CheckinEntry,
+  EffectEntry,
+  MeasurementEntry,
+  PhotoEntry,
+  Scale5,
+  Settings,
+  Shot,
+  WeightEntry,
+  WinEntry,
+} from "../types";
 import { emptyData } from "../lib/defaults";
 import { startOfDay } from "../lib/dates";
 import { uid } from "../lib/ids";
@@ -19,6 +31,7 @@ export type Action =
   | { type: "remove"; collection: CollectionKey; id: string }
   | { type: "addIntake"; ts: number; proteinG?: number; waterFlOz?: number }
   | { type: "addActivities"; items: ActivityEntry[] }
+  | { type: "setCheckin"; ts: number; hunger?: Scale5; energy?: Scale5 }
   | { type: "loadSample" }
   | { type: "importData"; data: AppData }
   | { type: "wipe" };
@@ -95,6 +108,19 @@ function applyAddIntake(state: AppData, action: Extract<Action, { type: "addInta
   return { ...state, intake: upsertById(state.intake, updated) };
 }
 
+/** Record today's hunger/energy — each field merges into the day's entry. */
+function applySetCheckin(state: AppData, action: Extract<Action, { type: "setCheckin" }>): AppData {
+  const day = startOfDay(action.ts);
+  const existing = state.checkins.find((c) => c.day === day);
+  const updated: CheckinEntry = {
+    id: existing?.id ?? uid(),
+    day,
+    hunger: action.hunger ?? existing?.hunger,
+    energy: action.energy ?? existing?.energy,
+  };
+  return { ...state, checkins: upsertById(state.checkins, updated) };
+}
+
 export function reducer(state: AppData, action: Action): AppData {
   switch (action.type) {
     case "completeOnboarding":
@@ -109,6 +135,8 @@ export function reducer(state: AppData, action: Action): AppData {
       return applyAddIntake(state, action);
     case "addActivities":
       return { ...state, activities: [...state.activities, ...action.items] };
+    case "setCheckin":
+      return applySetCheckin(state, action);
     case "loadSample":
       return sampleData(state.settings);
     case "importData":

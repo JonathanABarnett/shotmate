@@ -30,6 +30,7 @@ export function withDataDefaults(data: AppData): AppData {
     wins: data.wins ?? [],
     intake: data.intake ?? [],
     activities: data.activities ?? [],
+    checkins: data.checkins ?? [],
   };
 }
 

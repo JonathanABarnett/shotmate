@@ -2,6 +2,8 @@ import type { Entry } from "../../types";
 import { useStore } from "../../store/StoreProvider";
 import HeroCard from "./HeroCard";
 import StatTilesRow from "./StatTilesRow";
+import CheckinCard from "./CheckinCard";
+import CycleReviewCard from "./CycleReviewCard";
 import SupplyCard from "./SupplyCard";
 import IntakeCard from "./IntakeCard";
 import WeightTrendCard from "./WeightTrendCard";
@@ -27,6 +29,8 @@ export default function HomeView({ onLogShot, onSeeTrends, onSeeHistory, onOpenS
       )}
       <HeroCard data={data} onLogShot={onLogShot} />
       <StatTilesRow data={data} />
+      <CheckinCard data={data} />
+      <CycleReviewCard data={data} />
       <SupplyCard data={data} />
       <IntakeCard data={data} />
       <WeightTrendCard data={data} onSeeTrends={onSeeTrends} />

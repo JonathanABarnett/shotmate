@@ -73,6 +73,16 @@ export interface DailyIntake {
   waterFlOz: number;
 }
 
+export type Scale5 = 1 | 2 | 3 | 4 | 5;
+
+/** Daily hunger/energy check-in (day = local start-of-day ms). */
+export interface CheckinEntry {
+  id: string;
+  day: number;
+  hunger?: Scale5;
+  energy?: Scale5;
+}
+
 export type ThemePref = "auto" | "light" | "dark";
 
 export interface Settings {
@@ -110,6 +120,7 @@ export interface AppData {
   wins: WinEntry[];
   intake: DailyIntake[];
   activities: ActivityEntry[];
+  checkins: CheckinEntry[];
 }
 
 export type Entry =

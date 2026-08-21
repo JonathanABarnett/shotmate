@@ -1,0 +1,75 @@
+import type { AppData, Scale5 } from "../../types";
+import { ENERGY_LABELS, HUNGER_LABELS, SCALE, todayCheckin } from "../../lib/checkin";
+import { cycleOffsetDays } from "../../lib/insights/shared";
+import { useStore } from "../../store/StoreProvider";
+
+interface ScaleRowProps {
+  label: string;
+  emoji: string;
+  tone: "hunger" | "energy";
+  value?: Scale5;
+  labels: Record<Scale5, string>;
+  onPick: (value: Scale5) => void;
+}
+
+function ScaleRow({ label, emoji, tone, value, labels, onPick }: ScaleRowProps) {
+  return (
+    <div className="checkin-row">
+      <div className="row-between">
+        <span className="checkin-label">
+          {emoji} {label}
+        </span>
+        <span className="scale-value">{value ? labels[value] : "tap to rate"}</span>
+      </div>
+      <div className="scale-dots" role="radiogroup" aria-label={label}>
+        {SCALE.map((n) => (
+          <button
+            key={n}
+            role="radio"
+            aria-checked={value === n}
+            aria-label={`${label} ${n}: ${labels[n]}`}
+            className={`scale-dot ${tone}${value === n ? " active" : ""}`}
+            onClick={() => onPick(n)}
+          >
+            {n}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** Two taps a day — the input behind the hunger-creep insight. */
+export default function CheckinCard({ data }: { data: AppData }) {
+  const { dispatch } = useStore();
+  const today = todayCheckin(data);
+  const offset = cycleOffsetDays(Date.now(), data.shots);
+
+  return (
+    <section className="card checkin-card">
+      <div className="card-title-row">
+        <div>
+          <h3 className="card-title">How's today?</h3>
+          <div className="card-sub">Two taps — reveals how hunger moves across your cycle</div>
+        </div>
+        {offset != null && <span className="pill-note violet">cycle day {offset + 1}</span>}
+      </div>
+      <ScaleRow
+        label="Hunger"
+        emoji="🍽️"
+        tone="hunger"
+        value={today?.hunger}
+        labels={HUNGER_LABELS}
+        onPick={(hunger) => dispatch({ type: "setCheckin", ts: Date.now(), hunger })}
+      />
+      <ScaleRow
+        label="Energy"
+        emoji="⚡"
+        tone="energy"
+        value={today?.energy}
+        labels={ENERGY_LABELS}
+        onPick={(energy) => dispatch({ type: "setCheckin", ts: Date.now(), energy })}
+      />
+    </section>
+  );
+}

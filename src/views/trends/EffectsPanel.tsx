@@ -2,7 +2,7 @@ import type { AppData } from "../../types";
 import { fmtDayFull } from "../../lib/dates";
 import { effectTimingBuckets, effectTimingSummary } from "../../lib/insights";
 import EmptyState from "../../components/EmptyState";
-import ChartStats from "./ChartStats";
+import ChartStats from "../../components/ChartStats";
 
 interface EffectCount {
   name: string;

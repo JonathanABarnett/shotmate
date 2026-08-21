@@ -30,7 +30,8 @@ export function distanceUnit(unit: Unit): "mi" | "km" {
   return unit === "lbs" ? "mi" : "km";
 }
 
-function weekStart(ts: number): number {
+/** Local start of the week (Sunday) containing ts. */
+export function weekStart(ts: number): number {
   const d = new Date(ts);
   d.setHours(0, 0, 0, 0);
   d.setDate(d.getDate() - d.getDay());

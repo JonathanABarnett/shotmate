@@ -270,3 +270,173 @@
   font-size: 12.5px;
   font-weight: 700;
 }
+
+/* ------------------------------ daily check-in ------------------------------ */
+
+.checkin-row {
+  display: grid;
+  gap: 8px;
+  padding: 10px 0;
+}
+
+.checkin-label {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--ink-2);
+}
+
+.scale-dots {
+  display: flex;
+  gap: 10px;
+}
+
+.scale-dot {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid var(--hairline-strong);
+  background: var(--surface);
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ink-3);
+  display: grid;
+  place-items: center;
+  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.scale-dot:active {
+  transform: scale(0.9);
+}
+
+.scale-dot.hunger.active {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+}
+
+.scale-dot.energy.active {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: #fff;
+}
+
+.scale-value {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+/* ------------------------------- cycle review ------------------------------- */
+
+.review-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 12px;
+  align-items: baseline;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.review-row:last-of-type {
+  border-bottom: none;
+}
+
+.review-label {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.review-value {
+  font-weight: 800;
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.review-delta {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-3);
+  min-width: 84px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* --------------------------------- insights --------------------------------- */
+
+.insight-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.insight-bars {
+  margin: 4px 0 6px;
+}
+
+.insight-headline {
+  margin: 14px 0 0;
+}
+
+.insight-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 2px 0 8px;
+}
+
+.mood-table {
+  margin-top: 4px;
+}
+
+.mood-row {
+  display: grid;
+  grid-template-columns: 1fr 78px 78px;
+  gap: 8px;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.mood-row:last-of-type {
+  border-bottom: none;
+}
+
+.mood-head {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.mood-val {
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.locked-list {
+  display: grid;
+  gap: 10px;
+}
+
+.locked-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink-3);
+  font-weight: 600;
+}
+
+.locked-item .lock {
+  flex: none;
+  margin-top: 2px;
+}
+
+.locked-item strong {
+  color: var(--ink-2);
+}

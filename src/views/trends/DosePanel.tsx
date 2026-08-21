@@ -4,7 +4,7 @@ import { sortedShots } from "../../lib/shots";
 import { toDisplayWeight } from "../../lib/weight";
 import DoseChart from "../../components/charts/DoseChart";
 import EmptyState from "../../components/EmptyState";
-import ChartStats from "./ChartStats";
+import ChartStats from "../../components/ChartStats";
 
 function weeksOnCurrentDose(data: AppData): number {
   const sorted = sortedShots(data.shots);

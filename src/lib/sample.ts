@@ -1,4 +1,16 @@
-import type { AppData, DailyIntake, EffectEntry, MeasurementEntry, Settings, Shot, SiteId, WeightEntry, WinEntry } from "../types";
+import type {
+  AppData,
+  CheckinEntry,
+  DailyIntake,
+  EffectEntry,
+  MeasurementEntry,
+  Scale5,
+  Settings,
+  Shot,
+  SiteId,
+  WeightEntry,
+  WinEntry,
+} from "../types";
 import { DAY, HOUR, startOfDay } from "./dates";
 import { uid } from "./ids";
 
@@ -131,6 +143,25 @@ function sampleActivities(firstShot: number): AppData["activities"] {
   ];
 }
 
+/** Five weeks of daily check-ins: hunger creeps up late in each cycle, energy dips after shots. */
+function sampleCheckins(shots: Shot[], now: number, rnd: () => number): CheckinEntry[] {
+  const clamp = (n: number): Scale5 => Math.max(1, Math.min(5, Math.round(n))) as Scale5;
+  const entries: CheckinEntry[] = [];
+  for (let d = 34; d >= 0; d--) {
+    const day = startOfDay(now - d * DAY);
+    const lastShot = [...shots].reverse().find((s) => s.ts <= day + 12 * HOUR);
+    if (!lastShot) continue;
+    const offset = Math.floor((day + 12 * HOUR - lastShot.ts) / DAY);
+    entries.push({
+      id: uid(),
+      day,
+      hunger: clamp(1.6 + offset * 0.45 + (rnd() - 0.5) * 1.2),
+      energy: clamp((offset <= 1 ? 2.4 : 3.7) + (rnd() - 0.5) * 1.2),
+    });
+  }
+  return entries;
+}
+
 function sampleIntake(now: number): DailyIntake[] {
   const today = startOfDay(now);
   return [
@@ -144,12 +175,13 @@ export function sampleData(base: Settings): AppData {
   const now = Date.now();
   const firstShot = now - (WEEKS - 1) * 7 * DAY - 2 * DAY;
   const settings = sampleSettings(base, now);
+  const shots = sampleShots(firstShot, rnd);
   return {
     v: 1,
     onboarded: true,
     sample: true,
     settings,
-    shots: sampleShots(firstShot, rnd),
+    shots,
     weights: sampleWeights(firstShot, settings.startLbs!, now, rnd),
     effects: sampleEffects(firstShot),
     measures: sampleMeasures(firstShot),
@@ -157,5 +189,6 @@ export function sampleData(base: Settings): AppData {
     wins: sampleWins(firstShot),
     intake: sampleIntake(now),
     activities: sampleActivities(firstShot),
+    checkins: sampleCheckins(shots, now, rnd),
   };
 }

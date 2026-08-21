@@ -4,7 +4,7 @@ import { DAY } from "../../lib/dates";
 import { bmi, latestWeight, sortedWeights, toDisplayWeight, weeklyRate } from "../../lib/weight";
 import WeightChart from "../../components/charts/WeightChart";
 import EmptyState from "../../components/EmptyState";
-import ChartStats, { type ChartStat } from "./ChartStats";
+import ChartStats, { type ChartStat } from "../../components/ChartStats";
 import RangeChips from "./RangeChips";
 
 type RangeKey = "30" | "90" | "180" | "all";

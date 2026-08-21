@@ -1,0 +1,87 @@
+import { Lock } from "lucide-react";
+import type { AppData } from "../../types";
+import {
+  activityVsPace,
+  adherenceStats,
+  doseStepEffects,
+  goalOutlook,
+  hungerEnergyByCycleDay,
+  paceShift,
+  shotDayBump,
+  siteRotationHealth,
+  tapeVsScale,
+} from "../../lib/insights";
+import { OutlookCard, PaceCard, TapeCard, WaterWeightCard } from "./insights/weightInsights";
+import { ActivityPaceCard, AdherenceCard, CreepCard } from "./insights/habitInsights";
+import { DoseStepsCard, SitesCard } from "./insights/shotInsights";
+
+interface Locked {
+  title: string;
+  needs: string;
+}
+
+function LockedList({ items }: { items: Locked[] }) {
+  if (items.length === 0) return null;
+  return (
+    <section className="card">
+      <div className="card-title-row">
+        <div>
+          <h3 className="card-title">Unlocks as you log</h3>
+          <div className="card-sub">Each insight waits for enough data to be honest</div>
+        </div>
+      </div>
+      <div className="spacer-8" />
+      <div className="locked-list">
+        {items.map((i) => (
+          <div className="locked-item" key={i.title}>
+            <Lock size={15} className="lock" />
+            <span>
+              <strong>{i.title}</strong> — {i.needs}
+            </span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/** Cross-referenced patterns — each card appears only once its data threshold is met. */
+export default function InsightsPanel({ data }: { data: AppData }) {
+  const unit = data.settings.unit;
+  const creep = hungerEnergyByCycleDay(data);
+  const pace = paceShift(data);
+  const tape = tapeVsScale(data);
+  const outlook = goalOutlook(data);
+  const bump = shotDayBump(data);
+  const steps = doseStepEffects(data);
+  const activity = activityVsPace(data);
+  const sites = siteRotationHealth(data);
+  const adherence = adherenceStats(data);
+
+  const locked: Locked[] = [
+    ...(creep ? [] : [{ title: "Hunger & energy across your cycle", needs: "about 8 daily check-ins on Home" }]),
+    ...(pace ? [] : [{ title: "Pace & plateau check", needs: "3+ weeks of weigh-ins" }]),
+    ...(tape ? [] : [{ title: "Tape vs. scale", needs: "two tape check-ins 2+ weeks apart" }]),
+    ...(outlook ? [] : [{ title: "Milestones & outlook", needs: "a starting weight and a weigh-in below it" }]),
+    ...(bump ? [] : [{ title: "Shot-day water weight", needs: "a month or so of regular weigh-ins" }]),
+    ...(steps ? [] : [{ title: "Dose step-ups", needs: "a dose increase and a few side-effect entries" }]),
+    ...(activity ? [] : [{ title: "Moving vs. the scale", needs: "a few weeks with activity and 2+ weigh-ins each" }]),
+    ...(sites ? [] : [{ title: "Injection sites", needs: "3+ shots" }]),
+    ...(adherence ? [] : [{ title: "Consistency", needs: "3+ shots" }]),
+  ];
+
+  return (
+    <>
+      {outlook && <OutlookCard outlook={outlook} unit={unit} goalLbs={data.settings.goalLbs} />}
+      {pace && <PaceCard pace={pace} unit={unit} />}
+      {creep && <CreepCard creep={creep} />}
+      {tape && <TapeCard tape={tape} unit={unit} />}
+      {bump && <WaterWeightCard bump={bump} unit={unit} />}
+      {steps && <DoseStepsCard steps={steps} />}
+      {activity && <ActivityPaceCard pace={activity} unit={unit} />}
+      {sites && <SitesCard health={sites} />}
+      {adherence && <AdherenceCard adherence={adherence} />}
+      <LockedList items={locked} />
+    </>
+  );
+}

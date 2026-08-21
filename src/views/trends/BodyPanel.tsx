@@ -3,7 +3,7 @@ import { fmtDayFull } from "../../lib/dates";
 import { fmtLength, lengthUnit, MEASURES, measureSeries, sortedMeasures, toDisplayLength } from "../../lib/measures";
 import Sparkline from "../../components/charts/Sparkline";
 import EmptyState from "../../components/EmptyState";
-import ChartStats from "./ChartStats";
+import ChartStats from "../../components/ChartStats";
 
 const BODY_COLOR = "var(--chart-body)";
 

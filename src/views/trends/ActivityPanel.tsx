@@ -8,7 +8,7 @@ import { parseMmrCsv } from "../../lib/mmrImport";
 import { useStore } from "../../store/StoreProvider";
 import { CHART, ChartTip, gridProps, niceTicks, valueAxisProps } from "../../components/charts/chrome";
 import EmptyState from "../../components/EmptyState";
-import ChartStats from "./ChartStats";
+import ChartStats from "../../components/ChartStats";
 
 const ACTIVITY_C = "var(--chart-activity)";
 
