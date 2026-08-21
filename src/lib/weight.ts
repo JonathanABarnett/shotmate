@@ -65,6 +65,16 @@ export function weeklyRate(weights: WeightEntry[], days = 28): number | undefine
   return slopeLbsPerWeek(sortedWeights(weights).filter((w) => w.ts >= cutoff));
 }
 
+/** The weigh-in closest to ts, within a window — undefined if none is near enough. */
+export function nearestWeightLbs(weights: WeightEntry[], ts: number, windowDays = 7): number | undefined {
+  let best: WeightEntry | undefined;
+  for (const w of weights) {
+    if (Math.abs(w.ts - ts) > windowDays * DAY) continue;
+    if (!best || Math.abs(w.ts - ts) < Math.abs(best.ts - ts)) best = w;
+  }
+  return best?.lbs;
+}
+
 export function bmi(lbs: number, heightIn?: number): number | undefined {
   if (!heightIn || heightIn <= 0) return undefined;
   return (703 * lbs) / (heightIn * heightIn);

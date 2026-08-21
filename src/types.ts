@@ -65,6 +65,16 @@ export interface ActivityEntry {
   imported?: boolean;
 }
 
+export type VitalKey = "systolic" | "diastolic" | "restingHr" | "a1c" | "fastingGlucose" | "ldl" | "hdl" | "triglycerides";
+
+/** A labs/vitals check-in — fill in whichever values you have. */
+export interface VitalsEntry {
+  id: string;
+  ts: number;
+  values: Partial<Record<VitalKey, number>>;
+  note?: string;
+}
+
 /** One day's running protein/water totals (day = local start-of-day ms). */
 export interface DailyIntake {
   id: string;
@@ -102,6 +112,10 @@ export interface Settings {
   supplyMg?: number;
   /** when supplyMg was recorded; shots after this count against it */
   supplySetTs?: number;
+  /** what the recorded supply cost, for per-week / per-mg figures */
+  supplyCostUsd?: number;
+  /** days before running out that you want to reorder by */
+  reorderLeadDays?: number;
   theme?: ThemePref;
   proteinGoalG?: number;
   waterGoalFlOz?: number;
@@ -121,6 +135,9 @@ export interface AppData {
   intake: DailyIntake[];
   activities: ActivityEntry[];
   checkins: CheckinEntry[];
+  vitals: VitalsEntry[];
+  /** achievement keys already celebrated, so unlock toasts fire once */
+  seenAchievements: string[];
 }
 
 export type Entry =
@@ -130,4 +147,5 @@ export type Entry =
   | { kind: "measure"; item: MeasurementEntry }
   | { kind: "photo"; item: PhotoEntry }
   | { kind: "win"; item: WinEntry }
-  | { kind: "activity"; item: ActivityEntry };
+  | { kind: "activity"; item: ActivityEntry }
+  | { kind: "vitals"; item: VitalsEntry };

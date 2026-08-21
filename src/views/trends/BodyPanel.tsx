@@ -1,36 +1,28 @@
-import type { AppData, MeasureKey } from "../../types";
+import type { AppData } from "../../types";
 import { fmtDayFull } from "../../lib/dates";
 import { fmtLength, lengthUnit, MEASURES, measureSeries, sortedMeasures, toDisplayLength } from "../../lib/measures";
-import Sparkline from "../../components/charts/Sparkline";
+import MetricRows, { type MetricRow } from "../../components/MetricRows";
 import EmptyState from "../../components/EmptyState";
 import ChartStats from "../../components/ChartStats";
 
 const BODY_COLOR = "var(--chart-body)";
 
-interface RowData {
-  key: MeasureKey;
-  label: string;
-  current: string;
-  delta?: { text: string; className: string };
-  points: { ts: number; value: number }[];
-}
-
-function buildRows(data: AppData): RowData[] {
+function buildRows(data: AppData): MetricRow[] {
   const unit = data.settings.unit;
   return MEASURES.flatMap(({ key, label }) => {
     const series = measureSeries(data.measures, key);
     if (series.length === 0) return [];
     const current = series.at(-1)!.inches;
-    const first = series[0].inches;
-    const diff = toDisplayLength(current - first, unit);
+    const diff = toDisplayLength(current - series[0].inches, unit);
     return [
       {
         key,
         label,
         current: fmtLength(current, unit),
+        unit: lengthUnit(unit),
         delta:
           series.length >= 2 && Math.abs(diff) >= 0.05
-            ? { text: `${diff < 0 ? "↓" : "↑"} ${Math.abs(diff).toFixed(1)}`, className: diff < 0 ? "delta-down" : "delta-up" }
+            ? { text: `${diff < 0 ? "↓" : "↑"} ${Math.abs(diff).toFixed(1)}`, className: diff < 0 ? "delta-good" : "delta-bad" }
             : undefined,
         points: series.map((p) => ({ ts: p.ts, value: toDisplayLength(p.inches, unit) })),
       },
@@ -54,21 +46,7 @@ export default function BodyPanel({ data }: { data: AppData }) {
       {rows.length > 0 ? (
         <>
           <div className="spacer-8" />
-          {rows.map((row) => (
-            <div className="measure-row" key={row.key}>
-              <div className="measure-name">
-                {row.label}
-                {row.delta && <span className={`measure-delta ${row.delta.className}`}>{row.delta.text}</span>}
-              </div>
-              <div className="measure-spark">
-                <Sparkline points={row.points} height={40} color={BODY_COLOR} fillId={`m-${row.key}`} />
-              </div>
-              <div className="measure-value">
-                {row.current}
-                <small>{unit}</small>
-              </div>
-            </div>
-          ))}
+          <MetricRows rows={rows} color={BODY_COLOR} idPrefix="m" />
           <ChartStats
             stats={[
               { value: `${data.measures.length}`, label: "check-ins" },

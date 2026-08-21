@@ -1,8 +1,8 @@
-import { Camera, Footprints, HeartPulse, Ruler, Scale, Syringe, Trophy, type LucideIcon } from "lucide-react";
+import { Camera, Footprints, HeartPulse, Ruler, Scale, Stethoscope, Syringe, Trophy, type LucideIcon } from "lucide-react";
 
-export type EntryKind = "shot" | "weight" | "effect" | "measure" | "photo" | "win" | "activity";
+export type EntryKind = "shot" | "weight" | "effect" | "measure" | "photo" | "win" | "activity" | "vitals";
 
-export type Tone = "violet" | "teal" | "coral" | "gold" | "sky" | "rose" | "green";
+export type Tone = "violet" | "teal" | "coral" | "gold" | "sky" | "rose" | "green" | "navy";
 
 export interface EntryKindMeta {
   label: string;
@@ -16,6 +16,7 @@ export const ENTRY_KINDS: Record<EntryKind, EntryKindMeta> = {
   weight: { label: "Weight", tone: "teal", Icon: Scale },
   measure: { label: "Measurements", tone: "gold", Icon: Ruler },
   activity: { label: "Activity", tone: "green", Icon: Footprints },
+  vitals: { label: "Labs & vitals", tone: "navy", Icon: Stethoscope },
   effect: { label: "How I feel", tone: "coral", Icon: HeartPulse },
   photo: { label: "Progress photo", tone: "sky", Icon: Camera },
   win: { label: "Win", tone: "rose", Icon: Trophy },

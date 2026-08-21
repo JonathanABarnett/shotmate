@@ -423,6 +423,11 @@
   color: var(--green-ink);
 }
 
+.entry-ico.navy {
+  background: var(--navy-soft);
+  color: var(--navy-ink);
+}
+
 .entry-main {
   flex: 1;
   min-width: 0;

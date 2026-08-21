@@ -32,6 +32,16 @@ No subscription, no account, no cloud: **everything stays in your browser's loca
   plus side-effect timing and pace-at-each-dose on their own panels, and a per-cycle digest on Home.
 - **Activity** — quick-log walks/runs/rides/workouts or import a MapMyRun CSV export
   (deduplicated), with weekly active-minutes charting.
+- **Labs & vitals** — blood pressure, resting heart rate, A1c, glucose, and lipids with
+  per-metric trend lines; included in the provider report.
+- **Achievements** — badges for consistency, milestones, and habits, with unlock toasts and
+  a "next up" progress list.
+- **Photo share card** — a before/after (or single) photo stamped with date, weight, and waist,
+  shared via the native share sheet or saved as a PNG.
+- **Cost tracking** — record what a supply cost to see per-shot / per-week figures and an
+  "order by" date based on your reorder lead time.
+- **Quality of life** — undo after deleting anything, history search, home-screen app
+  shortcuts (log shot / log weight / check-in), and a tab row that scrolls with the mouse wheel.
 - **Protein & water quick-log** — daily meters with tap-to-add on the home screen.
 - **Wins journal** — non-scale victories, celebrated properly.
 - **Dark mode** — auto/light/dark, charts included.

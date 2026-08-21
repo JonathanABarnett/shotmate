@@ -213,6 +213,10 @@
   background: linear-gradient(135deg, #5fc768, #1e8a28);
 }
 
+.logmenu-ico.navy {
+  background: linear-gradient(135deg, #6b86e6, #2f4ea8);
+}
+
 .logmenu-title {
   font-size: 16px;
   font-weight: 800;

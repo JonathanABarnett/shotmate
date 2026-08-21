@@ -1,7 +1,7 @@
 import type { AppData } from "../../types";
 import { fmtDay } from "../../lib/dates";
 import { cycleReview } from "../../lib/insights";
-import { signedWeight } from "../trends/insights/format";
+import { signedWeight } from "../../lib/format";
 
 interface RowProps {
   label: string;

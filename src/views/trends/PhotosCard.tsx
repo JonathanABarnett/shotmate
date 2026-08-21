@@ -50,7 +50,7 @@ export default function PhotosCard({ data, onAddPhoto }: Props) {
         </div>
       )}
       {viewerId && (
-        <PhotoCompare photos={data.photos} initialId={viewerId} onClose={() => setViewerId(null)} />
+        <PhotoCompare data={data} photos={data.photos} initialId={viewerId} onClose={() => setViewerId(null)} />
       )}
       {photos.length > 0 && (
         <p className="field-hint">Tap a photo to compare before &amp; after — edit or delete from History.</p>

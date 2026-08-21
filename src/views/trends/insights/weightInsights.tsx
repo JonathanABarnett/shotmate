@@ -2,7 +2,7 @@ import type { Unit } from "../../../types";
 import { fmtDay } from "../../../lib/dates";
 import type { GoalOutlook, PaceShift, ShotDayBump, TapeVsScale } from "../../../lib/insights";
 import InsightCard from "../../../components/InsightCard";
-import { absWeight, signedLength, signedWeight, weeklyRateText } from "./format";
+import { absWeight, signedLength, signedWeight, weeklyRateText } from "../../../lib/format";
 
 interface WithUnit {
   unit: Unit;

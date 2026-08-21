@@ -8,6 +8,7 @@ import type {
   Scale5,
   Settings,
   Shot,
+  VitalsEntry,
   WeightEntry,
   WinEntry,
 } from "../types";
@@ -16,7 +17,7 @@ import { startOfDay } from "../lib/dates";
 import { uid } from "../lib/ids";
 import { sampleData } from "../lib/sample";
 
-export type CollectionKey = "shots" | "weights" | "effects" | "measures" | "photos" | "wins" | "activities";
+export type CollectionKey = "shots" | "weights" | "effects" | "measures" | "photos" | "wins" | "activities" | "vitals";
 
 export type Action =
   | { type: "completeOnboarding"; settings: Settings; firstWeight?: WeightEntry; firstShot?: Shot }
@@ -28,10 +29,12 @@ export type Action =
   | { type: "upsert"; collection: "photos"; item: PhotoEntry }
   | { type: "upsert"; collection: "wins"; item: WinEntry }
   | { type: "upsert"; collection: "activities"; item: ActivityEntry }
+  | { type: "upsert"; collection: "vitals"; item: VitalsEntry }
   | { type: "remove"; collection: CollectionKey; id: string }
   | { type: "addIntake"; ts: number; proteinG?: number; waterFlOz?: number }
   | { type: "addActivities"; items: ActivityEntry[] }
   | { type: "setCheckin"; ts: number; hunger?: Scale5; energy?: Scale5 }
+  | { type: "markAchievementsSeen"; keys: string[] }
   | { type: "loadSample" }
   | { type: "importData"; data: AppData }
   | { type: "wipe" };
@@ -73,6 +76,8 @@ function applyUpsert(state: AppData, action: Extract<Action, { type: "upsert" }>
       return { ...state, wins: upsertById(state.wins, action.item) };
     case "activities":
       return { ...state, activities: upsertById(state.activities, action.item) };
+    case "vitals":
+      return { ...state, vitals: upsertById(state.vitals, action.item) };
   }
 }
 
@@ -92,6 +97,8 @@ function applyRemove(state: AppData, action: Extract<Action, { type: "remove" }>
       return { ...state, wins: removeById(state.wins, action.id) };
     case "activities":
       return { ...state, activities: removeById(state.activities, action.id) };
+    case "vitals":
+      return { ...state, vitals: removeById(state.vitals, action.id) };
   }
 }
 
@@ -137,6 +144,8 @@ export function reducer(state: AppData, action: Action): AppData {
       return { ...state, activities: [...state.activities, ...action.items] };
     case "setCheckin":
       return applySetCheckin(state, action);
+    case "markAchievementsSeen":
+      return { ...state, seenAchievements: [...new Set([...state.seenAchievements, ...action.keys])] };
     case "loadSample":
       return sampleData(state.settings);
     case "importData":

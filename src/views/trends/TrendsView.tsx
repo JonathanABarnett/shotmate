@@ -7,11 +7,12 @@ import LevelPanel from "./LevelPanel";
 import DosePanel from "./DosePanel";
 import BodyPanel from "./BodyPanel";
 import BodySnapshot from "./BodySnapshot";
+import VitalsPanel from "./VitalsPanel";
 import PhotosCard from "./PhotosCard";
 import ActivityPanel from "./ActivityPanel";
 import EffectsPanel from "./EffectsPanel";
 
-type PanelKey = "weight" | "insights" | "level" | "dose" | "body" | "activity" | "effects";
+type PanelKey = "weight" | "insights" | "level" | "dose" | "body" | "vitals" | "activity" | "effects";
 
 const PANELS = [
   { key: "weight", label: "Weight" },
@@ -19,6 +20,7 @@ const PANELS = [
   { key: "level", label: "Med level" },
   { key: "dose", label: "Doses" },
   { key: "body", label: "Body" },
+  { key: "vitals", label: "Vitals" },
   { key: "activity", label: "Moves" },
   { key: "effects", label: "Feels" },
 ] as const;
@@ -51,6 +53,7 @@ export default function TrendsView({ onAddPhoto, showToast }: Props) {
           <PhotosCard data={data} onAddPhoto={onAddPhoto} />
         </>
       )}
+      {panel === "vitals" && <VitalsPanel data={data} />}
       {panel === "activity" && <ActivityPanel data={data} showToast={showToast} />}
       {panel === "effects" && <EffectsPanel data={data} />}
     </div>

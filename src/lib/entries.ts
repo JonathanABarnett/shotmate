@@ -4,6 +4,7 @@ import { fmtDayFull, startOfDay } from "./dates";
 import { severityMeta } from "./effects";
 import { fmtLength, lengthUnit, MEASURES } from "./measures";
 import { siteLabel } from "./sites";
+import { vitalsSummaryParts } from "./vitals";
 import { fmtWeight } from "./weight";
 
 /** All entries across collections, newest first. */
@@ -16,6 +17,7 @@ export function buildEntries(data: AppData): Entry[] {
     ...data.photos.map((item): Entry => ({ kind: "photo", item })),
     ...data.wins.map((item): Entry => ({ kind: "win", item })),
     ...data.activities.map((item): Entry => ({ kind: "activity", item })),
+    ...data.vitals.map((item): Entry => ({ kind: "vitals", item })),
   ];
   return entries.sort((a, b) => b.item.ts - a.item.ts);
 }
@@ -66,6 +68,11 @@ export function entrySummary(entry: Entry, unit: Unit): EntrySummary {
         ...(imported ? ["from MapMyRun"] : []),
       ].join(" · ");
       return { title: `${info.label} ${info.emoji}`, sub: note ? `${details} — ${note}` : details };
+    }
+    case "vitals": {
+      const parts = vitalsSummaryParts(entry.item.values);
+      const title = parts.length > 0 ? `${parts.slice(0, 3).join(" · ")}${parts.length > 3 ? ` +${parts.length - 3}` : ""}` : "Labs & vitals";
+      return { title, sub: entry.item.note || "Labs & vitals check-in" };
     }
   }
 }

@@ -2,7 +2,7 @@ import type { AppData, Settings } from "../../types";
 import { useStore } from "../../store/StoreProvider";
 import { medFor } from "../../lib/meds";
 import { drawVolume, fmtDraw } from "../../lib/draw";
-import { supplyStatus } from "../../lib/supply";
+import { DEFAULT_REORDER_LEAD_DAYS, fmtUsd, supplyStatus } from "../../lib/supply";
 import { Field } from "../../components/form/fields";
 import MedPicker from "../../components/form/MedPicker";
 import DosePicker from "../../components/form/DosePicker";
@@ -82,8 +82,37 @@ export default function MedicationSection() {
         }
         max={10_000}
       />
+
+      {settings.supplyMg != null && (
+        <>
+          <OptionalNumberField
+            label="What this supply cost (optional)"
+            hint={costHint(data)}
+            suffix="USD"
+            placeholder="e.g. 450"
+            value={settings.supplyCostUsd}
+            onChange={(supplyCostUsd) => patch({ supplyCostUsd })}
+            max={100_000}
+          />
+          <OptionalNumberField
+            label="Reorder lead time"
+            hint="How many days before running out you'd like the 'order by' nudge."
+            suffix="days"
+            placeholder={String(DEFAULT_REORDER_LEAD_DAYS)}
+            value={settings.reorderLeadDays}
+            onChange={(reorderLeadDays) => patch({ reorderLeadDays })}
+            max={90}
+          />
+        </>
+      )}
     </section>
   );
+}
+
+function costHint(data: AppData): string {
+  const status = supplyStatus(data);
+  if (!status?.costPerShot || !status.costPerWeek) return "Turns the supply into per-shot and per-week figures.";
+  return `≈ ${fmtUsd(status.costPerShot)} per shot · ${fmtUsd(status.costPerWeek)} per week at your planned dose.`;
 }
 
 function vialHint(settings: Settings): string {

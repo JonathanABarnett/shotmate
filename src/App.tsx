@@ -4,6 +4,7 @@ import { useStore } from "./store/StoreProvider";
 import { Toast, useToast } from "./hooks/useToast";
 import { useTheme } from "./hooks/useTheme";
 import { useLaunchAction } from "./hooks/useLaunchAction";
+import { useAchievementToasts } from "./hooks/useAchievementToasts";
 import { deleteOrphanPhotoBlobs } from "./store/photoStore";
 import { isDemoRequest } from "./store/persistence";
 import TopBar from "./components/TopBar";
@@ -34,17 +35,20 @@ function sheetForEntry(entry: Entry): ActiveSheet {
       return { kind: "win", existing: entry.item };
     case "activity":
       return { kind: "activity", existing: entry.item };
+    case "vitals":
+      return { kind: "vitals", existing: entry.item };
   }
 }
 
 export default function App() {
-  const { data } = useStore();
+  const { data, dispatch } = useStore();
   const { toast, showToast, dismissToast } = useToast();
   const [tab, setTab] = useState<Tab>("home");
   const [inSettings, setInSettings] = useState(false);
   const [inReport, setInReport] = useState(false);
   const [sheet, setSheet] = useState<ActiveSheet>(null);
   useTheme(data.settings.theme ?? "auto");
+  useAchievementToasts(data, showToast, dispatch);
 
   // Home-screen shortcuts / notification taps: open straight into the right sheet.
   useLaunchAction((action) => {

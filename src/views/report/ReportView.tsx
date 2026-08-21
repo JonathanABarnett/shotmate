@@ -6,6 +6,7 @@ import { fmtLength, lengthUnit, MEASURES, sortedMeasures } from "../../lib/measu
 import { medFor } from "../../lib/meds";
 import { sortedShots } from "../../lib/shots";
 import { siteLabel } from "../../lib/sites";
+import { fmtVital, sortedVitals, VITALS } from "../../lib/vitals";
 import { bmi, fmtWeight, goalProgress, latestWeight, sortedWeights, startWeightLbs, weeklyRate, toDisplayWeight } from "../../lib/weight";
 import WeightChart from "../../components/charts/WeightChart";
 import { useStore } from "../../store/StoreProvider";
@@ -134,6 +135,39 @@ function MeasureTable({ data }: { data: AppData }) {
   );
 }
 
+function VitalsTable({ data }: { data: AppData }) {
+  const entries = sortedVitals(data.vitals).slice(-8);
+  if (entries.length === 0) return null;
+  const usedKeys = VITALS.filter((v) => entries.some((e) => e.values[v.key] != null));
+  return (
+    <section className="report-section">
+      <h2>Labs &amp; vitals</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            {usedKeys.map((v) => (
+              <th key={v.key}>
+                {v.short} ({v.unit})
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {entries.map((e) => (
+            <tr key={e.id}>
+              <td>{fmtDay(e.ts)}</td>
+              {usedKeys.map((v) => (
+                <td key={v.key}>{e.values[v.key] != null ? fmtVital(v.key, e.values[v.key]!).replace(/ .*$/, "") : "—"}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
+  );
+}
+
 export default function ReportView({ onBack }: { onBack: () => void }) {
   const { data } = useStore();
   const med = medFor(data.settings);
@@ -171,6 +205,7 @@ export default function ReportView({ onBack }: { onBack: () => void }) {
       <ShotTable data={data} />
       <EffectTable data={data} />
       <MeasureTable data={data} />
+      <VitalsTable data={data} />
 
       <footer className="report-foot">
         Self-reported tracking data from the ShotMate app — not a medical record. Medication-level figures are model

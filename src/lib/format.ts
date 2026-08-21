@@ -1,6 +1,6 @@
-import type { Unit } from "../../../types";
-import { lengthUnit, toDisplayLength } from "../../../lib/measures";
-import { toDisplayWeight } from "../../../lib/weight";
+import type { Unit } from "../types";
+import { lengthUnit, toDisplayLength } from "./measures";
+import { toDisplayWeight } from "./weight";
 
 /** "−2.1 lbs" / "+0.4 kg" — signed, in the user's unit. */
 export function signedWeight(lbs: number, unit: Unit, digits = 1): string {

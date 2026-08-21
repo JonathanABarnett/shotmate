@@ -28,5 +28,7 @@ export function emptyData(): AppData {
     intake: [],
     activities: [],
     checkins: [],
+    vitals: [],
+    seenAchievements: [],
   };
 }

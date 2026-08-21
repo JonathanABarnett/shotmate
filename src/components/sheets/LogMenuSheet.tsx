@@ -6,6 +6,7 @@ const SUBTITLES: Record<EntryKind, string> = {
   weight: "A quick step on the scale",
   measure: "Chest, waist & more with a tape",
   activity: "A walk, run, ride, or workout",
+  vitals: "Blood pressure, resting HR, A1c & lipids",
   effect: "Side effects & symptoms",
   photo: "Private before & after shots",
   win: "A non-scale victory 🎉",

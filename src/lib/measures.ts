@@ -43,6 +43,16 @@ export function measureSeries(measures: MeasurementEntry[], key: MeasureKey): { 
     .map((m) => ({ ts: m.ts, inches: m.valuesIn[key]! }));
 }
 
+/** The measurement closest to ts for one measure, within a window. */
+export function nearestMeasureIn(measures: MeasurementEntry[], key: MeasureKey, ts: number, windowDays = 14): number | undefined {
+  let best: { ts: number; inches: number } | undefined;
+  for (const p of measureSeries(measures, key)) {
+    if (Math.abs(p.ts - ts) > windowDays * 86_400_000) continue;
+    if (!best || Math.abs(p.ts - ts) < Math.abs(best.ts - ts)) best = p;
+  }
+  return best?.inches;
+}
+
 /** Most recent recorded value for each measure — used to prefill the next check-in. */
 export function latestValues(measures: MeasurementEntry[]): Partial<Record<MeasureKey, number>> {
   const latest: Partial<Record<MeasureKey, number>> = {};

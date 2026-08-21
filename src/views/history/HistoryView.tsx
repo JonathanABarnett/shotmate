@@ -15,6 +15,7 @@ const FILTERS: { key: Filter; label: string }[] = [
   { key: "weight", label: "Weight" },
   { key: "measure", label: "Body" },
   { key: "activity", label: "Moves" },
+  { key: "vitals", label: "Vitals" },
   { key: "effect", label: "Feels" },
   { key: "photo", label: "Photos" },
   { key: "win", label: "Wins" },

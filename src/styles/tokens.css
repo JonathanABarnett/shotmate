@@ -35,6 +35,9 @@
   --rose-ink: #c2418f;
   --green-soft: #e5f4e3;
   --green-ink: #1c6b21;
+  --navy-soft: #e4e9fb;
+  --navy-ink: #2f4ea8;
+  --chart-vitals: #2f4ea8;
   --chart-activity: #008300;
 
   --grad: linear-gradient(135deg, #7c5ce6 0%, #5f68e8 45%, #18b597 115%);
@@ -110,6 +113,9 @@
   --rose-ink: #f27bbd;
   --green-soft: #1b301d;
   --green-ink: #67cf72;
+  --navy-soft: #1c2440;
+  --navy-ink: #8fa7f2;
+  --chart-vitals: #8fa7f2;
 
   --good: #43d09a;
   --bad: #ff9f78;

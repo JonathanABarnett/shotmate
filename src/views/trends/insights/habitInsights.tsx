@@ -1,7 +1,7 @@
 import type { Unit } from "../../../types";
 import type { ActivityPace, Adherence, CreepInsight } from "../../../lib/insights";
 import InsightCard from "../../../components/InsightCard";
-import { absWeight, signedWeight } from "./format";
+import { absWeight, signedWeight } from "../../../lib/format";
 
 export function CreepCard({ creep }: { creep: CreepInsight }) {
   const filled = creep.buckets.filter((b) => b.n > 0);

@@ -8,6 +8,7 @@ import type {
   Settings,
   Shot,
   SiteId,
+  VitalsEntry,
   WeightEntry,
   WinEntry,
 } from "../types";
@@ -162,6 +163,20 @@ function sampleCheckins(shots: Shot[], now: number, rnd: () => number): CheckinE
   return entries;
 }
 
+function sampleVitals(firstShot: number): VitalsEntry[] {
+  const at = (day: number, values: VitalsEntry["values"], note?: string): VitalsEntry => ({
+    id: uid(),
+    ts: firstShot + day * DAY + 8 * HOUR,
+    values,
+    note,
+  });
+  return [
+    at(0, { systolic: 138, diastolic: 88, restingHr: 78, a1c: 6.1, fastingGlucose: 108, ldl: 142, hdl: 41, triglycerides: 190 }, "Baseline labs from the intake visit."),
+    at(42, { systolic: 131, diastolic: 84, restingHr: 72 }),
+    at(77, { systolic: 126, diastolic: 81, restingHr: 68, a1c: 5.7, fastingGlucose: 98, ldl: 128, hdl: 44, triglycerides: 150 }, "3-month follow-up panel."),
+  ];
+}
+
 function sampleIntake(now: number): DailyIntake[] {
   const today = startOfDay(now);
   return [
@@ -190,5 +205,7 @@ export function sampleData(base: Settings): AppData {
     intake: sampleIntake(now),
     activities: sampleActivities(firstShot),
     checkins: sampleCheckins(shots, now, rnd),
+    vitals: sampleVitals(firstShot),
+    seenAchievements: [],
   };
 }

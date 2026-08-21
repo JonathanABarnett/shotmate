@@ -31,6 +31,8 @@ export function withDataDefaults(data: AppData): AppData {
     intake: data.intake ?? [],
     activities: data.activities ?? [],
     checkins: data.checkins ?? [],
+    vitals: data.vitals ?? [],
+    seenAchievements: data.seenAchievements ?? [],
   };
 }
 

@@ -14,6 +14,8 @@ import {
 import { OutlookCard, PaceCard, TapeCard, WaterWeightCard } from "./insights/weightInsights";
 import { ActivityPaceCard, AdherenceCard, CreepCard } from "./insights/habitInsights";
 import { DoseStepsCard, SitesCard } from "./insights/shotInsights";
+import AchievementsCard from "./insights/AchievementsCard";
+import { achievements } from "../../lib/achievements";
 
 interface Locked {
   title: string;
@@ -72,6 +74,7 @@ export default function InsightsPanel({ data }: { data: AppData }) {
 
   return (
     <>
+      <AchievementsCard items={achievements(data)} />
       {outlook && <OutlookCard outlook={outlook} unit={unit} goalLbs={data.settings.goalLbs} />}
       {pace && <PaceCard pace={pace} unit={unit} />}
       {creep && <CreepCard creep={creep} />}
