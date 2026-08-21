@@ -1,4 +1,6 @@
 import type { Entry } from "../../types";
+import type { InstallPrompt } from "../../hooks/useInstallPrompt";
+import InstallBanner from "../../components/InstallBanner";
 import { useStore } from "../../store/StoreProvider";
 import HeroCard from "./HeroCard";
 import StatTilesRow from "./StatTilesRow";
@@ -11,6 +13,7 @@ import GoalCard from "./GoalCard";
 import RecentActivity from "./RecentActivity";
 
 interface Props {
+  installPrompt: InstallPrompt;
   onLogShot: () => void;
   onSeeTrends: () => void;
   onSeeHistory: () => void;
@@ -18,7 +21,7 @@ interface Props {
   onEdit: (entry: Entry) => void;
 }
 
-export default function HomeView({ onLogShot, onSeeTrends, onSeeHistory, onOpenSettings, onEdit }: Props) {
+export default function HomeView({ installPrompt, onLogShot, onSeeTrends, onSeeHistory, onOpenSettings, onEdit }: Props) {
   const { data } = useStore();
   return (
     <div className="view">
@@ -27,6 +30,7 @@ export default function HomeView({ onLogShot, onSeeTrends, onSeeHistory, onOpenS
           👀 You're browsing <strong>sample data</strong> — clear it anytime in Settings → Data.
         </p>
       )}
+      <InstallBanner prompt={installPrompt} />
       <HeroCard data={data} onLogShot={onLogShot} />
       <StatTilesRow data={data} />
       <CheckinCard data={data} />

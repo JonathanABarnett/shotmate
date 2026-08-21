@@ -6,6 +6,7 @@ import { useTheme } from "./hooks/useTheme";
 import { useLaunchAction } from "./hooks/useLaunchAction";
 import { useAchievementToasts } from "./hooks/useAchievementToasts";
 import { useSync } from "./sync/useSync";
+import { useInstallPrompt } from "./hooks/useInstallPrompt";
 import { deleteOrphanPhotoBlobs } from "./store/photoStore";
 import { isDemoRequest } from "./store/persistence";
 import TopBar from "./components/TopBar";
@@ -51,6 +52,7 @@ export default function App() {
   useTheme(data.settings.theme ?? "auto");
   useAchievementToasts(data, showToast, dispatch);
   const sync = useSync(data, dispatch);
+  const installPrompt = useInstallPrompt();
 
   // Home-screen shortcuts / notification taps: open straight into the right sheet.
   useLaunchAction((action) => {
@@ -69,7 +71,7 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!data.onboarded) return <OnboardingView />;
+  if (!data.onboarded) return <OnboardingView installPrompt={installPrompt} />;
   if (inReport) return <ReportView onBack={() => setInReport(false)} />;
 
   const goTo = (nextTab: Tab) => {
@@ -87,6 +89,7 @@ export default function App() {
         <>
           {tab === "home" && (
             <HomeView
+              installPrompt={installPrompt}
               onLogShot={() => setSheet({ kind: "shot" })}
               onSeeTrends={() => goTo("trends")}
               onSeeHistory={() => goTo("history")}

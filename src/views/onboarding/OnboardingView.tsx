@@ -1,11 +1,13 @@
 import { useState, type ReactNode } from "react";
+import type { InstallPrompt } from "../../hooks/useInstallPrompt";
+import InstallBanner from "../../components/InstallBanner";
 import { useStore } from "../../store/StoreProvider";
 import { draftToResult, emptyDraft, type OnboardingDraft } from "./draft";
 import { BodyStep, MedStep, ReadyStep, WelcomeStep, type StepProps } from "./steps";
 
 const STEPS: ((props: StepProps) => ReactNode)[] = [WelcomeStep, MedStep, BodyStep, ReadyStep];
 
-export default function OnboardingView() {
+export default function OnboardingView({ installPrompt }: { installPrompt: InstallPrompt }) {
   const { dispatch } = useStore();
   const [step, setStep] = useState(0);
   const [draft, setDraft] = useState<OnboardingDraft>(emptyDraft);
@@ -30,6 +32,7 @@ export default function OnboardingView() {
         <StepBody draft={draft} patch={patch} />
       </div>
       <div className="onb-footer">
+        <InstallBanner prompt={installPrompt} compact />
         <button className="btn btn-primary btn-block" onClick={() => (isLast ? finish() : setStep(step + 1))}>
           {isLast ? "Start tracking 🎉" : "Continue"}
         </button>

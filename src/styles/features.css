@@ -726,3 +726,39 @@
   font-size: 13.5px;
   text-align: center;
 }
+
+/* ------------------------------- install banner ------------------------------ */
+
+.install-card {
+  border: 1.5px solid var(--brand-soft);
+  background: linear-gradient(135deg, var(--brand-soft), var(--surface) 60%);
+}
+
+.install-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.install-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+  flex: none;
+  box-shadow: 0 8px 18px -10px rgba(96, 74, 216, 0.55);
+}
+
+.install-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.install-text .entry-sub {
+  white-space: normal;
+}
+
+.install-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
