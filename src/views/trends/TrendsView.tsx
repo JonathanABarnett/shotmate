@@ -4,14 +4,16 @@ import SegmentedControl from "../../components/SegmentedControl";
 import WeightPanel from "./WeightPanel";
 import LevelPanel from "./LevelPanel";
 import DosePanel from "./DosePanel";
+import BodyPanel from "./BodyPanel";
 import EffectsPanel from "./EffectsPanel";
 
-type PanelKey = "weight" | "level" | "dose" | "effects";
+type PanelKey = "weight" | "level" | "dose" | "body" | "effects";
 
 const PANELS = [
   { key: "weight", label: "Weight" },
   { key: "level", label: "Med level" },
   { key: "dose", label: "Doses" },
+  { key: "body", label: "Body" },
   { key: "effects", label: "Feels" },
 ] as const;
 
@@ -30,6 +32,7 @@ export default function TrendsView() {
       {panel === "weight" && <WeightPanel data={data} />}
       {panel === "level" && <LevelPanel data={data} />}
       {panel === "dose" && <DosePanel data={data} />}
+      {panel === "body" && <BodyPanel data={data} />}
       {panel === "effects" && <EffectsPanel data={data} />}
     </div>
   );

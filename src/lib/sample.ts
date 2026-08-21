@@ -1,4 +1,4 @@
-import type { AppData, EffectEntry, Settings, Shot, SiteId, WeightEntry } from "../types";
+import type { AppData, EffectEntry, MeasurementEntry, Settings, Shot, SiteId, WeightEntry } from "../types";
 import { DAY, HOUR } from "./dates";
 import { uid } from "./ids";
 
@@ -80,6 +80,19 @@ function sampleEffects(firstShot: number): EffectEntry[] {
   ];
 }
 
+function sampleMeasures(firstShot: number): MeasurementEntry[] {
+  // Fortnightly tape check-ins, easing down alongside the weight trend.
+  const chest = [46.0, 45.4, 44.9, 44.5, 44.1, 43.8];
+  const waist = [44.0, 43.2, 42.4, 41.8, 41.2, 40.6];
+  const hips = [47.0, 46.5, 46.1, 45.8, 45.5, 45.2];
+  return chest.map((c, i) => ({
+    id: uid(),
+    ts: firstShot + i * 14 * DAY + 9 * HOUR,
+    valuesIn: { chest: c, waist: waist[i], hips: hips[i] },
+    note: i === 0 ? "Starting numbers — deep breath!" : undefined,
+  }));
+}
+
 export function sampleData(base: Settings): AppData {
   const rnd = mulberry(20260821);
   const now = Date.now();
@@ -93,5 +106,6 @@ export function sampleData(base: Settings): AppData {
     shots: sampleShots(firstShot, rnd),
     weights: sampleWeights(firstShot, settings.startLbs!, now, rnd),
     effects: sampleEffects(firstShot),
+    measures: sampleMeasures(firstShot),
   };
 }

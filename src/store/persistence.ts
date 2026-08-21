@@ -21,13 +21,18 @@ export function isAppData(json: unknown): json is AppData {
   );
 }
 
+/** Fill in collections added after a stored snapshot was written. */
+export function withDataDefaults(data: AppData): AppData {
+  return { ...data, measures: data.measures ?? [] };
+}
+
 export function loadStoredData(): AppData {
   if (isDemoRequest()) return sampleData(defaultSettings());
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed: unknown = JSON.parse(raw);
-      if (isAppData(parsed)) return parsed;
+      if (isAppData(parsed)) return withDataDefaults(parsed);
     }
   } catch {
     // corrupted storage — start fresh rather than crash

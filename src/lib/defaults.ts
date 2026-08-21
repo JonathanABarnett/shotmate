@@ -18,5 +18,6 @@ export function emptyData(): AppData {
     shots: [],
     weights: [],
     effects: [],
+    measures: [],
   };
 }

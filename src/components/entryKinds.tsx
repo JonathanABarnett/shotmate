@@ -1,8 +1,8 @@
-import { HeartPulse, Scale, Syringe, type LucideIcon } from "lucide-react";
+import { HeartPulse, Ruler, Scale, Syringe, type LucideIcon } from "lucide-react";
 
-export type EntryKind = "shot" | "weight" | "effect";
+export type EntryKind = "shot" | "weight" | "effect" | "measure";
 
-export type Tone = "violet" | "teal" | "coral";
+export type Tone = "violet" | "teal" | "coral" | "gold";
 
 export interface EntryKindMeta {
   label: string;
@@ -13,6 +13,7 @@ export interface EntryKindMeta {
 export const ENTRY_KINDS: Record<EntryKind, EntryKindMeta> = {
   shot: { label: "Shot", tone: "violet", Icon: Syringe },
   weight: { label: "Weight", tone: "teal", Icon: Scale },
+  measure: { label: "Measurements", tone: "gold", Icon: Ruler },
   effect: { label: "How I feel", tone: "coral", Icon: HeartPulse },
 };
 

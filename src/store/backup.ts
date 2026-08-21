@@ -1,5 +1,5 @@
 import type { AppData } from "../types";
-import { isAppData } from "./persistence";
+import { isAppData, withDataDefaults } from "./persistence";
 
 /** Download the user's data as a JSON backup file. */
 export function downloadBackup(data: AppData): void {
@@ -18,7 +18,7 @@ export async function parseBackupFile(file: File): Promise<AppData | null> {
   try {
     const parsed: unknown = JSON.parse(await file.text());
     if (!isAppData(parsed)) return null;
-    return { ...parsed, onboarded: true };
+    return withDataDefaults({ ...parsed, onboarded: true });
   } catch {
     return null;
   }

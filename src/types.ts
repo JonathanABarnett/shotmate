@@ -27,6 +27,16 @@ export interface EffectEntry {
   note?: string;
 }
 
+export type MeasureKey = "chest" | "waist" | "hips" | "arm" | "thigh";
+
+export interface MeasurementEntry {
+  id: string;
+  ts: number;
+  /** inches canonical — converted for display when unit is kg/cm */
+  valuesIn: Partial<Record<MeasureKey, number>>;
+  note?: string;
+}
+
 export interface Settings {
   name: string;
   medKey: string;
@@ -54,9 +64,11 @@ export interface AppData {
   shots: Shot[];
   weights: WeightEntry[];
   effects: EffectEntry[];
+  measures: MeasurementEntry[];
 }
 
 export type Entry =
   | { kind: "shot"; item: Shot }
   | { kind: "weight"; item: WeightEntry }
-  | { kind: "effect"; item: EffectEntry };
+  | { kind: "effect"; item: EffectEntry }
+  | { kind: "measure"; item: MeasurementEntry };

@@ -3,6 +3,7 @@ import LogMenuSheet from "./LogMenuSheet";
 import LogShotSheet from "./LogShotSheet";
 import LogWeightSheet from "./LogWeightSheet";
 import LogEffectSheet from "./LogEffectSheet";
+import LogMeasureSheet from "./LogMeasureSheet";
 import type { ActiveSheet } from "./types";
 
 interface Props {
@@ -24,5 +25,7 @@ export default function SheetRouter({ sheet, onClose, onOpen, onDone }: Props) {
       return <LogWeightSheet onClose={onClose} onDone={onDone} existing={sheet.existing} />;
     case "effect":
       return <LogEffectSheet onClose={onClose} onDone={onDone} existing={sheet.existing} />;
+    case "measure":
+      return <LogMeasureSheet onClose={onClose} onDone={onDone} existing={sheet.existing} />;
   }
 }

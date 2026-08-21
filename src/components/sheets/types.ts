@@ -1,4 +1,4 @@
-import type { EffectEntry, Shot, WeightEntry } from "../../types";
+import type { EffectEntry, MeasurementEntry, Shot, WeightEntry } from "../../types";
 
 export interface EntrySheetProps {
   onClose: () => void;
@@ -11,4 +11,5 @@ export type ActiveSheet =
   | { kind: "menu" }
   | { kind: "shot"; existing?: Shot }
   | { kind: "weight"; existing?: WeightEntry }
-  | { kind: "effect"; existing?: EffectEntry };
+  | { kind: "effect"; existing?: EffectEntry }
+  | { kind: "measure"; existing?: MeasurementEntry };

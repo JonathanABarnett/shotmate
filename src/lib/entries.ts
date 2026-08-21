@@ -1,6 +1,7 @@
 import type { AppData, Entry, Unit } from "../types";
 import { fmtDayFull, startOfDay } from "./dates";
 import { severityMeta } from "./effects";
+import { fmtLength, lengthUnit, MEASURES } from "./measures";
 import { siteLabel } from "./sites";
 import { fmtWeight } from "./weight";
 
@@ -10,6 +11,7 @@ export function buildEntries(data: AppData): Entry[] {
     ...data.shots.map((item): Entry => ({ kind: "shot", item })),
     ...data.weights.map((item): Entry => ({ kind: "weight", item })),
     ...data.effects.map((item): Entry => ({ kind: "effect", item })),
+    ...data.measures.map((item): Entry => ({ kind: "measure", item })),
   ];
   return entries.sort((a, b) => b.item.ts - a.item.ts);
 }
@@ -35,6 +37,16 @@ export function entrySummary(entry: Entry, unit: Unit): EntrySummary {
       return {
         title: effects.join(", "),
         sub: note ? `${sev.label} ${sev.emoji} — ${note}` : `${sev.label} ${sev.emoji}`,
+      };
+    }
+    case "measure": {
+      const { valuesIn, note } = entry.item;
+      const parts = MEASURES.filter((m) => valuesIn[m.key] != null).map(
+        (m) => `${m.label} ${fmtLength(valuesIn[m.key]!, unit)}`
+      );
+      return {
+        title: `${parts.slice(0, 3).join(" · ")}${parts.length > 3 ? ` +${parts.length - 3}` : ""} ${lengthUnit(unit)}`,
+        sub: note || "Tape-measure check-in",
       };
     }
   }

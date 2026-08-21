@@ -21,6 +21,8 @@ function sheetForEntry(entry: Entry): ActiveSheet {
       return { kind: "weight", existing: entry.item };
     case "effect":
       return { kind: "effect", existing: entry.item };
+    case "measure":
+      return { kind: "measure", existing: entry.item };
   }
 }
 

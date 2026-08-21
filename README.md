@@ -16,6 +16,8 @@ No subscription, no account, no cloud: **everything stays in your browser's loca
   is in your system, with a dashed projection to your next shot. An estimate for curiosity,
   not medical guidance.
 - **Dose history** — your titration journey as a bar chart.
+- **Body measurements** — chest, waist, hips, arm, and thigh check-ins with per-measure
+  trend lines and change-since-start (tape numbers often move before the scale does).
 - **Side-effect journal** — quick symptom chips, severity, and frequency summaries.
 - **History timeline** — every entry, grouped by day, tap to edit or delete.
 - **Help** — friendly guidance on injections, site rotation, side effects, storage, and red flags.

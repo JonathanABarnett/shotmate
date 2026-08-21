@@ -370,6 +370,11 @@
   color: #e85d3d;
 }
 
+.entry-ico.gold {
+  background: var(--gold-soft);
+  color: #c98500;
+}
+
 .entry-main {
   flex: 1;
   min-width: 0;

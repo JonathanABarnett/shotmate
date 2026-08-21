@@ -1,8 +1,8 @@
-import type { AppData, EffectEntry, Settings, Shot, WeightEntry } from "../types";
+import type { AppData, EffectEntry, MeasurementEntry, Settings, Shot, WeightEntry } from "../types";
 import { emptyData } from "../lib/defaults";
 import { sampleData } from "../lib/sample";
 
-export type CollectionKey = "shots" | "weights" | "effects";
+export type CollectionKey = "shots" | "weights" | "effects" | "measures";
 
 export type Action =
   | { type: "completeOnboarding"; settings: Settings; firstWeight?: WeightEntry; firstShot?: Shot }
@@ -10,6 +10,7 @@ export type Action =
   | { type: "upsert"; collection: "shots"; item: Shot }
   | { type: "upsert"; collection: "weights"; item: WeightEntry }
   | { type: "upsert"; collection: "effects"; item: EffectEntry }
+  | { type: "upsert"; collection: "measures"; item: MeasurementEntry }
   | { type: "remove"; collection: CollectionKey; id: string }
   | { type: "loadSample" }
   | { type: "importData"; data: AppData }
@@ -44,6 +45,8 @@ function applyUpsert(state: AppData, action: Extract<Action, { type: "upsert" }>
       return { ...state, weights: upsertById(state.weights, action.item) };
     case "effects":
       return { ...state, effects: upsertById(state.effects, action.item) };
+    case "measures":
+      return { ...state, measures: upsertById(state.measures, action.item) };
   }
 }
 
@@ -55,6 +58,8 @@ function applyRemove(state: AppData, action: Extract<Action, { type: "remove" }>
       return { ...state, weights: removeById(state.weights, action.id) };
     case "effects":
       return { ...state, effects: removeById(state.effects, action.id) };
+    case "measures":
+      return { ...state, measures: removeById(state.measures, action.id) };
   }
 }
 

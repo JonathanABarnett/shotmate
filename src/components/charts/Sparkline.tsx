@@ -1,40 +1,40 @@
 import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
-import type { Unit, WeightEntry } from "../../types";
-import { sortedWeights, toDisplayWeight } from "../../lib/weight";
 import { AreaFillDef, CHART } from "./chrome";
 
-const POINTS = 30;
-
-interface Props {
-  weights: WeightEntry[];
-  unit: Unit;
+export interface SparkPoint {
+  ts: number;
+  value: number;
 }
 
-/** Tiny axis-free trend for the home card. */
-export default function Sparkline({ weights, unit }: Props) {
-  const data = sortedWeights(weights)
-    .slice(-POINTS)
-    .map((w) => ({ ts: w.ts, value: toDisplayWeight(w.lbs, unit) }));
-  if (data.length < 2) return null;
+interface Props {
+  points: SparkPoint[];
+  height?: number;
+  color?: string;
+  fillId?: string;
+}
 
-  const values = data.map((d) => d.value);
+/** Tiny axis-free trend line for cards and list rows. */
+export default function Sparkline({ points, height = 64, color = CHART.weight, fillId = "spark-fill" }: Props) {
+  if (points.length < 2) return null;
+
+  const values = points.map((d) => d.value);
   const lo = Math.min(...values);
   const hi = Math.max(...values);
-  const pad = Math.max(1, (hi - lo) * 0.15);
+  const pad = Math.max(0.5, (hi - lo) * 0.15);
 
   return (
-    <ResponsiveContainer width="100%" height={64}>
-      <AreaChart data={data} margin={{ top: 4, right: 0, bottom: 0, left: 0 }}>
-        <AreaFillDef id="spark-fill" color={CHART.weight} />
+    <ResponsiveContainer width="100%" height={height}>
+      <AreaChart data={points} margin={{ top: 4, right: 0, bottom: 0, left: 0 }}>
+        <AreaFillDef id={fillId} color={color} />
         <YAxis hide domain={[lo - pad, hi + pad]} />
         <XAxis hide dataKey="ts" type="number" domain={["dataMin", "dataMax"]} />
         <Area
           type="monotone"
           dataKey="value"
-          stroke={CHART.weight}
+          stroke={color}
           strokeWidth={2}
           strokeLinecap="round"
-          fill="url(#spark-fill)"
+          fill={`url(#${fillId})`}
           dot={false}
           isAnimationActive={false}
         />
