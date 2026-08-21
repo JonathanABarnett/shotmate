@@ -16,7 +16,7 @@ function mulberry(seed: number) {
 const ROTATION: SiteId[] = ["ab-l", "ab-r", "th-l", "th-r", "arm-l", "arm-r"];
 const WEEKS = 12;
 
-function sampleSettings(base: Settings): Settings {
+function sampleSettings(base: Settings, now: number): Settings {
   return {
     ...base,
     name: base.name || "Sam",
@@ -27,6 +27,9 @@ function sampleSettings(base: Settings): Settings {
     startLbs: 231.8,
     goalLbs: 185,
     heightIn: base.heightIn ?? 69,
+    vialMgPerMl: 10,
+    supplyMg: 40,
+    supplySetTs: now - 3 * DAY,
   };
 }
 
@@ -81,7 +84,7 @@ export function sampleData(base: Settings): AppData {
   const rnd = mulberry(20260821);
   const now = Date.now();
   const firstShot = now - (WEEKS - 1) * 7 * DAY - 2 * DAY;
-  const settings = sampleSettings(base);
+  const settings = sampleSettings(base, now);
   return {
     v: 1,
     onboarded: true,

@@ -38,6 +38,12 @@ export interface Settings {
   goalLbs?: number;
   startLbs?: number;
   heightIn?: number;
+  /** vial concentration for compounded meds — enables the draw calculator */
+  vialMgPerMl?: number;
+  /** mg on hand when the user last recorded their supply */
+  supplyMg?: number;
+  /** when supplyMg was recorded; shots after this count against it */
+  supplySetTs?: number;
 }
 
 export interface AppData {

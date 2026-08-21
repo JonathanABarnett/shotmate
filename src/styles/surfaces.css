@@ -296,6 +296,24 @@
   color: var(--ink-2);
 }
 
+/* ------------------------------- supply card ------------------------------- */
+
+.supply-card {
+  padding: 15px 18px;
+}
+
+.supply-main {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-width: 0;
+}
+
+.supply-card .entry-sub {
+  white-space: normal;
+  overflow: visible;
+}
+
 /* -------------------------------- entry rows ------------------------------- */
 
 .day-group {

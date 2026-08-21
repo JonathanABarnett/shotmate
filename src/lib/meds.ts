@@ -17,6 +17,8 @@ export const MEDS: MedInfo[] = [
   { key: "mounjaro", brand: "Mounjaro", generic: "tirzepatide", halfLifeH: 120, doses: [2.5, 5, 7.5, 10, 12.5, 15], emoji: "🩶" },
   { key: "saxenda", brand: "Saxenda", generic: "liraglutide", halfLifeH: 13, doses: [0.6, 1.2, 1.8, 2.4, 3], emoji: "🤍" },
   { key: "trulicity", brand: "Trulicity", generic: "dulaglutide", halfLifeH: 112, doses: [0.75, 1.5, 3, 4.5], emoji: "💚" },
+  { key: "tirz-compound", brand: "Compounded tirzepatide", generic: "tirzepatide · vials", halfLifeH: 120, doses: [2, 2.5, 5, 7.5, 10, 12.5, 15], emoji: "🧪" },
+  { key: "sema-compound", brand: "Compounded semaglutide", generic: "semaglutide · vials", halfLifeH: 168, doses: [0.25, 0.5, 1, 1.7, 2.4], emoji: "⚗️" },
   { key: "custom", brand: "Something else", generic: "custom medication", halfLifeH: 120, doses: [1, 2.5, 5, 10], emoji: "✨" },
 ];
 

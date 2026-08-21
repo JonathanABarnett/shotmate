@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Shot } from "../../types";
 import { medFor } from "../../lib/meds";
+import { drawVolume, fmtDraw } from "../../lib/draw";
 import { suggestedSite } from "../../lib/sites";
 import { uid } from "../../lib/ids";
 import { useStore } from "../../store/StoreProvider";
@@ -42,9 +43,11 @@ export default function LogShotSheet({ onClose, onDone, existing }: EntrySheetPr
     finish("Shot deleted");
   };
 
+  const draw = data.settings.vialMgPerMl != null ? drawVolume(doseMg, data.settings.vialMgPerMl) : undefined;
+
   return (
     <Sheet title={existing ? "Edit shot" : "Log a shot"} icon={<EntryBadge kind="shot" />} onClose={onClose}>
-      <Field label={`Dose · ${med.brand}`}>
+      <Field label={`Dose · ${med.brand}`} hint={draw ? `Draw ≈ ${fmtDraw(draw)}` : undefined}>
         <DosePicker med={med} value={doseMg} onChange={setDoseMg} />
       </Field>
       <Field label="Injection site">
