@@ -1,0 +1,40 @@
+:root {
+  color-scheme: light;
+
+  /* ink */
+  --ink: #241f3a;
+  --ink-2: #5a5474;
+  --ink-3: #7a7492;
+
+  /* surfaces */
+  --bg: #f4f2fb;
+  --surface: #ffffff;
+  --surface-2: #f7f5fd;
+  --hairline: rgba(36, 31, 58, 0.08);
+  --hairline-strong: rgba(36, 31, 58, 0.14);
+
+  /* brand */
+  --brand: #6c4fe0;
+  --brand-deep: #5638c8;
+  --brand-soft: #efeafe;
+  --teal: #12a98d;
+  --teal-soft: #e2f6f0;
+  --coral: #ff7a59;
+  --coral-soft: #ffefe9;
+  --gold: #ffb43a;
+  --gold-soft: #fff3dd;
+  --danger: #d93a44;
+  --danger-soft: #fdecec;
+
+  --grad: linear-gradient(135deg, #7c5ce6 0%, #5f68e8 45%, #18b597 115%);
+
+  /* shape + depth */
+  --r-lg: 26px;
+  --r-md: 18px;
+  --r-sm: 12px;
+  --shadow-card: 0 18px 40px -24px rgba(76, 54, 150, 0.35), 0 2px 8px -2px rgba(76, 54, 150, 0.08);
+  --shadow-float: 0 24px 50px -20px rgba(76, 54, 150, 0.45);
+  --shadow-hero: 0 24px 44px -18px rgba(96, 74, 216, 0.55);
+
+  --font: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}

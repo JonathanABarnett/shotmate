@@ -1,0 +1,213 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  /* keep the centered column still when a short view drops the scrollbar */
+  scrollbar-gutter: stable both-edges;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.45;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+/* soft ambient blobs behind everything */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(520px 380px at 12% -6%, rgba(124, 92, 230, 0.16), transparent 65%),
+    radial-gradient(460px 340px at 96% 4%, rgba(24, 181, 151, 0.14), transparent 65%),
+    radial-gradient(520px 420px at 85% 96%, rgba(255, 143, 107, 0.1), transparent 60%),
+    var(--bg);
+}
+
+::selection {
+  background: rgba(124, 92, 230, 0.22);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible {
+  outline: 3px solid rgba(108, 79, 224, 0.45);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+/* ------------------------------- app shell ------------------------------- */
+
+.app {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 18px 18px calc(118px + env(safe-area-inset-bottom));
+  animation: fade-in 0.35s ease both;
+}
+
+.view {
+  animation: view-in 0.32s cubic-bezier(0.22, 0.9, 0.35, 1) both;
+}
+
+@keyframes view-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-3deg);
+  }
+  50% {
+    transform: translateY(-9px) rotate(3deg);
+  }
+}
+
+/* -------------------------------- top bar -------------------------------- */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.topbar .who {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.logo-mark {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  flex: none;
+  box-shadow: 0 10px 22px -10px rgba(96, 74, 216, 0.55);
+}
+
+.greet-hi {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+.greet-name {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.icon-btn {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  color: var(--ink-2);
+  box-shadow: 0 8px 18px -12px rgba(76, 54, 150, 0.35);
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.icon-btn:active {
+  transform: scale(0.94);
+}
+
+.icon-btn-sm {
+  width: 38px;
+  height: 38px;
+}
+
+/* ------------------------------- utilities ------------------------------- */
+
+.row-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.spacer-8 {
+  height: 8px;
+}
+
+.spacer-16 {
+  height: 16px;
+}
+
+.muted {
+  color: var(--ink-3);
+}
+
+.tiny {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

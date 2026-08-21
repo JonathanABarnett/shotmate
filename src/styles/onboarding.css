@@ -1,0 +1,90 @@
+.onb {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 26px 22px calc(26px + env(safe-area-inset-bottom));
+}
+
+.onb-dots {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin-bottom: 26px;
+}
+
+.onb-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(36, 31, 58, 0.14);
+  transition: all 0.25s ease;
+}
+
+.onb-dot.active {
+  width: 26px;
+  background: var(--brand);
+}
+
+.onb-body {
+  flex: 1;
+  animation: view-in 0.3s ease both;
+}
+
+.onb-hero-art {
+  width: 132px;
+  height: 132px;
+  display: block;
+  margin: 26px auto 22px;
+  border-radius: 40px;
+  box-shadow: var(--shadow-hero);
+  animation: bob 4s ease-in-out infinite;
+}
+
+.onb-title {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.onb-title .grad-text {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.onb-sub {
+  font-size: 15px;
+  color: var(--ink-2);
+  font-weight: 500;
+  text-align: center;
+  margin: 12px auto 26px;
+  max-width: 40ch;
+  line-height: 1.55;
+}
+
+.onb-footer {
+  display: grid;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.ready-tips {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-2);
+  line-height: 1.5;
+}
+
+.ready-tips strong {
+  color: var(--ink);
+}
