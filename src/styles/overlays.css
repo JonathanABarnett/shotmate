@@ -103,6 +103,38 @@
   margin: 6px auto 14px;
 }
 
+/* On wide screens a bottom-hugging sheet reads as cut off —
+   float it as a centered dialog instead. */
+@media (min-width: 700px) {
+  .sheet-backdrop {
+    align-items: center;
+    padding: 28px;
+  }
+
+  .sheet {
+    border-radius: 30px;
+    max-height: calc(100dvh - 96px);
+    padding-bottom: 26px;
+    box-shadow: 0 40px 90px -30px rgba(20, 12, 50, 0.55);
+    animation: dialog-in 0.28s cubic-bezier(0.22, 0.9, 0.35, 1) both;
+  }
+
+  .sheet-handle {
+    display: none;
+  }
+}
+
+@keyframes dialog-in {
+  from {
+    transform: translateY(14px) scale(0.98);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
 .sheet-head {
   display: flex;
   align-items: center;
