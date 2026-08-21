@@ -72,6 +72,22 @@ your real data (demo mode never saves).
 | `npm run icons` | Regenerate PNG icons from `public/icon.svg` |
 | `node scripts/screenshots.mjs` | Capture app screenshots (dev server must be running) |
 
+## Sync & reminders (optional)
+
+Sign in once per device (Settings → Sync & reminders, magic link by email) to keep phone and laptop
+on the same history and to get **shot-day push notifications** (the evening before and the morning
+of). Backend is a free-tier Supabase project; sources live in `supabase/`:
+
+- `migrations/0001_sync_and_reminders.sql` — one `snapshots` row per user (last-write-wins),
+  `push_subscriptions`, and a service-role-only `app_config` (VAPID keys). Row-level security
+  on everything.
+- `functions/send-reminders/` — edge function run hourly by `pg_cron` → `pg_net`; sends Web Push
+  once per due date per device and prunes dead subscriptions.
+
+Photos never sync (their pixels stay in each device's IndexedDB). Without sign-in the app stays
+fully local. Supabase project settings needed once: Authentication → URL configuration → set the
+Site URL to your deployed app and add `http://localhost:5173/**` to redirect URLs.
+
 ## Using it on your phone
 
 Data lives per-device in local storage, so pick one:

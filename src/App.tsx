@@ -5,6 +5,7 @@ import { Toast, useToast } from "./hooks/useToast";
 import { useTheme } from "./hooks/useTheme";
 import { useLaunchAction } from "./hooks/useLaunchAction";
 import { useAchievementToasts } from "./hooks/useAchievementToasts";
+import { useSync } from "./sync/useSync";
 import { deleteOrphanPhotoBlobs } from "./store/photoStore";
 import { isDemoRequest } from "./store/persistence";
 import TopBar from "./components/TopBar";
@@ -49,6 +50,7 @@ export default function App() {
   const [sheet, setSheet] = useState<ActiveSheet>(null);
   useTheme(data.settings.theme ?? "auto");
   useAchievementToasts(data, showToast, dispatch);
+  const sync = useSync(data, dispatch);
 
   // Home-screen shortcuts / notification taps: open straight into the right sheet.
   useLaunchAction((action) => {
@@ -80,7 +82,7 @@ export default function App() {
       <TopBar name={data.settings.name} inSettings={inSettings} onToggleSettings={() => setInSettings((s) => !s)} />
 
       {inSettings ? (
-        <SettingsView showToast={showToast} onOpenReport={() => setInReport(true)} />
+        <SettingsView showToast={showToast} onOpenReport={() => setInReport(true)} sync={sync} />
       ) : (
         <>
           {tab === "home" && (

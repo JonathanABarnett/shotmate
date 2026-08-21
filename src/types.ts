@@ -138,6 +138,8 @@ export interface AppData {
   vitals: VitalsEntry[];
   /** achievement keys already celebrated, so unlock toasts fire once */
   seenAchievements: string[];
+  /** last local change, ms — drives last-write-wins sync */
+  updatedAt?: number;
 }
 
 export type Entry =

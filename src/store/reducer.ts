@@ -37,6 +37,7 @@ export type Action =
   | { type: "markAchievementsSeen"; keys: string[] }
   | { type: "loadSample" }
   | { type: "importData"; data: AppData }
+  | { type: "replaceFromSync"; data: AppData }
   | { type: "wipe" };
 
 function upsertById<T extends { id: string }>(items: T[], item: T): T[] {
@@ -149,6 +150,7 @@ export function reducer(state: AppData, action: Action): AppData {
     case "loadSample":
       return sampleData(state.settings);
     case "importData":
+    case "replaceFromSync":
       return action.data;
     case "wipe":
       return emptyData();
