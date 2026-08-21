@@ -101,6 +101,36 @@ function sampleWins(firstShot: number): WinEntry[] {
   ];
 }
 
+function sampleActivities(firstShot: number): AppData["activities"] {
+  const walk = (day: number, minutes: number, mi: number) => ({
+    id: uid(),
+    ts: firstShot + day * DAY + 17 * HOUR,
+    type: "walk" as const,
+    minutes,
+    distanceMi: mi,
+  });
+  const run = (day: number, minutes: number, mi: number) => ({
+    id: uid(),
+    ts: firstShot + day * DAY + 7 * HOUR,
+    type: "run" as const,
+    minutes,
+    distanceMi: mi,
+    imported: true,
+  });
+  return [
+    walk(35, 25, 1.1),
+    walk(42, 30, 1.4),
+    walk(46, 35, 1.6),
+    run(52, 22, 1.8),
+    walk(56, 40, 2.0),
+    run(60, 25, 2.1),
+    walk(63, 45, 2.2),
+    run(67, 28, 2.4),
+    walk(70, 40, 2.1),
+    run(74, 30, 2.7),
+  ];
+}
+
 function sampleIntake(now: number): DailyIntake[] {
   const today = startOfDay(now);
   return [
@@ -126,5 +156,6 @@ export function sampleData(base: Settings): AppData {
     photos: [],
     wins: sampleWins(firstShot),
     intake: sampleIntake(now),
+    activities: sampleActivities(firstShot),
   };
 }

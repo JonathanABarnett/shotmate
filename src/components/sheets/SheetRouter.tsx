@@ -6,6 +6,7 @@ import LogEffectSheet from "./LogEffectSheet";
 import LogMeasureSheet from "./LogMeasureSheet";
 import LogPhotoSheet from "./LogPhotoSheet";
 import LogWinSheet from "./LogWinSheet";
+import LogActivitySheet from "./LogActivitySheet";
 import type { ActiveSheet } from "./types";
 
 interface Props {
@@ -33,5 +34,7 @@ export default function SheetRouter({ sheet, onClose, onOpen, onDone }: Props) {
       return <LogPhotoSheet onClose={onClose} onDone={onDone} existing={sheet.existing} />;
     case "win":
       return <LogWinSheet onClose={onClose} onDone={onDone} existing={sheet.existing} />;
+    case "activity":
+      return <LogActivitySheet onClose={onClose} onDone={onDone} existing={sheet.existing} />;
   }
 }

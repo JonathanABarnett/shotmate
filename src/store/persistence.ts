@@ -29,6 +29,7 @@ export function withDataDefaults(data: AppData): AppData {
     photos: data.photos ?? [],
     wins: data.wins ?? [],
     intake: data.intake ?? [],
+    activities: data.activities ?? [],
   };
 }
 

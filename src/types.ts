@@ -51,6 +51,20 @@ export interface WinEntry {
   text: string;
 }
 
+export type ActivityType = "run" | "walk" | "ride" | "strength" | "other";
+
+export interface ActivityEntry {
+  id: string;
+  ts: number;
+  type: ActivityType;
+  minutes: number;
+  /** miles canonical — shown as km for kg users */
+  distanceMi?: number;
+  note?: string;
+  /** set when the entry came from a MapMyRun CSV import */
+  imported?: boolean;
+}
+
 /** One day's running protein/water totals (day = local start-of-day ms). */
 export interface DailyIntake {
   id: string;
@@ -95,6 +109,7 @@ export interface AppData {
   photos: PhotoEntry[];
   wins: WinEntry[];
   intake: DailyIntake[];
+  activities: ActivityEntry[];
 }
 
 export type Entry =
@@ -103,4 +118,5 @@ export type Entry =
   | { kind: "effect"; item: EffectEntry }
   | { kind: "measure"; item: MeasurementEntry }
   | { kind: "photo"; item: PhotoEntry }
-  | { kind: "win"; item: WinEntry };
+  | { kind: "win"; item: WinEntry }
+  | { kind: "activity"; item: ActivityEntry };

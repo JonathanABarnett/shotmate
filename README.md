@@ -24,6 +24,8 @@ No subscription, no account, no cloud: **everything stays in your browser's loca
   effects, measurements) for appointments.
 - **Shot-day calendar** — download a repeating calendar event with a reminder (.ics).
 - **Insights** — side-effect timing around shot day, and weight pace at each dose.
+- **Activity** — quick-log walks/runs/rides/workouts or import a MapMyRun CSV export
+  (deduplicated), with weekly active-minutes charting.
 - **Protein & water quick-log** — daily meters with tap-to-add on the home screen.
 - **Wins journal** — non-scale victories, celebrated properly.
 - **Dark mode** — auto/light/dark, charts included.

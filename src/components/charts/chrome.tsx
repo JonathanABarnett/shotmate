@@ -92,11 +92,13 @@ export interface ChartTipProps {
   color: string;
   unitLabel: string;
   digits?: number;
+  /** hide the time — for buckets (weeks, days) where a clock time is noise */
+  dateOnly?: boolean;
   sub?: (point: Record<string, unknown>) => string | undefined;
 }
 
 /** The one tooltip every chart uses: date line, keyed value, optional context. */
-export function ChartTip({ active, payload, color, unitLabel, sub, digits = 1 }: ChartTipProps) {
+export function ChartTip({ active, payload, color, unitLabel, sub, digits = 1, dateOnly }: ChartTipProps) {
   if (!active || !payload?.length) return null;
   const point = payload.find((p) => p.value != null) ?? payload[0];
   if (point.value == null) return null;
@@ -105,7 +107,8 @@ export function ChartTip({ active, payload, color, unitLabel, sub, digits = 1 }:
   return (
     <div className="chart-tip">
       <div className="tip-date">
-        {fmtDayFull(ts)} · {fmtTime(ts)}
+        {fmtDayFull(ts)}
+        {!dateOnly && ` · ${fmtTime(ts)}`}
       </div>
       <div className="tip-value">
         <span className="tip-key" style={{ background: color }} />

@@ -5,6 +5,7 @@ const SUBTITLES: Record<EntryKind, string> = {
   shot: "Dose, injection site & time",
   weight: "A quick step on the scale",
   measure: "Chest, waist & more with a tape",
+  activity: "A walk, run, ride, or workout",
   effect: "Side effects & symptoms",
   photo: "Private before & after shots",
   win: "A non-scale victory 🎉",

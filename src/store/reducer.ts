@@ -1,10 +1,10 @@
-import type { AppData, EffectEntry, MeasurementEntry, PhotoEntry, Settings, Shot, WeightEntry, WinEntry } from "../types";
+import type { ActivityEntry, AppData, EffectEntry, MeasurementEntry, PhotoEntry, Settings, Shot, WeightEntry, WinEntry } from "../types";
 import { emptyData } from "../lib/defaults";
 import { startOfDay } from "../lib/dates";
 import { uid } from "../lib/ids";
 import { sampleData } from "../lib/sample";
 
-export type CollectionKey = "shots" | "weights" | "effects" | "measures" | "photos" | "wins";
+export type CollectionKey = "shots" | "weights" | "effects" | "measures" | "photos" | "wins" | "activities";
 
 export type Action =
   | { type: "completeOnboarding"; settings: Settings; firstWeight?: WeightEntry; firstShot?: Shot }
@@ -15,8 +15,10 @@ export type Action =
   | { type: "upsert"; collection: "measures"; item: MeasurementEntry }
   | { type: "upsert"; collection: "photos"; item: PhotoEntry }
   | { type: "upsert"; collection: "wins"; item: WinEntry }
+  | { type: "upsert"; collection: "activities"; item: ActivityEntry }
   | { type: "remove"; collection: CollectionKey; id: string }
   | { type: "addIntake"; ts: number; proteinG?: number; waterFlOz?: number }
+  | { type: "addActivities"; items: ActivityEntry[] }
   | { type: "loadSample" }
   | { type: "importData"; data: AppData }
   | { type: "wipe" };
@@ -56,6 +58,8 @@ function applyUpsert(state: AppData, action: Extract<Action, { type: "upsert" }>
       return { ...state, photos: upsertById(state.photos, action.item) };
     case "wins":
       return { ...state, wins: upsertById(state.wins, action.item) };
+    case "activities":
+      return { ...state, activities: upsertById(state.activities, action.item) };
   }
 }
 
@@ -73,6 +77,8 @@ function applyRemove(state: AppData, action: Extract<Action, { type: "remove" }>
       return { ...state, photos: removeById(state.photos, action.id) };
     case "wins":
       return { ...state, wins: removeById(state.wins, action.id) };
+    case "activities":
+      return { ...state, activities: removeById(state.activities, action.id) };
   }
 }
 
@@ -101,6 +107,8 @@ export function reducer(state: AppData, action: Action): AppData {
       return applyRemove(state, action);
     case "addIntake":
       return applyAddIntake(state, action);
+    case "addActivities":
+      return { ...state, activities: [...state.activities, ...action.items] };
     case "loadSample":
       return sampleData(state.settings);
     case "importData":

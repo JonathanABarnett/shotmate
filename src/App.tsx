@@ -29,6 +29,8 @@ function sheetForEntry(entry: Entry): ActiveSheet {
       return { kind: "photo", existing: entry.item };
     case "win":
       return { kind: "win", existing: entry.item };
+    case "activity":
+      return { kind: "activity", existing: entry.item };
   }
 }
 
@@ -66,7 +68,7 @@ export default function App() {
               onEdit={(entry) => setSheet(sheetForEntry(entry))}
             />
           )}
-          {tab === "trends" && <TrendsView onAddPhoto={() => setSheet({ kind: "photo" })} />}
+          {tab === "trends" && <TrendsView onAddPhoto={() => setSheet({ kind: "photo" })} showToast={showToast} />}
           {tab === "history" && <HistoryView onEdit={(entry) => setSheet(sheetForEntry(entry))} />}
           {tab === "help" && <HelpView />}
         </>
