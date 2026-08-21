@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { Entry } from "./types";
 import { useStore } from "./store/StoreProvider";
 import { Toast, useToast } from "./hooks/useToast";
+import { useTheme } from "./hooks/useTheme";
 import TopBar from "./components/TopBar";
 import Dock, { type Tab } from "./components/Dock";
 import SheetRouter from "./components/sheets/SheetRouter";
@@ -12,6 +13,7 @@ import TrendsView from "./views/trends/TrendsView";
 import HistoryView from "./views/history/HistoryView";
 import HelpView from "./views/help/HelpView";
 import SettingsView from "./views/settings/SettingsView";
+import ReportView from "./views/report/ReportView";
 
 function sheetForEntry(entry: Entry): ActiveSheet {
   switch (entry.kind) {
@@ -23,6 +25,10 @@ function sheetForEntry(entry: Entry): ActiveSheet {
       return { kind: "effect", existing: entry.item };
     case "measure":
       return { kind: "measure", existing: entry.item };
+    case "photo":
+      return { kind: "photo", existing: entry.item };
+    case "win":
+      return { kind: "win", existing: entry.item };
   }
 }
 
@@ -31,9 +37,12 @@ export default function App() {
   const { toast, showToast } = useToast();
   const [tab, setTab] = useState<Tab>("home");
   const [inSettings, setInSettings] = useState(false);
+  const [inReport, setInReport] = useState(false);
   const [sheet, setSheet] = useState<ActiveSheet>(null);
+  useTheme(data.settings.theme ?? "auto");
 
   if (!data.onboarded) return <OnboardingView />;
+  if (inReport) return <ReportView onBack={() => setInReport(false)} />;
 
   const goTo = (nextTab: Tab) => {
     setInSettings(false);
@@ -45,7 +54,7 @@ export default function App() {
       <TopBar name={data.settings.name} inSettings={inSettings} onToggleSettings={() => setInSettings((s) => !s)} />
 
       {inSettings ? (
-        <SettingsView showToast={showToast} />
+        <SettingsView showToast={showToast} onOpenReport={() => setInReport(true)} />
       ) : (
         <>
           {tab === "home" && (
@@ -57,7 +66,7 @@ export default function App() {
               onEdit={(entry) => setSheet(sheetForEntry(entry))}
             />
           )}
-          {tab === "trends" && <TrendsView />}
+          {tab === "trends" && <TrendsView onAddPhoto={() => setSheet({ kind: "photo" })} />}
           {tab === "history" && <HistoryView onEdit={(entry) => setSheet(sheetForEntry(entry))} />}
           {tab === "help" && <HelpView />}
         </>

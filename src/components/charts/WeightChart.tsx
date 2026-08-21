@@ -73,8 +73,8 @@ export default function WeightChart({ weights, unit, goalLbs, height = 240 }: Pr
             strokeWidth={2}
             strokeLinecap="round"
             fill="url(#weight-fill)"
-            dot={showDots ? { r: 3, fill: CHART.weight, stroke: "#fff", strokeWidth: 2 } : false}
-            activeDot={{ r: 5, fill: CHART.weight, stroke: "#fff", strokeWidth: 2 }}
+            dot={showDots ? { r: 3, fill: CHART.weight, stroke: CHART.surface, strokeWidth: 2 } : false}
+            activeDot={{ r: 5, fill: CHART.weight, stroke: CHART.surface, strokeWidth: 2 }}
             isAnimationActive={false}
           />
           {data.length >= MIN_TREND_POINTS && (

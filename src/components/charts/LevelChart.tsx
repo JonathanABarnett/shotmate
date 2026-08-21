@@ -18,7 +18,7 @@ const seriesStyle = {
   strokeWidth: 2,
   strokeLinecap: "round",
   dot: false,
-  activeDot: { r: 5, fill: CHART.level, stroke: "#fff", strokeWidth: 2 },
+  activeDot: { r: 5, fill: CHART.level, stroke: CHART.surface, strokeWidth: 2 },
   isAnimationActive: false,
 } as const;
 

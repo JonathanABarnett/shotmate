@@ -30,9 +30,9 @@ body::before {
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(520px 380px at 12% -6%, rgba(124, 92, 230, 0.16), transparent 65%),
-    radial-gradient(460px 340px at 96% 4%, rgba(24, 181, 151, 0.14), transparent 65%),
-    radial-gradient(520px 420px at 85% 96%, rgba(255, 143, 107, 0.1), transparent 60%),
+    radial-gradient(520px 380px at 12% -6%, var(--blob-a), transparent 65%),
+    radial-gradient(460px 340px at 96% 4%, var(--blob-b), transparent 65%),
+    radial-gradient(520px 420px at 85% 96%, var(--blob-c), transparent 60%),
     var(--bg);
 }
 

@@ -31,11 +31,11 @@
 
 .btn-subtle {
   background: var(--brand-soft);
-  color: var(--brand-deep);
+  color: var(--brand);
 }
 
 .btn-plain {
-  background: rgba(36, 31, 58, 0.06);
+  background: var(--wash);
   color: var(--ink-2);
 }
 
@@ -110,7 +110,7 @@ textarea.input {
 .input:focus {
   outline: none;
   border-color: var(--brand);
-  background: #fff;
+  background: var(--surface);
 }
 
 .input::placeholder {
@@ -158,8 +158,8 @@ textarea.input {
 }
 
 .chip.active {
-  background: var(--brand);
-  border-color: var(--brand);
+  background: var(--accent-solid);
+  border-color: var(--accent-solid);
   color: #fff;
   box-shadow: 0 8px 18px -8px rgba(108, 79, 224, 0.6);
 }
@@ -176,7 +176,7 @@ textarea.input {
 
 .seg {
   display: flex;
-  background: rgba(36, 31, 58, 0.06);
+  background: var(--wash);
   border-radius: 999px;
   padding: 4px;
   gap: 2px;
@@ -224,14 +224,14 @@ textarea.input {
 
 .range-chip.active {
   background: var(--ink);
-  color: #fff;
+  color: var(--bg);
 }
 
 /* ------------------------------ unit toggle ------------------------------ */
 
 .unit-toggle {
   display: inline-flex;
-  background: rgba(36, 31, 58, 0.06);
+  background: var(--wash);
   border-radius: 999px;
   padding: 3px;
 }
@@ -358,7 +358,7 @@ textarea.input {
 .sev-btn.active {
   border-color: var(--brand);
   background: var(--brand-soft);
-  color: var(--brand-deep);
+  color: var(--brand);
 }
 
 /* ------------------------------- med picker ------------------------------- */
@@ -413,11 +413,11 @@ textarea.input {
 }
 
 .bodymap .silhouette {
-  fill: #ece7fb;
+  fill: var(--silhouette);
 }
 
 .bodymap .zone {
-  fill: #fff;
+  fill: var(--surface);
   stroke: var(--hairline-strong);
   stroke-width: 1.5;
   cursor: pointer;
@@ -425,8 +425,8 @@ textarea.input {
 }
 
 .bodymap .zone.selected {
-  fill: var(--brand);
-  stroke: var(--brand);
+  fill: var(--accent-solid);
+  stroke: var(--accent-solid);
 }
 
 .bodymap .zone.suggested:not(.selected) {
@@ -473,7 +473,7 @@ textarea.input {
 .site-row.selected {
   border-color: var(--brand);
   background: var(--brand-soft);
-  color: var(--brand-deep);
+  color: var(--brand);
 }
 
 .site-row .site-meta {
@@ -486,7 +486,7 @@ textarea.input {
 .site-row .suggested-tag {
   font-size: 11px;
   font-weight: 800;
-  color: #0b6b58;
+  color: var(--info-ink);
   background: var(--teal-soft);
   border-radius: 999px;
   padding: 3px 8px;

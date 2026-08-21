@@ -18,6 +18,15 @@ No subscription, no account, no cloud: **everything stays in your browser's loca
 - **Dose history** — your titration journey as a bar chart.
 - **Body measurements** — chest, waist, hips, arm, and thigh check-ins with per-measure
   trend lines and change-since-start (tape numbers often move before the scale does).
+- **Progress photos** — private on-device photos (IndexedDB) with a before/after compare
+  view; included in JSON backups.
+- **Provider report** — a one-tap printable summary (weight chart, injections, side
+  effects, measurements) for appointments.
+- **Shot-day calendar** — download a repeating calendar event with a reminder (.ics).
+- **Insights** — side-effect timing around shot day, and weight pace at each dose.
+- **Protein & water quick-log** — daily meters with tap-to-add on the home screen.
+- **Wins journal** — non-scale victories, celebrated properly.
+- **Dark mode** — auto/light/dark, charts included.
 - **Side-effect journal** — quick symptom chips, severity, and frequency summaries.
 - **History timeline** — every entry, grouped by day, tap to edit or delete.
 - **Help** — friendly guidance on injections, site rotation, side effects, storage, and red flags.

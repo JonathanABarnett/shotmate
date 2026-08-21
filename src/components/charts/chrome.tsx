@@ -1,19 +1,25 @@
 import { fmtDay, fmtDayFull, fmtTime } from "../../lib/dates";
 
-/** Chart palette — validated ≥3:1 on the white card surface (dataviz method). */
+/**
+ * Chart palette — CSS custom properties so light/dark both resolve to steps
+ * validated ≥3:1 against their surface (dataviz method; see styles/tokens.css).
+ */
 export const CHART = {
-  weight: "#6c4fe0",
-  level: "#0e9f84",
-  dose: "#6c4fe0",
-  effect: "#e85d3d",
-  grid: "#eceaf4",
-  axis: "#7a7492",
-  reference: "#b9adee",
+  weight: "var(--chart-weight)",
+  level: "var(--chart-level)",
+  dose: "var(--chart-weight)",
+  effect: "var(--chart-effect)",
+  body: "var(--chart-body)",
+  grid: "var(--chart-grid)",
+  axis: "var(--chart-axis)",
+  reference: "var(--chart-ref)",
+  surface: "var(--surface)",
+  barHover: "var(--chart-bar-hover)",
 } as const;
 
 const AXIS_TICK = { fontSize: 11, fontWeight: 600, fill: CHART.axis, fontFamily: "inherit" } as const;
 
-export const CROSSHAIR = { stroke: "#c9c2e8", strokeWidth: 1 } as const;
+export const CROSSHAIR = { stroke: "var(--chart-cursor)", strokeWidth: 1 } as const;
 
 export const gridProps = { vertical: false, stroke: CHART.grid, strokeWidth: 1 } as const;
 

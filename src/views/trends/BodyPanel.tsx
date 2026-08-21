@@ -5,7 +5,7 @@ import Sparkline from "../../components/charts/Sparkline";
 import EmptyState from "../../components/EmptyState";
 import ChartStats from "./ChartStats";
 
-const BODY_COLOR = "#c98500";
+const BODY_COLOR = "var(--chart-body)";
 
 interface RowData {
   key: MeasureKey;

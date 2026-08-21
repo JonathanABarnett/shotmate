@@ -6,6 +6,8 @@ const SUBTITLES: Record<EntryKind, string> = {
   weight: "A quick step on the scale",
   measure: "Chest, waist & more with a tape",
   effect: "Side effects & symptoms",
+  photo: "Private before & after shots",
+  win: "A non-scale victory 🎉",
 };
 
 interface Props {

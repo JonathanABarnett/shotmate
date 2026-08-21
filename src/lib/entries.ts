@@ -12,6 +12,8 @@ export function buildEntries(data: AppData): Entry[] {
     ...data.weights.map((item): Entry => ({ kind: "weight", item })),
     ...data.effects.map((item): Entry => ({ kind: "effect", item })),
     ...data.measures.map((item): Entry => ({ kind: "measure", item })),
+    ...data.photos.map((item): Entry => ({ kind: "photo", item })),
+    ...data.wins.map((item): Entry => ({ kind: "win", item })),
   ];
   return entries.sort((a, b) => b.item.ts - a.item.ts);
 }
@@ -49,6 +51,10 @@ export function entrySummary(entry: Entry, unit: Unit): EntrySummary {
         sub: note || "Tape-measure check-in",
       };
     }
+    case "photo":
+      return { title: "Progress photo", sub: entry.item.note || "Tap to view or edit" };
+    case "win":
+      return { title: entry.item.text, sub: "Non-scale victory 🎉" };
   }
 }
 

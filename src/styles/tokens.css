@@ -1,4 +1,5 @@
-:root {
+:root,
+:root[data-theme="light"] {
   color-scheme: light;
 
   /* ink */
@@ -12,10 +13,13 @@
   --surface-2: #f7f5fd;
   --hairline: rgba(36, 31, 58, 0.08);
   --hairline-strong: rgba(36, 31, 58, 0.14);
+  --wash: rgba(36, 31, 58, 0.06);
+  --wash-strong: rgba(36, 31, 58, 0.15);
+  --backdrop: rgba(24, 18, 48, 0.45);
 
   /* brand */
   --brand: #6c4fe0;
-  --brand-deep: #5638c8;
+  --accent-solid: #6c4fe0;
   --brand-soft: #efeafe;
   --teal: #12a98d;
   --teal-soft: #e2f6f0;
@@ -25,8 +29,39 @@
   --gold-soft: #fff3dd;
   --danger: #d93a44;
   --danger-soft: #fdecec;
+  --sky-soft: #e3f1fd;
+  --sky-ink: #2273c9;
+  --rose-soft: #fdeaf3;
+  --rose-ink: #c2418f;
 
   --grad: linear-gradient(135deg, #7c5ce6 0%, #5f68e8 45%, #18b597 115%);
+
+  /* semantic ink */
+  --good: #0c7c5f;
+  --bad: #c25a2f;
+  --info-ink: #0b6b58;
+  --note-ink: #8a5b00;
+  --warn-ink: #a12832;
+
+  /* charts (validated ≥3:1 on the light surface) */
+  --chart-weight: #6c4fe0;
+  --chart-level: #0e9f84;
+  --chart-effect: #e85d3d;
+  --chart-body: #c98500;
+  --chart-grid: #eceaf4;
+  --chart-axis: #7a7492;
+  --chart-ref: #b9adee;
+  --chart-cursor: #c9c2e8;
+  --chart-bar-hover: rgba(108, 79, 224, 0.07);
+
+  /* figure & chrome details */
+  --silhouette: #ece7fb;
+  --dock-bg: rgba(255, 255, 255, 0.82);
+  --dock-border: rgba(255, 255, 255, 0.9);
+  --fab-ring: rgba(255, 255, 255, 0.75);
+  --blob-a: rgba(124, 92, 230, 0.16);
+  --blob-b: rgba(24, 181, 151, 0.14);
+  --blob-c: rgba(255, 143, 107, 0.1);
 
   /* shape + depth */
   --r-lg: 26px;
@@ -37,4 +72,65 @@
   --shadow-hero: 0 24px 44px -18px rgba(96, 74, 216, 0.55);
 
   --font: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --ink: #f1eefb;
+  --ink-2: #b9b3d0;
+  --ink-3: #8b85a6;
+
+  --bg: #131022;
+  --surface: #1e1a30;
+  --surface-2: #272138;
+  --hairline: rgba(255, 255, 255, 0.07);
+  --hairline-strong: rgba(255, 255, 255, 0.14);
+  --wash: rgba(255, 255, 255, 0.07);
+  --wash-strong: rgba(255, 255, 255, 0.16);
+  --backdrop: rgba(5, 3, 14, 0.6);
+
+  --brand: #a190f5;
+  --accent-solid: #6c4fe0;
+  --brand-soft: #2c2547;
+  --teal: #2cc4a4;
+  --teal-soft: #16332e;
+  --coral: #ff8f68;
+  --coral-soft: #3a241d;
+  --gold: #e0a640;
+  --gold-soft: #372a11;
+  --danger: #ff7b82;
+  --danger-soft: #3d1e24;
+  --sky-soft: #16293d;
+  --sky-ink: #64b1f2;
+  --rose-soft: #3a1f30;
+  --rose-ink: #f27bbd;
+
+  --good: #43d09a;
+  --bad: #ff9f78;
+  --info-ink: #6fe0c3;
+  --note-ink: #ffce7a;
+  --warn-ink: #ff9aa2;
+
+  --chart-weight: #9085e9;
+  --chart-level: #199e70;
+  --chart-effect: #d95926;
+  --chart-body: #c98500;
+  --chart-grid: #2b2740;
+  --chart-axis: #8b85a6;
+  --chart-ref: #5b4fa0;
+  --chart-cursor: #524a7d;
+  --chart-bar-hover: rgba(161, 144, 245, 0.12);
+
+  --silhouette: #322b52;
+  --dock-bg: rgba(30, 26, 48, 0.85);
+  --dock-border: rgba(255, 255, 255, 0.08);
+  --fab-ring: rgba(19, 16, 34, 0.8);
+  --blob-a: rgba(124, 92, 230, 0.14);
+  --blob-b: rgba(24, 181, 151, 0.08);
+  --blob-c: rgba(255, 143, 107, 0.05);
+
+  --shadow-card: 0 18px 40px -24px rgba(0, 0, 0, 0.7), 0 2px 8px -2px rgba(0, 0, 0, 0.4);
+  --shadow-float: 0 24px 50px -20px rgba(0, 0, 0, 0.8);
+  --shadow-hero: 0 24px 44px -18px rgba(60, 40, 140, 0.6);
 }

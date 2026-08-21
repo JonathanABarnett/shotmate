@@ -37,6 +37,30 @@ export interface MeasurementEntry {
   note?: string;
 }
 
+/** Photo pixels live in IndexedDB under the same id — only metadata sits here. */
+export interface PhotoEntry {
+  id: string;
+  ts: number;
+  note?: string;
+}
+
+/** A non-scale victory. */
+export interface WinEntry {
+  id: string;
+  ts: number;
+  text: string;
+}
+
+/** One day's running protein/water totals (day = local start-of-day ms). */
+export interface DailyIntake {
+  id: string;
+  day: number;
+  proteinG: number;
+  waterFlOz: number;
+}
+
+export type ThemePref = "auto" | "light" | "dark";
+
 export interface Settings {
   name: string;
   medKey: string;
@@ -54,6 +78,9 @@ export interface Settings {
   supplyMg?: number;
   /** when supplyMg was recorded; shots after this count against it */
   supplySetTs?: number;
+  theme?: ThemePref;
+  proteinGoalG?: number;
+  waterGoalFlOz?: number;
 }
 
 export interface AppData {
@@ -65,10 +92,15 @@ export interface AppData {
   weights: WeightEntry[];
   effects: EffectEntry[];
   measures: MeasurementEntry[];
+  photos: PhotoEntry[];
+  wins: WinEntry[];
+  intake: DailyIntake[];
 }
 
 export type Entry =
   | { kind: "shot"; item: Shot }
   | { kind: "weight"; item: WeightEntry }
   | { kind: "effect"; item: EffectEntry }
-  | { kind: "measure"; item: MeasurementEntry };
+  | { kind: "measure"; item: MeasurementEntry }
+  | { kind: "photo"; item: PhotoEntry }
+  | { kind: "win"; item: WinEntry };

@@ -1,0 +1,272 @@
+/* ------------------------------ intake meters ------------------------------ */
+
+.intake-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.intake-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.intake-label {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--ink-2);
+}
+
+.intake-value {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+.meter-track {
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.meter-track.coral {
+  background: var(--coral-soft);
+}
+
+.meter-track.coral .meter-fill {
+  background: var(--chart-effect);
+}
+
+.meter-track.teal {
+  background: var(--teal-soft);
+}
+
+.meter-track.teal .meter-fill {
+  background: var(--teal);
+}
+
+.meter-fill {
+  height: 100%;
+  border-radius: 999px;
+  min-width: 4px;
+  transition: width 0.3s ease;
+}
+
+.intake-actions {
+  display: flex;
+  gap: 6px;
+  flex: none;
+}
+
+.intake-btn {
+  padding: 9px 11px;
+  border-radius: 11px;
+  background: var(--wash);
+  color: var(--ink-2);
+  font-size: 12.5px;
+  font-weight: 800;
+  transition: transform 0.12s ease;
+}
+
+.intake-btn:active {
+  transform: scale(0.92);
+}
+
+.intake-btn.ghost {
+  background: transparent;
+  border: 1px solid var(--hairline-strong);
+  color: var(--ink-3);
+  display: grid;
+  place-items: center;
+}
+
+/* ------------------------------ progress photos ----------------------------- */
+
+.photo-pick {
+  width: 100%;
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  padding: 28px 16px;
+  border: 2px dashed var(--hairline-strong);
+  border-radius: 18px;
+  background: var(--surface-2);
+  color: var(--ink-3);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.photo-preview {
+  position: relative;
+  display: block;
+  width: 100%;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid var(--hairline);
+}
+
+.photo-preview img {
+  display: block;
+  width: 100%;
+  max-height: 320px;
+  object-fit: cover;
+}
+
+.photo-preview-hint {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 999px;
+}
+
+.photo-strip {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 4px 0 2px;
+  scrollbar-width: none;
+}
+
+.photo-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.photo-cell {
+  flex: none;
+  width: 92px;
+  display: grid;
+  gap: 4px;
+  justify-items: center;
+}
+
+.photo-cell-img,
+.photo-cell .photo-loading {
+  width: 92px;
+  height: 122px;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid var(--hairline);
+  display: block;
+}
+
+.photo-cell-date {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-3);
+}
+
+.photo-loading {
+  background: var(--wash);
+  animation: photo-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes photo-pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* before/after viewer */
+.compare-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: var(--bg);
+  overflow-y: auto;
+  padding: 18px;
+  animation: fade-in 0.2s ease both;
+}
+
+.compare-top,
+.compare-grid {
+  max-width: 560px;
+  margin-inline: auto;
+}
+
+.compare-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.compare-grid.single {
+  grid-template-columns: 1fr;
+}
+
+.compare-pane {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+
+.compare-img,
+.compare-pane .photo-loading {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  height: auto;
+  object-fit: cover;
+  border-radius: 18px;
+  border: 1px solid var(--hairline);
+  display: block;
+}
+
+.compare-select {
+  padding: 10px 12px;
+  font-size: 13.5px;
+}
+
+.compare-note {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+/* ------------------------------- pace insight ------------------------------- */
+
+.pace-row {
+  display: grid;
+  grid-template-columns: 76px 1fr auto;
+  gap: 10px;
+  align-items: baseline;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.pace-row:last-of-type {
+  border-bottom: none;
+}
+
+.pace-dose {
+  font-weight: 800;
+  font-size: 14.5px;
+}
+
+.pace-rate {
+  font-weight: 800;
+  font-size: 15px;
+}
+
+.pace-weeks {
+  color: var(--ink-3);
+  font-size: 12.5px;
+  font-weight: 700;
+}

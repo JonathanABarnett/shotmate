@@ -1,8 +1,8 @@
-import { HeartPulse, Ruler, Scale, Syringe, type LucideIcon } from "lucide-react";
+import { Camera, HeartPulse, Ruler, Scale, Syringe, Trophy, type LucideIcon } from "lucide-react";
 
-export type EntryKind = "shot" | "weight" | "effect" | "measure";
+export type EntryKind = "shot" | "weight" | "effect" | "measure" | "photo" | "win";
 
-export type Tone = "violet" | "teal" | "coral" | "gold";
+export type Tone = "violet" | "teal" | "coral" | "gold" | "sky" | "rose";
 
 export interface EntryKindMeta {
   label: string;
@@ -10,11 +10,14 @@ export interface EntryKindMeta {
   Icon: LucideIcon;
 }
 
+/** Insertion order doubles as the log-menu order. */
 export const ENTRY_KINDS: Record<EntryKind, EntryKindMeta> = {
   shot: { label: "Shot", tone: "violet", Icon: Syringe },
   weight: { label: "Weight", tone: "teal", Icon: Scale },
   measure: { label: "Measurements", tone: "gold", Icon: Ruler },
   effect: { label: "How I feel", tone: "coral", Icon: HeartPulse },
+  photo: { label: "Progress photo", tone: "sky", Icon: Camera },
+  win: { label: "Win", tone: "rose", Icon: Trophy },
 };
 
 interface BadgeProps {

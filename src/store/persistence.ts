@@ -23,7 +23,13 @@ export function isAppData(json: unknown): json is AppData {
 
 /** Fill in collections added after a stored snapshot was written. */
 export function withDataDefaults(data: AppData): AppData {
-  return { ...data, measures: data.measures ?? [] };
+  return {
+    ...data,
+    measures: data.measures ?? [],
+    photos: data.photos ?? [],
+    wins: data.wins ?? [],
+    intake: data.intake ?? [],
+  };
 }
 
 export function loadStoredData(): AppData {

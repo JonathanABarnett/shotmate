@@ -5,6 +5,7 @@ import WeightPanel from "./WeightPanel";
 import LevelPanel from "./LevelPanel";
 import DosePanel from "./DosePanel";
 import BodyPanel from "./BodyPanel";
+import PhotosCard from "./PhotosCard";
 import EffectsPanel from "./EffectsPanel";
 
 type PanelKey = "weight" | "level" | "dose" | "body" | "effects";
@@ -17,7 +18,11 @@ const PANELS = [
   { key: "effects", label: "Feels" },
 ] as const;
 
-export default function TrendsView() {
+interface Props {
+  onAddPhoto: () => void;
+}
+
+export default function TrendsView({ onAddPhoto }: Props) {
   const { data } = useStore();
   const [panel, setPanel] = useState<PanelKey>("weight");
 
@@ -32,7 +37,12 @@ export default function TrendsView() {
       {panel === "weight" && <WeightPanel data={data} />}
       {panel === "level" && <LevelPanel data={data} />}
       {panel === "dose" && <DosePanel data={data} />}
-      {panel === "body" && <BodyPanel data={data} />}
+      {panel === "body" && (
+        <>
+          <BodyPanel data={data} />
+          <PhotosCard data={data} onAddPhoto={onAddPhoto} />
+        </>
+      )}
       {panel === "effects" && <EffectsPanel data={data} />}
     </div>
   );

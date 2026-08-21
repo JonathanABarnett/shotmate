@@ -1,8 +1,10 @@
-import type { AppData, EffectEntry, MeasurementEntry, Settings, Shot, WeightEntry } from "../types";
+import type { AppData, EffectEntry, MeasurementEntry, PhotoEntry, Settings, Shot, WeightEntry, WinEntry } from "../types";
 import { emptyData } from "../lib/defaults";
+import { startOfDay } from "../lib/dates";
+import { uid } from "../lib/ids";
 import { sampleData } from "../lib/sample";
 
-export type CollectionKey = "shots" | "weights" | "effects" | "measures";
+export type CollectionKey = "shots" | "weights" | "effects" | "measures" | "photos" | "wins";
 
 export type Action =
   | { type: "completeOnboarding"; settings: Settings; firstWeight?: WeightEntry; firstShot?: Shot }
@@ -11,7 +13,10 @@ export type Action =
   | { type: "upsert"; collection: "weights"; item: WeightEntry }
   | { type: "upsert"; collection: "effects"; item: EffectEntry }
   | { type: "upsert"; collection: "measures"; item: MeasurementEntry }
+  | { type: "upsert"; collection: "photos"; item: PhotoEntry }
+  | { type: "upsert"; collection: "wins"; item: WinEntry }
   | { type: "remove"; collection: CollectionKey; id: string }
+  | { type: "addIntake"; ts: number; proteinG?: number; waterFlOz?: number }
   | { type: "loadSample" }
   | { type: "importData"; data: AppData }
   | { type: "wipe" };
@@ -47,6 +52,10 @@ function applyUpsert(state: AppData, action: Extract<Action, { type: "upsert" }>
       return { ...state, effects: upsertById(state.effects, action.item) };
     case "measures":
       return { ...state, measures: upsertById(state.measures, action.item) };
+    case "photos":
+      return { ...state, photos: upsertById(state.photos, action.item) };
+    case "wins":
+      return { ...state, wins: upsertById(state.wins, action.item) };
   }
 }
 
@@ -60,7 +69,24 @@ function applyRemove(state: AppData, action: Extract<Action, { type: "remove" }>
       return { ...state, effects: removeById(state.effects, action.id) };
     case "measures":
       return { ...state, measures: removeById(state.measures, action.id) };
+    case "photos":
+      return { ...state, photos: removeById(state.photos, action.id) };
+    case "wins":
+      return { ...state, wins: removeById(state.wins, action.id) };
   }
+}
+
+/** Accumulate protein/water into the entry for that day, clamped at zero. */
+function applyAddIntake(state: AppData, action: Extract<Action, { type: "addIntake" }>): AppData {
+  const day = startOfDay(action.ts);
+  const existing = state.intake.find((i) => i.day === day);
+  const base = existing ?? { id: uid(), day, proteinG: 0, waterFlOz: 0 };
+  const updated = {
+    ...base,
+    proteinG: Math.max(0, base.proteinG + (action.proteinG ?? 0)),
+    waterFlOz: Math.max(0, base.waterFlOz + (action.waterFlOz ?? 0)),
+  };
+  return { ...state, intake: upsertById(state.intake, updated) };
 }
 
 export function reducer(state: AppData, action: Action): AppData {
@@ -73,6 +99,8 @@ export function reducer(state: AppData, action: Action): AppData {
       return applyUpsert(state, action);
     case "remove":
       return applyRemove(state, action);
+    case "addIntake":
+      return applyAddIntake(state, action);
     case "loadSample":
       return sampleData(state.settings);
     case "importData":

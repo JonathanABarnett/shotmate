@@ -3,6 +3,7 @@ import { useStore } from "../../store/StoreProvider";
 import HeroCard from "./HeroCard";
 import StatTilesRow from "./StatTilesRow";
 import SupplyCard from "./SupplyCard";
+import IntakeCard from "./IntakeCard";
 import WeightTrendCard from "./WeightTrendCard";
 import GoalCard from "./GoalCard";
 import RecentActivity from "./RecentActivity";
@@ -27,6 +28,7 @@ export default function HomeView({ onLogShot, onSeeTrends, onSeeHistory, onOpenS
       <HeroCard data={data} onLogShot={onLogShot} />
       <StatTilesRow data={data} />
       <SupplyCard data={data} />
+      <IntakeCard data={data} />
       <WeightTrendCard data={data} onSeeTrends={onSeeTrends} />
       <GoalCard data={data} onOpenSettings={onOpenSettings} />
       <RecentActivity data={data} onEdit={onEdit} onSeeAll={onSeeHistory} />

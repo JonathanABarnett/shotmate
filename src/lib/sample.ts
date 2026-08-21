@@ -1,5 +1,5 @@
-import type { AppData, EffectEntry, MeasurementEntry, Settings, Shot, SiteId, WeightEntry } from "../types";
-import { DAY, HOUR } from "./dates";
+import type { AppData, DailyIntake, EffectEntry, MeasurementEntry, Settings, Shot, SiteId, WeightEntry, WinEntry } from "../types";
+import { DAY, HOUR, startOfDay } from "./dates";
 import { uid } from "./ids";
 
 /** Deterministic pseudo-random so the demo always looks good. */
@@ -93,6 +93,22 @@ function sampleMeasures(firstShot: number): MeasurementEntry[] {
   }));
 }
 
+function sampleWins(firstShot: number): WinEntry[] {
+  return [
+    { id: uid(), ts: firstShot + 26 * DAY, text: "Belt moved in a notch!" },
+    { id: uid(), ts: firstShot + 52 * DAY, text: "Hiked the long loop without stopping — first time in years." },
+    { id: uid(), ts: firstShot + 74 * DAY, text: "Wore the shirt from the back of the closet 🎉" },
+  ];
+}
+
+function sampleIntake(now: number): DailyIntake[] {
+  const today = startOfDay(now);
+  return [
+    { id: uid(), day: today - DAY, proteinG: 105, waterFlOz: 64 },
+    { id: uid(), day: today, proteinG: 45, waterFlOz: 24 },
+  ];
+}
+
 export function sampleData(base: Settings): AppData {
   const rnd = mulberry(20260821);
   const now = Date.now();
@@ -107,5 +123,8 @@ export function sampleData(base: Settings): AppData {
     weights: sampleWeights(firstShot, settings.startLbs!, now, rnd),
     effects: sampleEffects(firstShot),
     measures: sampleMeasures(firstShot),
+    photos: [],
+    wins: sampleWins(firstShot),
+    intake: sampleIntake(now),
   };
 }

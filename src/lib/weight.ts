@@ -43,12 +43,9 @@ export function movingAverage(weights: WeightEntry[], windowDays = 7): { ts: num
   });
 }
 
-/** Least-squares slope over the last `days` days, in lbs per week. */
-export function weeklyRate(weights: WeightEntry[], days = 28): number | undefined {
-  const cutoff = Date.now() - days * DAY;
-  const pts = sortedWeights(weights).filter((w) => w.ts >= cutoff);
+/** Least-squares slope of a set of weigh-ins, in lbs per week. */
+export function slopeLbsPerWeek(pts: WeightEntry[]): number | undefined {
   if (pts.length < 3) return undefined;
-
   const xs = pts.map((p) => (p.ts - pts[0].ts) / (7 * DAY));
   const ys = pts.map((p) => p.lbs);
   const mx = xs.reduce((a, b) => a + b, 0) / xs.length;
@@ -60,6 +57,12 @@ export function weeklyRate(weights: WeightEntry[], days = 28): number | undefine
     den += (xs[i] - mx) ** 2;
   }
   return den === 0 ? undefined : num / den;
+}
+
+/** Slope over the last `days` days, in lbs per week. */
+export function weeklyRate(weights: WeightEntry[], days = 28): number | undefined {
+  const cutoff = Date.now() - days * DAY;
+  return slopeLbsPerWeek(sortedWeights(weights).filter((w) => w.ts >= cutoff));
 }
 
 export function bmi(lbs: number, heightIn?: number): number | undefined {

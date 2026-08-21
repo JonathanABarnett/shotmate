@@ -31,7 +31,7 @@ export default function DoseChart({ shots, height = 220 }: Props) {
           <YAxis {...valueAxisProps(34)} domain={[0, hi]} ticks={niceTicks(0, hi)} />
           <Tooltip
             content={<ChartTip color={CHART.dose} unitLabel="mg" sub={(p) => siteLabel(p.site as SiteId)} />}
-            cursor={{ fill: "rgba(108,79,224,0.07)" }}
+            cursor={{ fill: CHART.barHover }}
             isAnimationActive={false}
           />
           <Bar dataKey="value" fill={CHART.dose} radius={[4, 4, 0, 0]} maxBarSize={18} isAnimationActive={false} />

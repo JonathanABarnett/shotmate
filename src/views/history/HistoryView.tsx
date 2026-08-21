@@ -12,7 +12,10 @@ const FILTERS: { key: Filter; label: string }[] = [
   { key: "all", label: "All" },
   { key: "shot", label: "Shots" },
   { key: "weight", label: "Weight" },
+  { key: "measure", label: "Body" },
   { key: "effect", label: "Feels" },
+  { key: "photo", label: "Photos" },
+  { key: "win", label: "Wins" },
 ];
 
 interface Props {
