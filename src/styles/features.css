@@ -714,3 +714,15 @@
 .switch:disabled {
   opacity: 0.5;
 }
+
+.photo-pick-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.photo-pick-row .photo-pick {
+  padding: 22px 10px;
+  font-size: 13.5px;
+  text-align: center;
+}

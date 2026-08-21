@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ImagePlus } from "lucide-react";
+import { Camera, Images } from "lucide-react";
 import type { PhotoEntry } from "../../types";
 import { uid } from "../../lib/ids";
 import { useStore } from "../../store/StoreProvider";
@@ -13,7 +13,8 @@ import type { EntrySheetProps } from "./types";
 
 export default function LogPhotoSheet({ onClose, onDone, existing }: EntrySheetProps & { existing?: PhotoEntry }) {
   const { dispatch } = useStore();
-  const fileRef = useRef<HTMLInputElement>(null);
+  const galleryRef = useRef<HTMLInputElement>(null);
+  const cameraRef = useRef<HTMLInputElement>(null);
   const [pending, setPending] = useState<Blob | null>(null);
   const [pendingUrl, setPendingUrl] = useState<string>();
   const existingUrl = usePhotoUrl(existing?.id);
@@ -57,23 +58,25 @@ export default function LogPhotoSheet({ onClose, onDone, existing }: EntrySheetP
     <Sheet title={existing ? "Edit photo" : "Progress photo"} icon={<EntryBadge kind="photo" />} onClose={onClose}>
       <Field label="Photo" hint="Stays on this device — same pose, same spot, same lighting works best.">
         {previewUrl ? (
-          <button className="photo-preview" onClick={() => fileRef.current?.click()}>
+          <button className="photo-preview" onClick={() => galleryRef.current?.click()}>
             <img src={previewUrl} alt="Progress" />
             <span className="photo-preview-hint">Tap to replace</span>
           </button>
         ) : (
-          <button className="photo-pick" onClick={() => fileRef.current?.click()}>
-            <ImagePlus size={26} />
-            Take or choose a photo
-          </button>
+          <div className="photo-pick-row">
+            <button className="photo-pick" onClick={() => cameraRef.current?.click()}>
+              <Camera size={26} />
+              Take a photo
+            </button>
+            <button className="photo-pick" onClick={() => galleryRef.current?.click()}>
+              <Images size={26} />
+              Choose from gallery
+            </button>
+          </div>
         )}
-        <input
-          ref={fileRef}
-          type="file"
-          accept="image/*"
-          hidden
-          onChange={(e) => handlePick(e.target.files?.[0])}
-        />
+        {/* Two pickers: one opens the camera directly, one the gallery/files. */}
+        <input ref={cameraRef} type="file" accept="image/*" capture="environment" hidden onChange={(e) => handlePick(e.target.files?.[0])} />
+        <input ref={galleryRef} type="file" accept="image/*" hidden onChange={(e) => handlePick(e.target.files?.[0])} />
       </Field>
       <DateTimeField value={ts} onChange={setTs} />
       <NoteField value={note} onChange={setNote} />
