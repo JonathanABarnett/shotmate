@@ -17,7 +17,8 @@ No subscription, no account, no cloud: **everything stays in your browser's loca
   not medical guidance.
 - **Dose history** — your titration journey as a bar chart.
 - **Body measurements** — chest, waist, hips, arm, and thigh check-ins with per-measure
-  trend lines and change-since-start (tape numbers often move before the scale does).
+  trend lines and change-since-start (tape numbers often move before the scale does), plus a
+  **body snapshot** figure with your weight and each measurement drawn on the body it belongs to.
 - **Progress photos** — private on-device photos (IndexedDB) with a before/after compare
   view; included in JSON backups.
 - **Provider report** — a one-tap printable summary (weight chart, injections, side

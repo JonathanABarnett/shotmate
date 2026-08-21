@@ -429,7 +429,7 @@ textarea.input {
   flex: none;
 }
 
-.bodymap .silhouette {
+.silhouette {
   fill: var(--silhouette);
 }
 

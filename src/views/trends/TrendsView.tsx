@@ -6,6 +6,7 @@ import InsightsPanel from "./InsightsPanel";
 import LevelPanel from "./LevelPanel";
 import DosePanel from "./DosePanel";
 import BodyPanel from "./BodyPanel";
+import BodySnapshot from "./BodySnapshot";
 import PhotosCard from "./PhotosCard";
 import ActivityPanel from "./ActivityPanel";
 import EffectsPanel from "./EffectsPanel";
@@ -45,6 +46,7 @@ export default function TrendsView({ onAddPhoto, showToast }: Props) {
       {panel === "dose" && <DosePanel data={data} />}
       {panel === "body" && (
         <>
+          <BodySnapshot data={data} />
           <BodyPanel data={data} />
           <PhotosCard data={data} onAddPhoto={onAddPhoto} />
         </>
