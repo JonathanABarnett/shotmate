@@ -32,6 +32,7 @@ export default function GoalsSection() {
         onChange={(goalLbs) => dispatch({ type: "updateSettings", patch: { goalLbs } })}
       />
       <HeightField
+        key={unit}
         heightIn={settings.heightIn}
         unit={unit}
         onChange={(heightIn) => dispatch({ type: "updateSettings", patch: { heightIn } })}

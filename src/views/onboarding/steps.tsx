@@ -101,7 +101,7 @@ export function BodyStep({ draft, patch }: StepProps) {
       <Field label="Goal weight">
         <WeightInput value={draft.goalWeightText} onChange={(goalWeightText) => patch({ goalWeightText })} unit={draft.unit} />
       </Field>
-      <HeightField heightIn={draft.heightIn} unit={draft.unit} onChange={(heightIn) => patch({ heightIn })} />
+      <HeightField key={draft.unit} heightIn={draft.heightIn} unit={draft.unit} onChange={(heightIn) => patch({ heightIn })} />
     </>
   );
 }
