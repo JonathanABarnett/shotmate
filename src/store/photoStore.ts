@@ -41,6 +41,18 @@ export function clearPhotoBlobs(): Promise<undefined> {
   return run("readwrite", (s) => s.clear() as IDBRequest<undefined>);
 }
 
+function listPhotoIds(): Promise<string[]> {
+  return run("readonly", (s) => s.getAllKeys() as IDBRequest<IDBValidKey[]>).then((keys) => keys.map(String));
+}
+
+/** Drop blobs no photo entry references any more (deleted photos whose undo window passed). */
+export async function deleteOrphanPhotoBlobs(keepIds: string[]): Promise<void> {
+  const keep = new Set(keepIds);
+  for (const id of await listPhotoIds()) {
+    if (!keep.has(id)) await deletePhotoBlob(id);
+  }
+}
+
 const MAX_EDGE_PX = 1600;
 const JPEG_QUALITY = 0.85;
 

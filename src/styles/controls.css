@@ -174,14 +174,49 @@ textarea.input {
 
 /* ------------------------------- segmented ------------------------------- */
 
+.seg-wrap {
+  position: relative;
+  margin-bottom: 14px;
+}
+
+/* soft edges that appear only when more tabs hide in that direction */
+.seg-wrap::before,
+.seg-wrap::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 34px;
+  border-radius: 999px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 1;
+}
+
+.seg-wrap::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--bg) 20%, transparent);
+}
+
+.seg-wrap::after {
+  right: 0;
+  background: linear-gradient(270deg, var(--bg) 20%, transparent);
+}
+
+.seg-wrap.fade-left::before,
+.seg-wrap.fade-right::after {
+  opacity: 1;
+}
+
 .seg {
   display: flex;
   background: var(--wash);
   border-radius: 999px;
   padding: 4px;
   gap: 2px;
-  margin-bottom: 14px;
   overflow-x: auto;
+  scroll-behavior: smooth;
   scrollbar-width: none;
 }
 

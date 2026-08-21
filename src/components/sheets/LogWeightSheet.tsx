@@ -23,8 +23,8 @@ export default function LogWeightSheet({ onClose, onDone, existing }: EntrySheet
 
   const parsed = parseWeightInput(value);
 
-  const finish = (message: string) => {
-    onDone(message);
+  const finish = (message: string, undo?: () => void) => {
+    onDone(message, undo);
     onClose();
   };
 
@@ -43,7 +43,7 @@ export default function LogWeightSheet({ onClose, onDone, existing }: EntrySheet
   const remove = () => {
     if (!existing) return;
     dispatch({ type: "remove", collection: "weights", id: existing.id });
-    finish("Entry deleted");
+    finish("Entry deleted", () => dispatch({ type: "upsert", collection: "weights", item: existing }));
   };
 
   return (

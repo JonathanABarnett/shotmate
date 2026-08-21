@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { Search, X } from "lucide-react";
 import type { Entry } from "../../types";
-import { buildEntries, groupEntriesByDay } from "../../lib/entries";
+import { buildEntries, entrySummary, groupEntriesByDay } from "../../lib/entries";
 import { useStore } from "../../store/StoreProvider";
 import ChipGroup from "../../components/form/ChipGroup";
 import EmptyState from "../../components/EmptyState";
@@ -26,12 +27,35 @@ interface Props {
 export default function HistoryView({ onEdit }: Props) {
   const { data } = useStore();
   const [filter, setFilter] = useState<Filter>("all");
+  const [query, setQuery] = useState("");
+  const unit = data.settings.unit;
+  const needle = query.trim().toLowerCase();
 
-  const entries = buildEntries(data).filter((e) => filter === "all" || e.kind === filter);
+  const matches = (entry: Entry) => {
+    if (!needle) return true;
+    const { title, sub } = entrySummary(entry, unit);
+    return `${title} ${sub}`.toLowerCase().includes(needle);
+  };
+  const entries = buildEntries(data).filter((e) => (filter === "all" || e.kind === filter) && matches(e));
   const groups = groupEntriesByDay(entries);
 
   return (
     <div className="view">
+      <div className="history-search">
+        <Search size={17} className="history-search-icon" />
+        <input
+          className="input"
+          placeholder="Search notes, symptoms, sites…"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          aria-label="Search history"
+        />
+        {query && (
+          <button className="history-search-clear" onClick={() => setQuery("")} aria-label="Clear search">
+            <X size={16} />
+          </button>
+        )}
+      </div>
       <ChipGroup
         className="history-filter"
         options={FILTERS.map((f) => ({ key: f.key, label: f.label }))}
@@ -39,17 +63,21 @@ export default function HistoryView({ onEdit }: Props) {
         onToggle={(key) => setFilter(key as Filter)}
       />
       {groups.length === 0 ? (
-        <EmptyState
-          emoji="📖"
-          title="Your story starts here"
-          sub="Everything you log — shots, weigh-ins, how you feel — lands on this timeline."
-        />
+        needle ? (
+          <EmptyState emoji="🔍" title="No matches" sub={`Nothing mentions “${query.trim()}” — try another word.`} />
+        ) : (
+          <EmptyState
+            emoji="📖"
+            title="Your story starts here"
+            sub="Everything you log — shots, weigh-ins, how you feel — lands on this timeline."
+          />
+        )
       ) : (
         groups.map((g) => (
           <section className="day-group" key={g.day}>
             <div className="day-head">{g.label}</div>
             {g.entries.map((entry) => (
-              <EntryRow key={`${entry.kind}-${entry.item.id}`} entry={entry} unit={data.settings.unit} onEdit={onEdit} />
+              <EntryRow key={`${entry.kind}-${entry.item.id}`} entry={entry} unit={unit} onEdit={onEdit} />
             ))}
           </section>
         ))

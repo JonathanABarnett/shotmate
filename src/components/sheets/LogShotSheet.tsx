@@ -23,8 +23,8 @@ export default function LogShotSheet({ onClose, onDone, existing }: EntrySheetPr
   const [ts, setTs] = useState(existing?.ts ?? Date.now());
   const [note, setNote] = useState(existing?.note ?? "");
 
-  const finish = (message: string) => {
-    onDone(message);
+  const finish = (message: string, undo?: () => void) => {
+    onDone(message, undo);
     onClose();
   };
 
@@ -40,7 +40,7 @@ export default function LogShotSheet({ onClose, onDone, existing }: EntrySheetPr
   const remove = () => {
     if (!existing) return;
     dispatch({ type: "remove", collection: "shots", id: existing.id });
-    finish("Shot deleted");
+    finish("Shot deleted", () => dispatch({ type: "upsert", collection: "shots", item: existing }));
   };
 
   const draw = data.settings.vialMgPerMl != null ? drawVolume(doseMg, data.settings.vialMgPerMl) : undefined;

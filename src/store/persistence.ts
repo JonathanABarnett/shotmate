@@ -5,7 +5,7 @@ import { sampleData } from "../lib/sample";
 const STORAGE_KEY = "shotmate-data-v1";
 
 /** `?demo` shows the app pre-filled with sample data — handy for demos and screenshots. */
-function isDemoRequest(): boolean {
+export function isDemoRequest(): boolean {
   return new URLSearchParams(window.location.search).has("demo");
 }
 

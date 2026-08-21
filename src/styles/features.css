@@ -503,3 +503,38 @@
   text-align: center;
   margin-top: 8px;
 }
+
+/* ------------------------------- history search ------------------------------ */
+
+.history-search {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.history-search .input {
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+.history-search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ink-3);
+  pointer-events: none;
+}
+
+.history-search-clear {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--ink-3);
+  background: var(--wash);
+}

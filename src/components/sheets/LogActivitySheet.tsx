@@ -23,8 +23,8 @@ export default function LogActivitySheet({ onClose, onDone, existing }: EntryShe
   const [ts, setTs] = useState(existing?.ts ?? Date.now());
   const [note, setNote] = useState(existing?.note ?? "");
 
-  const finish = (message: string) => {
-    onDone(message);
+  const finish = (message: string, undo?: () => void) => {
+    onDone(message, undo);
     onClose();
   };
 
@@ -45,7 +45,7 @@ export default function LogActivitySheet({ onClose, onDone, existing }: EntryShe
   const remove = () => {
     if (!existing) return;
     dispatch({ type: "remove", collection: "activities", id: existing.id });
-    finish("Entry deleted");
+    finish("Entry deleted", () => dispatch({ type: "upsert", collection: "activities", item: existing }));
   };
 
   return (

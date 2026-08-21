@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Entry } from "./types";
 import { useStore } from "./store/StoreProvider";
 import { Toast, useToast } from "./hooks/useToast";
 import { useTheme } from "./hooks/useTheme";
+import { useLaunchAction } from "./hooks/useLaunchAction";
+import { deleteOrphanPhotoBlobs } from "./store/photoStore";
+import { isDemoRequest } from "./store/persistence";
 import TopBar from "./components/TopBar";
 import Dock, { type Tab } from "./components/Dock";
 import SheetRouter from "./components/sheets/SheetRouter";
@@ -36,12 +39,29 @@ function sheetForEntry(entry: Entry): ActiveSheet {
 
 export default function App() {
   const { data } = useStore();
-  const { toast, showToast } = useToast();
+  const { toast, showToast, dismissToast } = useToast();
   const [tab, setTab] = useState<Tab>("home");
   const [inSettings, setInSettings] = useState(false);
   const [inReport, setInReport] = useState(false);
   const [sheet, setSheet] = useState<ActiveSheet>(null);
   useTheme(data.settings.theme ?? "auto");
+
+  // Home-screen shortcuts / notification taps: open straight into the right sheet.
+  useLaunchAction((action) => {
+    if (action === "checkin") {
+      setTab("home");
+      setTimeout(() => document.querySelector(".checkin-card")?.scrollIntoView({ behavior: "smooth", block: "center" }), 300);
+    } else {
+      setSheet({ kind: action });
+    }
+  });
+
+  // Photos deleted (and not undone) leave their pixels behind until the next launch.
+  useEffect(() => {
+    if (!isDemoRequest()) void deleteOrphanPhotoBlobs(data.photos.map((p) => p.id));
+    // once per launch — deliberately not reacting to later photo changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!data.onboarded) return <OnboardingView />;
   if (inReport) return <ReportView onBack={() => setInReport(false)} />;
@@ -79,9 +99,9 @@ export default function App() {
         sheet={sheet}
         onClose={() => setSheet(null)}
         onOpen={(kind) => setSheet({ kind })}
-        onDone={showToast}
+        onDone={(message, undo) => showToast(message, undo ? { label: "Undo", onClick: undo } : undefined)}
       />
-      <Toast toast={toast} />
+      <Toast toast={toast} onDismiss={dismissToast} />
     </div>
   );
 }

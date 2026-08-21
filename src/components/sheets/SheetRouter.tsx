@@ -13,7 +13,7 @@ interface Props {
   sheet: ActiveSheet;
   onClose: () => void;
   onOpen: (kind: EntryKind) => void;
-  onDone: (message: string) => void;
+  onDone: (message: string, undo?: () => void) => void;
 }
 
 /** Renders whichever sheet is active — keeps App free of sheet wiring. */

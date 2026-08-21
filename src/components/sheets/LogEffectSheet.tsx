@@ -21,8 +21,8 @@ export default function LogEffectSheet({ onClose, onDone, existing }: EntrySheet
   const toggleEffect = (key: string) =>
     setEffects((prev) => (prev.includes(key) ? prev.filter((x) => x !== key) : [...prev, key]));
 
-  const finish = (message: string) => {
-    onDone(message);
+  const finish = (message: string, undo?: () => void) => {
+    onDone(message, undo);
     onClose();
   };
 
@@ -36,7 +36,7 @@ export default function LogEffectSheet({ onClose, onDone, existing }: EntrySheet
   const remove = () => {
     if (!existing) return;
     dispatch({ type: "remove", collection: "effects", id: existing.id });
-    finish("Entry deleted");
+    finish("Entry deleted", () => dispatch({ type: "upsert", collection: "effects", item: existing }));
   };
 
   return (

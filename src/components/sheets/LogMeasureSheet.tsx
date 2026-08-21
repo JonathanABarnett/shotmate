@@ -32,8 +32,8 @@ export default function LogMeasureSheet({ onClose, onDone, existing }: EntryShee
 
   const hasAny = Object.keys(valuesIn).length > 0;
 
-  const finish = (message: string) => {
-    onDone(message);
+  const finish = (message: string, undo?: () => void) => {
+    onDone(message, undo);
     onClose();
   };
 
@@ -47,7 +47,7 @@ export default function LogMeasureSheet({ onClose, onDone, existing }: EntryShee
   const remove = () => {
     if (!existing) return;
     dispatch({ type: "remove", collection: "measures", id: existing.id });
-    finish("Entry deleted");
+    finish("Entry deleted", () => dispatch({ type: "upsert", collection: "measures", item: existing }));
   };
 
   return (

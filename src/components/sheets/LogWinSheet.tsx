@@ -20,8 +20,8 @@ export default function LogWinSheet({ onClose, onDone, existing }: EntrySheetPro
   const [text, setText] = useState(existing?.text ?? "");
   const [ts, setTs] = useState(existing?.ts ?? Date.now());
 
-  const finish = (message: string) => {
-    onDone(message);
+  const finish = (message: string, undo?: () => void) => {
+    onDone(message, undo);
     onClose();
   };
 
@@ -35,7 +35,7 @@ export default function LogWinSheet({ onClose, onDone, existing }: EntrySheetPro
   const remove = () => {
     if (!existing) return;
     dispatch({ type: "remove", collection: "wins", id: existing.id });
-    finish("Entry deleted");
+    finish("Entry deleted", () => dispatch({ type: "upsert", collection: "wins", item: existing }));
   };
 
   return (

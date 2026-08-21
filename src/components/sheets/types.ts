@@ -2,8 +2,8 @@ import type { ActivityEntry, EffectEntry, MeasurementEntry, PhotoEntry, Shot, We
 
 export interface EntrySheetProps {
   onClose: () => void;
-  /** report a success message for the toast */
-  onDone: (message: string) => void;
+  /** report a success message for the toast; pass an undo to offer one-tap restore */
+  onDone: (message: string, undo?: () => void) => void;
 }
 
 export type ActiveSheet =

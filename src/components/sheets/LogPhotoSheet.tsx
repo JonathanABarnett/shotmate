@@ -3,7 +3,7 @@ import { ImagePlus } from "lucide-react";
 import type { PhotoEntry } from "../../types";
 import { uid } from "../../lib/ids";
 import { useStore } from "../../store/StoreProvider";
-import { deletePhotoBlob, preparePhotoBlob, savePhotoBlob } from "../../store/photoStore";
+import { preparePhotoBlob, savePhotoBlob } from "../../store/photoStore";
 import { usePhotoUrl } from "../../hooks/usePhotoUrl";
 import Sheet from "../Sheet";
 import { EntryBadge } from "../entryKinds";
@@ -34,8 +34,8 @@ export default function LogPhotoSheet({ onClose, onDone, existing }: EntrySheetP
 
   const previewUrl = pendingUrl ?? existingUrl;
 
-  const finish = (message: string) => {
-    onDone(message);
+  const finish = (message: string, undo?: () => void) => {
+    onDone(message, undo);
     onClose();
   };
 
@@ -47,11 +47,10 @@ export default function LogPhotoSheet({ onClose, onDone, existing }: EntrySheetP
     finish(existing ? "Photo updated" : "Photo saved 📸");
   };
 
-  const remove = async () => {
+  const remove = () => {
     if (!existing) return;
-    await deletePhotoBlob(existing.id);
     dispatch({ type: "remove", collection: "photos", id: existing.id });
-    finish("Photo deleted");
+    finish("Photo deleted", () => dispatch({ type: "upsert", collection: "photos", item: existing }));
   };
 
   return (
