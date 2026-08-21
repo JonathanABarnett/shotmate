@@ -1,6 +1,6 @@
 -- ShotMate backend: one snapshot per user (sync) + push subscriptions (reminders).
 create extension if not exists pg_cron;
-create extension if not exists pg_net;
+create extension if not exists pg_net with schema extensions;
 
 create table public.snapshots (
   user_id uuid primary key references auth.users(id) on delete cascade,
