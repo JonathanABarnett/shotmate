@@ -8,6 +8,7 @@ import type { Action } from "../store/reducer";
 import { isSyncConfigured } from "./config";
 import { getSupabase } from "./supabaseClient";
 import { updateReminderSchedule, type ReminderSchedule } from "./pushReminders";
+import { mergeSnapshots } from "./merge";
 
 export type SyncStatus = "unconfigured" | "signed-out" | "syncing" | "synced" | "error";
 
@@ -23,6 +24,8 @@ export interface SyncState {
 }
 
 const PUSH_DEBOUNCE_MS = 1500;
+/** Per-device marker: has this device ever reconciled with the account's snapshot? */
+const joinedKey = (userId: string) => `shotmate-sync-joined:${userId}`;
 
 /** Photos are device-local (their pixels live in IndexedDB) — everything else syncs. */
 const stripLocalOnly = (data: AppData): AppData => ({ ...data, photos: [] });
@@ -73,13 +76,19 @@ export function useSync(data: AppData, dispatch: (a: Action) => void): SyncState
       return;
     }
     const local = dataRef.current;
+    const joined = localStorage.getItem(joinedKey(session.user.id)) === "1";
     if (row) {
       const remoteTs = new Date(row.updated_at as string).getTime();
       remoteUpdatedAt.current = remoteTs;
-      if (remoteTs > (local.updatedAt ?? 0)) {
-        dispatch({ type: "replaceFromSync", data: mergeLocalOnly({ ...(row.data as AppData), updatedAt: remoteTs }, local) });
+      const remote = row.data as AppData;
+      if (!joined) {
+        // First time this device meets the account: union both sides, never drop either.
+        dispatch({ type: "replaceFromSync", data: mergeSnapshots(remote, local) });
+      } else if (remoteTs > (local.updatedAt ?? 0)) {
+        dispatch({ type: "replaceFromSync", data: mergeLocalOnly({ ...remote, updatedAt: remoteTs }, local) });
       }
     }
+    localStorage.setItem(joinedKey(session.user.id), "1");
     setStatus("synced");
     setLastSyncAt(Date.now());
   }, [sb, enabled, session, dispatch]);

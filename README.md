@@ -84,8 +84,9 @@ of). Backend is a free-tier Supabase project; sources live in `supabase/`:
 - `functions/send-reminders/` — edge function run hourly by `pg_cron` → `pg_net`; sends Web Push
   once per due date per device and prunes dead subscriptions.
 
-Photos never sync (their pixels stay in each device's IndexedDB). Without sign-in the app stays
-fully local. Supabase project settings needed once: Authentication → URL configuration → set the
+The first time a device joins an account it merges (union of entries, account settings win) so
+neither side loses data; after that, newest snapshot wins. Photos never sync (their pixels stay in
+each device's IndexedDB). Without sign-in the app stays fully local. Supabase project settings needed once: Authentication → URL configuration → set the
 Site URL to your deployed app and add `http://localhost:5173/**` to redirect URLs.
 
 ## Using it on your phone

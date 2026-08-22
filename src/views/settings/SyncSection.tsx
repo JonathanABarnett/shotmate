@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Bell, BellOff, Cloud, LogOut, RefreshCw } from "lucide-react";
 import { useStore } from "../../store/StoreProvider";
 import { fmtTime } from "../../lib/dates";
-import { Field } from "../../components/form/fields";
+import SignInForm from "../../components/SignInForm";
 import { getSupabase } from "../../sync/supabaseClient";
 import { disableReminders, enableReminders, isPushSupported, remindersWanted } from "../../sync/pushReminders";
 import { scheduleFor, type SyncState } from "../../sync/useSync";
@@ -10,39 +10,6 @@ import { scheduleFor, type SyncState } from "../../sync/useSync";
 interface Props {
   sync: SyncState;
   showToast: (message: string) => void;
-}
-
-function SignInForm({ sync, showToast }: Props) {
-  const [email, setEmail] = useState("");
-  const [sent, setSent] = useState(false);
-  const send = async () => {
-    try {
-      await sync.signIn(email.trim());
-      setSent(true);
-    } catch (e) {
-      showToast(e instanceof Error ? e.message : "Couldn't send the link");
-    }
-  };
-  return (
-    <>
-      <p className="field-hint" style={{ marginBottom: 12 }}>
-        Sign in once on each device to keep your history in sync and to get shot-day reminders. No password — you'll
-        get a magic link by email.
-      </p>
-      {sent ? (
-        <p className="callout info">📬 Check your email and tap the link — this page picks it up automatically.</p>
-      ) : (
-        <Field label="Email">
-          <div className="input-row">
-            <input className="input" type="email" inputMode="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
-            <button className="btn btn-primary btn-sm" disabled={!/\S+@\S+\.\S+/.test(email)} onClick={send}>
-              Send link
-            </button>
-          </div>
-        </Field>
-      )}
-    </>
-  );
 }
 
 function RemindersRow({ sync, showToast }: Props) {
@@ -124,7 +91,10 @@ export default function SyncSection({ sync, showToast }: Props) {
           </button>
         </>
       ) : (
-        <SignInForm sync={sync} showToast={showToast} />
+        <SignInForm
+          onSend={sync.signIn}
+          intro="Sign in once on each device to keep your history in sync and to get shot-day reminders. No password — you'll get a magic link by email."
+        />
       )}
     </section>
   );

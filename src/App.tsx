@@ -71,7 +71,7 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!data.onboarded) return <OnboardingView installPrompt={installPrompt} />;
+  if (!data.onboarded) return <OnboardingView installPrompt={installPrompt} sync={sync} />;
   if (inReport) return <ReportView onBack={() => setInReport(false)} />;
 
   const goTo = (nextTab: Tab) => {
