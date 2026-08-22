@@ -349,9 +349,24 @@
   font-weight: 800;
 }
 
+/* dots plus the end labels that say which way is "more" */
+.scale {
+  display: grid;
+  width: max-content;
+  gap: 4px;
+}
+
 .scale-dots {
   display: flex;
   gap: 10px;
+}
+
+.scale-ends {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-3);
 }
 
 .scale-dot {

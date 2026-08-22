@@ -24,19 +24,25 @@ function ScaleRow({ label, emoji, tone, value, labels, onPick }: ScaleRowProps) 
         </span>
         <span className="scale-value">{value ? labels[value] : "tap to rate"}</span>
       </div>
-      <div className="scale-dots" role="radiogroup" aria-label={label}>
-        {SCALE.map((n) => (
-          <button
-            key={n}
-            role="radio"
-            aria-checked={value === n}
-            aria-label={`${label} ${n}: ${labels[n]}`}
-            className={`scale-dot ${tone}${value === n ? " active" : ""}`}
-            onClick={() => onPick(n)}
-          >
-            {n}
-          </button>
-        ))}
+      <div className="scale">
+        <div className="scale-dots" role="radiogroup" aria-label={label}>
+          {SCALE.map((n) => (
+            <button
+              key={n}
+              role="radio"
+              aria-checked={value === n}
+              aria-label={`${label} ${n}: ${labels[n]}`}
+              className={`scale-dot ${tone}${value === n ? " active" : ""}`}
+              onClick={() => onPick(n)}
+            >
+              {n}
+            </button>
+          ))}
+        </div>
+        <div className="scale-ends" aria-hidden="true">
+          <span>{labels[1]}</span>
+          <span>{labels[5]}</span>
+        </div>
       </div>
     </div>
   );
