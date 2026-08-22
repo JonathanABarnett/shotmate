@@ -328,12 +328,17 @@
 
 /* morning / afternoon / evening tabs above the check-in rows */
 .slot-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
   margin: 6px 0 2px;
 }
 
 .slot-chip {
-  font-size: 12.5px;
-  padding: 7px 12px;
+  font-size: 12px;
+  padding: 7px 4px;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .slot-chip:disabled {
