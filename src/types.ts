@@ -37,11 +37,18 @@ export interface MeasurementEntry {
   note?: string;
 }
 
+/** Where a photo's fixed-frame crops center, 0..1 per axis (like CSS object-position). */
+export interface PhotoFocus {
+  x: number;
+  y: number;
+}
+
 /** Photo pixels live in IndexedDB under the same id — only metadata sits here. */
 export interface PhotoEntry {
   id: string;
   ts: number;
   note?: string;
+  focus?: PhotoFocus;
 }
 
 /** A non-scale victory. */

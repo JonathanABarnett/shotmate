@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Camera, Images } from "lucide-react";
-import type { PhotoEntry } from "../../types";
+import type { PhotoEntry, PhotoFocus } from "../../types";
 import { uid } from "../../lib/ids";
 import { useStore } from "../../store/StoreProvider";
 import { preparePhotoBlob, savePhotoBlob } from "../../store/photoStore";
@@ -9,7 +9,10 @@ import Sheet from "../Sheet";
 import { EntryBadge } from "../entryKinds";
 import { DateTimeField, Field, NoteField } from "../form/fields";
 import EntrySheetFooter from "../form/EntrySheetFooter";
+import PhotoCropFrame from "../PhotoCropFrame";
 import type { EntrySheetProps } from "./types";
+
+const CENTER: PhotoFocus = { x: 0.5, y: 0.5 };
 
 export default function LogPhotoSheet({ onClose, onDone, existing }: EntrySheetProps & { existing?: PhotoEntry }) {
   const { dispatch } = useStore();
@@ -20,6 +23,7 @@ export default function LogPhotoSheet({ onClose, onDone, existing }: EntrySheetP
   const existingUrl = usePhotoUrl(existing?.id);
   const [ts, setTs] = useState(existing?.ts ?? Date.now());
   const [note, setNote] = useState(existing?.note ?? "");
+  const [focus, setFocus] = useState<PhotoFocus>(existing?.focus ?? CENTER);
 
   useEffect(() => () => {
     if (pendingUrl) URL.revokeObjectURL(pendingUrl);
@@ -31,6 +35,7 @@ export default function LogPhotoSheet({ onClose, onDone, existing }: EntrySheetP
     if (pendingUrl) URL.revokeObjectURL(pendingUrl);
     setPending(blob);
     setPendingUrl(URL.createObjectURL(blob));
+    setFocus(CENTER);
   };
 
   const previewUrl = pendingUrl ?? existingUrl;
@@ -42,7 +47,7 @@ export default function LogPhotoSheet({ onClose, onDone, existing }: EntrySheetP
 
   const save = async () => {
     if (!existing && !pending) return;
-    const entry: PhotoEntry = { id: existing?.id ?? uid(), ts, note: note.trim() || undefined };
+    const entry: PhotoEntry = { id: existing?.id ?? uid(), ts, note: note.trim() || undefined, focus };
     if (pending) await savePhotoBlob(entry.id, pending);
     dispatch({ type: "upsert", collection: "photos", item: entry });
     finish(existing ? "Photo updated" : "Photo saved 📸");
@@ -56,12 +61,12 @@ export default function LogPhotoSheet({ onClose, onDone, existing }: EntrySheetP
 
   return (
     <Sheet title={existing ? "Edit photo" : "Progress photo"} icon={<EntryBadge kind="photo" />} onClose={onClose}>
-      <Field label="Photo" hint="Stays on this device — same pose, same spot, same lighting works best.">
+      <Field
+        label="Photo"
+        hint={previewUrl ? "Drag the photo to choose what the crop shows — thumbnails, before/after, and share cards use it. Stays on this device." : "Stays on this device — same pose, same spot, same lighting works best."}
+      >
         {previewUrl ? (
-          <button className="photo-preview" onClick={() => galleryRef.current?.click()}>
-            <img src={previewUrl} alt="Progress" />
-            <span className="photo-preview-hint">Tap to replace</span>
-          </button>
+          <PhotoCropFrame url={previewUrl} focus={focus} onChange={setFocus} onReplace={() => galleryRef.current?.click()} />
         ) : (
           <div className="photo-pick-row">
             <button className="photo-pick" onClick={() => cameraRef.current?.click()}>

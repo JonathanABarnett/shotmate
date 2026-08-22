@@ -20,7 +20,7 @@ function ComparePane({ photos, selectedId, onSelect, label }: PaneProps) {
   const photo = photos.find((p) => p.id === selectedId) ?? photos[0];
   return (
     <div className="compare-pane">
-      <PhotoThumb photoId={photo.id} alt={`${label} photo`} className="compare-img" />
+      <PhotoThumb photoId={photo.id} alt={`${label} photo`} className="compare-img"  focus={photo.focus} />
       <select className="input compare-select" value={photo.id} onChange={(e) => onSelect(e.target.value)} aria-label={label}>
         {photos.map((p) => (
           <option key={p.id} value={p.id}>
@@ -79,7 +79,7 @@ export default function PhotoCompare({ data, photos, initialId, onClose }: Props
       const panes: SharePane[] = [];
       for (const photo of chosen) {
         const image = await loadPhotoBlob(photo.id);
-        if (image) panes.push({ image, caption: fmtDay(photo.ts), stats: statsFor(data, photo.ts).stats });
+        if (image) panes.push({ image, caption: fmtDay(photo.ts), stats: statsFor(data, photo.ts).stats, focus: photo.focus });
       }
       if (panes.length === 0) throw new Error("no photos");
       const summary = chosen.length === 2 ? summaryFor(data, chosen[0], chosen[1]) : statsFor(data, chosen[0].ts).stats.join("  ·  ") || "My progress";
