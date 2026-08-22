@@ -1,5 +1,6 @@
 import type { AppData } from "../../types";
 import { HOUR } from "../dates";
+import { dayEnergy, dayHunger } from "../checkin";
 import { cycleOffsetDays, mean, offsetLabel, round1 } from "./shared";
 
 export interface CycleDayMood {
@@ -32,8 +33,10 @@ export function hungerEnergyByCycleDay(data: AppData): CreepInsight | undefined 
   for (const c of data.checkins) {
     const offset = cycleOffsetDays(c.day + 12 * HOUR, data.shots);
     if (offset == null || offset >= span) continue;
-    if (c.hunger != null) hunger[offset].push(c.hunger);
-    if (c.energy != null) energy[offset].push(c.energy);
+    const h = dayHunger(c);
+    const e = dayEnergy(c);
+    if (h != null) hunger[offset].push(h);
+    if (e != null) energy[offset].push(e);
     total++;
   }
   const buckets: CycleDayMood[] = hunger.map((h, i) => ({

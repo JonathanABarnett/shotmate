@@ -1,5 +1,6 @@
 import type { AppData, CheckinEntry } from "../../types";
 import { HOUR } from "../dates";
+import { dayEnergy, dayHunger } from "../checkin";
 import { cycleOffsetDays, mean, round1 } from "./shared";
 
 export interface SleepHunger {
@@ -22,8 +23,12 @@ const GOOD_SLEEP = 4;
 const NOTABLE = 0.5;
 const NO_CYCLE = -1;
 
-const hasSleepAndHunger = (c: CheckinEntry) => c.sleep != null && c.hunger != null;
-const energies = (group: CheckinEntry[]) => group.flatMap((c) => (c.energy != null ? [c.energy] : []));
+const hasSleepAndHunger = (c: CheckinEntry) => c.sleep != null && dayHunger(c) != null;
+const energies = (group: CheckinEntry[]) =>
+  group.flatMap((c) => {
+    const e = dayEnergy(c);
+    return e != null ? [e] : [];
+  });
 
 /** Each check-in's hunger relative to the usual for that day of the cycle — so late-cycle creep doesn't masquerade as a sleep effect. */
 function hungerShifts(pairs: CheckinEntry[], data: AppData): Map<CheckinEntry, number> {
@@ -31,10 +36,10 @@ function hungerShifts(pairs: CheckinEntry[], data: AppData): Map<CheckinEntry, n
   const byOffset = new Map<number, number[]>();
   for (const c of pairs) {
     const bucket = byOffset.get(offsetOf(c)) ?? [];
-    bucket.push(c.hunger!);
+    bucket.push(dayHunger(c)!);
     byOffset.set(offsetOf(c), bucket);
   }
-  return new Map(pairs.map((c) => [c, c.hunger! - mean(byOffset.get(offsetOf(c))!)!]));
+  return new Map(pairs.map((c) => [c, dayHunger(c)! - mean(byOffset.get(offsetOf(c))!)!]));
 }
 
 function energyNote(poor: CheckinEntry[], good: CheckinEntry[]): string | undefined {

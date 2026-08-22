@@ -1,6 +1,7 @@
 import type {
   AppData,
   CheckinEntry,
+  CheckinSlot,
   DailyIntake,
   EffectEntry,
   MeasurementEntry,
@@ -14,6 +15,7 @@ import type {
 } from "../types";
 import { DAY, HOUR, startOfDay } from "./dates";
 import { uid } from "./ids";
+import { SLOTS } from "./checkin";
 import { FEELING_FINE, STILL_HUNGRY } from "./effects";
 
 /** Deterministic pseudo-random so the demo always looks good. */
@@ -150,9 +152,13 @@ function sampleActivities(firstShot: number): AppData["activities"] {
   ];
 }
 
-/** Five weeks of daily check-ins: hunger creeps up late in each cycle, energy dips after shots, rough nights mean hungrier days. */
+const SLOT_HUNGER: Record<CheckinSlot, number> = { morning: -0.7, afternoon: 0, evening: 0.8 };
+const SLOT_ENERGY: Record<CheckinSlot, number> = { morning: 0.3, afternoon: -0.6, evening: 0 };
+
+/** Five weeks of check-ins, up to three a day: hunger creeps up late in each cycle and builds toward evening, energy dips after shots and mid-afternoon, rough nights mean hungrier days. */
 function sampleCheckins(shots: Shot[], now: number, rnd: () => number): CheckinEntry[] {
   const clamp = (n: number): Scale5 => Math.max(1, Math.min(5, Math.round(n))) as Scale5;
+  const hourNow = new Date(now).getHours();
   const entries: CheckinEntry[] = [];
   for (let d = 34; d >= 0; d--) {
     const day = startOfDay(now - d * DAY);
@@ -160,13 +166,18 @@ function sampleCheckins(shots: Shot[], now: number, rnd: () => number): CheckinE
     if (!lastShot) continue;
     const offset = Math.floor((day + 12 * HOUR - lastShot.ts) / DAY);
     const sleep = clamp(3.3 + (rnd() - 0.5) * 3.2);
-    entries.push({
-      id: uid(),
-      day,
-      hunger: clamp(1.3 + offset * 0.42 + (sleep <= 2 ? 1.2 : 0) + (rnd() - 0.5) * 1.2),
-      energy: clamp((offset <= 1 ? 2.4 : 3.7) + (sleep >= 4 ? 0.5 : sleep <= 2 ? -0.7 : 0) + (rnd() - 0.5) * 1.2),
-      sleep,
-    });
+    const hungerBase = 1.5 + offset * 0.4 + (sleep <= 2 ? 1.1 : 0);
+    const energyBase = (offset <= 1 ? 2.6 : 3.7) + (sleep >= 4 ? 0.5 : sleep <= 2 ? -0.7 : 0);
+    const slots: CheckinEntry["slots"] = {};
+    for (const slot of SLOTS) {
+      if (rnd() < 0.2) continue; // the odd missed check-in
+      if (d === 0 && slot.fromHour > hourNow) continue; // today's later slots haven't happened yet
+      slots[slot.key] = {
+        hunger: clamp(hungerBase + SLOT_HUNGER[slot.key] + (rnd() - 0.5) * 1.2),
+        energy: clamp(energyBase + SLOT_ENERGY[slot.key] + (rnd() - 0.5) * 1.2),
+      };
+    }
+    entries.push({ id: uid(), day, sleep, slots });
   }
   return entries;
 }

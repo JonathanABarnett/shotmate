@@ -92,14 +92,24 @@ export interface DailyIntake {
 
 export type Scale5 = 1 | 2 | 3 | 4 | 5;
 
-/** Daily hunger/energy check-in (day = local start-of-day ms). */
+export type CheckinSlot = "morning" | "afternoon" | "evening";
+
+/** One hunger/energy reading — at most one per slot per day. */
+export interface CheckinMoment {
+  hunger?: Scale5;
+  energy?: Scale5;
+}
+
+/** A day's check-ins (day = local start-of-day ms): sleep once, hunger/energy per time of day. */
 export interface CheckinEntry {
   id: string;
   day: number;
-  hunger?: Scale5;
-  energy?: Scale5;
   /** last night's sleep quality */
   sleep?: Scale5;
+  slots?: Partial<Record<CheckinSlot, CheckinMoment>>;
+  /** pre-slot readings with no time of day — old entries only; read via momentsOf() */
+  hunger?: Scale5;
+  energy?: Scale5;
 }
 
 export type ThemePref = "auto" | "light" | "dark";

@@ -11,3 +11,4 @@ export { activityVsPace, type ActivityPace } from "./activityPace";
 export { siteRotationHealth, type SiteHealth } from "./sites";
 export { adherenceStats, type Adherence } from "./adherence";
 export { sleepVsHunger, type SleepHunger } from "./sleep";
+export { hungerByTimeOfDay, type TimeOfDay, type SlotAverage } from "./timeOfDay";

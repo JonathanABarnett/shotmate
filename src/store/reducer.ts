@@ -2,6 +2,8 @@ import type {
   ActivityEntry,
   AppData,
   CheckinEntry,
+  CheckinMoment,
+  CheckinSlot,
   EffectEntry,
   MeasurementEntry,
   PhotoEntry,
@@ -12,6 +14,7 @@ import type {
   WeightEntry,
   WinEntry,
 } from "../types";
+import { slotFor } from "../lib/checkin";
 import { emptyData } from "../lib/defaults";
 import { startOfDay } from "../lib/dates";
 import { uid } from "../lib/ids";
@@ -33,7 +36,7 @@ export type Action =
   | { type: "remove"; collection: CollectionKey; id: string }
   | { type: "addIntake"; ts: number; proteinG?: number; waterFlOz?: number }
   | { type: "addActivities"; items: ActivityEntry[] }
-  | { type: "setCheckin"; ts: number; hunger?: Scale5; energy?: Scale5; sleep?: Scale5 }
+  | { type: "setCheckin"; ts: number; slot?: CheckinSlot; hunger?: Scale5; energy?: Scale5; sleep?: Scale5 }
   | { type: "markAchievementsSeen"; keys: string[] }
   | { type: "loadSample" }
   | { type: "importData"; data: AppData }
@@ -116,16 +119,23 @@ function applyAddIntake(state: AppData, action: Extract<Action, { type: "addInta
   return { ...state, intake: upsertById(state.intake, updated) };
 }
 
-/** Record today's hunger/energy — each field merges into the day's entry. */
+/** Record a check-in — sleep merges into the day, hunger/energy into that time-of-day slot. */
 function applySetCheckin(state: AppData, action: Extract<Action, { type: "setCheckin" }>): AppData {
   const day = startOfDay(action.ts);
   const existing = state.checkins.find((c) => c.day === day);
+  const slot = action.slot ?? slotFor(action.ts);
+  const hasReading = action.hunger != null || action.energy != null;
+  const moment: CheckinMoment = {
+    ...existing?.slots?.[slot],
+    ...(action.hunger != null ? { hunger: action.hunger } : {}),
+    ...(action.energy != null ? { energy: action.energy } : {}),
+  };
   const updated: CheckinEntry = {
+    ...existing,
     id: existing?.id ?? uid(),
     day,
-    hunger: action.hunger ?? existing?.hunger,
-    energy: action.energy ?? existing?.energy,
     sleep: action.sleep ?? existing?.sleep,
+    slots: hasReading ? { ...existing?.slots, [slot]: moment } : existing?.slots,
   };
   return { ...state, checkins: upsertById(state.checkins, updated) };
 }

@@ -326,6 +326,24 @@
   color: var(--ink-2);
 }
 
+/* morning / afternoon / evening tabs above the check-in rows */
+.slot-row {
+  margin: 6px 0 2px;
+}
+
+.slot-chip {
+  font-size: 12.5px;
+  padding: 7px 12px;
+}
+
+.slot-chip:disabled {
+  opacity: 0.45;
+}
+
+.slot-check {
+  font-weight: 800;
+}
+
 .scale-dots {
   display: flex;
   gap: 10px;

@@ -1,5 +1,5 @@
 import type { Unit } from "../../../types";
-import type { ActivityPace, Adherence, CreepInsight, SleepHunger } from "../../../lib/insights";
+import type { ActivityPace, Adherence, CreepInsight, SleepHunger, TimeOfDay } from "../../../lib/insights";
 import InsightCard from "../../../components/InsightCard";
 import { absWeight, signedWeight } from "../../../lib/format";
 
@@ -45,6 +45,21 @@ export function SleepCard({ sleep }: { sleep: SleepHunger }) {
         { value: signedShift(sleep.goodShift), label: `after ${sleep.goodNights} good nights` },
       ]}
       headline={sleep.energyNote ? `${sleep.summary} ${sleep.energyNote}` : sleep.summary}
+    />
+  );
+}
+
+export function TimeOfDayCard({ timeOfDay }: { timeOfDay: TimeOfDay }) {
+  return (
+    <InsightCard
+      emoji="🕑"
+      title="Hunger through the day"
+      sub="Average hunger by time of day (1 = none, 5 = ravenous)"
+      tone={timeOfDay.peak ? "note" : "info"}
+      stats={timeOfDay.slots
+        .filter((s) => s.hunger != null)
+        .map((s) => ({ value: s.hunger!.toFixed(1), label: `${s.label.toLowerCase()} (${s.n})` }))}
+      headline={timeOfDay.energyNote ? `${timeOfDay.summary} ${timeOfDay.energyNote}` : timeOfDay.summary}
     />
   );
 }
