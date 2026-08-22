@@ -164,6 +164,22 @@ textarea.input {
   box-shadow: 0 8px 18px -8px rgba(108, 79, 224, 0.6);
 }
 
+/* the exclusive "feeling fine" check-in — full width, teal when on */
+.chip-fine {
+  width: 100%;
+  text-align: center;
+  padding: 11px 14px;
+  font-size: 14px;
+  border-style: dashed;
+}
+
+.chip-fine.active {
+  background: var(--teal);
+  border-color: var(--teal);
+  border-style: solid;
+  box-shadow: 0 8px 18px -8px rgba(18, 169, 141, 0.6);
+}
+
 .dose-chips {
   margin-bottom: 10px;
 }

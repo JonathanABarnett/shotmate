@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { EffectEntry, Severity } from "../../types";
-import { EFFECT_OPTIONS } from "../../lib/effects";
+import { EFFECT_OPTIONS, FEELING_FINE } from "../../lib/effects";
 import { uid } from "../../lib/ids";
 import { useStore } from "../../store/StoreProvider";
 import Sheet from "../Sheet";
@@ -11,15 +11,25 @@ import SeverityPicker from "../form/SeverityPicker";
 import EntrySheetFooter from "../form/EntrySheetFooter";
 import type { EntrySheetProps } from "./types";
 
+/** "Feeling fine" stands alone: picking it clears the symptoms, and picking a symptom clears it. */
+function toggleTag(selected: string[], key: string): string[] {
+  if (key === FEELING_FINE) return selected.includes(key) ? [] : [FEELING_FINE];
+  const rest = selected.filter((x) => x !== FEELING_FINE);
+  return rest.includes(key) ? rest.filter((x) => x !== key) : [...rest, key];
+}
+
+const savedMessage = (editing: boolean, fine: boolean) =>
+  editing ? "Entry updated" : fine ? "Logged — here's to more days like this 💛" : "Noted — hope you feel better soon 💛";
+
 export default function LogEffectSheet({ onClose, onDone, existing }: EntrySheetProps & { existing?: EffectEntry }) {
   const { dispatch } = useStore();
   const [effects, setEffects] = useState<string[]>(existing?.effects ?? []);
   const [severity, setSeverity] = useState<Severity>(existing?.severity ?? 1);
   const [ts, setTs] = useState(existing?.ts ?? Date.now());
   const [note, setNote] = useState(existing?.note ?? "");
+  const fine = effects.includes(FEELING_FINE);
 
-  const toggleEffect = (key: string) =>
-    setEffects((prev) => (prev.includes(key) ? prev.filter((x) => x !== key) : [...prev, key]));
+  const toggleEffect = (key: string) => setEffects((prev) => toggleTag(prev, key));
 
   const finish = (message: string, undo?: () => void) => {
     onDone(message, undo);
@@ -28,9 +38,15 @@ export default function LogEffectSheet({ onClose, onDone, existing }: EntrySheet
 
   const save = () => {
     if (effects.length === 0) return;
-    const entry: EffectEntry = { id: existing?.id ?? uid(), ts, effects, severity, note: note.trim() || undefined };
+    const entry: EffectEntry = {
+      id: existing?.id ?? uid(),
+      ts,
+      effects,
+      severity: fine ? 1 : severity,
+      note: note.trim() || undefined,
+    };
     dispatch({ type: "upsert", collection: "effects", item: entry });
-    finish(existing ? "Entry updated" : "Noted — hope you feel better soon 💛");
+    finish(savedMessage(Boolean(existing), fine));
   };
 
   const remove = () => {
@@ -45,16 +61,26 @@ export default function LogEffectSheet({ onClose, onDone, existing }: EntrySheet
       icon={<EntryBadge kind="effect" />}
       onClose={onClose}
     >
-      <Field label="Symptoms">
+      <Field label="Symptoms" hint="Tap everything that applies. Log as often as you like — several times a day is fine.">
+        <button
+          className={`chip chip-fine${fine ? " active" : ""}`}
+          aria-pressed={fine}
+          onClick={() => toggleEffect(FEELING_FINE)}
+        >
+          😊 Feeling fine — no symptoms
+        </button>
+        <div className="spacer-8" />
         <ChipGroup
           options={EFFECT_OPTIONS.map((e) => ({ key: e, label: e }))}
           selected={effects}
           onToggle={toggleEffect}
         />
       </Field>
-      <Field label="How intense?">
-        <SeverityPicker value={severity} onChange={setSeverity} />
-      </Field>
+      {!fine && (
+        <Field label="How intense?">
+          <SeverityPicker value={severity} onChange={setSeverity} />
+        </Field>
+      )}
       <DateTimeField value={ts} onChange={setTs} />
       <NoteField value={note} onChange={setNote} />
       <EntrySheetFooter

@@ -1,7 +1,7 @@
 import { ArrowLeft, Printer } from "lucide-react";
 import type { AppData } from "../../types";
 import { fmtDay } from "../../lib/dates";
-import { severityMeta } from "../../lib/effects";
+import { isFeelingFine, severityMeta } from "../../lib/effects";
 import { fmtLength, lengthUnit, MEASURES, sortedMeasures } from "../../lib/measures";
 import { medFor } from "../../lib/meds";
 import { sortedShots } from "../../lib/shots";
@@ -93,7 +93,7 @@ function EffectTable({ data }: { data: AppData }) {
             <tr key={e.id}>
               <td>{fmtDay(e.ts)}</td>
               <td>{e.effects.join(", ")}</td>
-              <td>{severityMeta(e.severity).label}</td>
+              <td>{isFeelingFine(e) ? "—" : severityMeta(e.severity).label}</td>
               <td>{e.note ?? ""}</td>
             </tr>
           ))}

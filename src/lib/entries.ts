@@ -1,7 +1,7 @@
 import type { AppData, Entry, Unit } from "../types";
 import { activityTypeInfo, fmtDistance } from "./activity";
 import { fmtDayFull, startOfDay } from "./dates";
-import { severityMeta } from "./effects";
+import { isFeelingFine, severityMeta } from "./effects";
 import { fmtLength, lengthUnit, MEASURES } from "./measures";
 import { siteLabel } from "./sites";
 import { vitalsSummaryParts } from "./vitals";
@@ -40,10 +40,8 @@ export function entrySummary(entry: Entry, unit: Unit): EntrySummary {
     case "effect": {
       const { effects, severity, note } = entry.item;
       const sev = severityMeta(severity);
-      return {
-        title: effects.join(", "),
-        sub: note ? `${sev.label} ${sev.emoji} — ${note}` : `${sev.label} ${sev.emoji}`,
-      };
+      const state = isFeelingFine(entry.item) ? "No symptoms 😊" : `${sev.label} ${sev.emoji}`;
+      return { title: effects.join(", "), sub: note ? `${state} — ${note}` : state };
     }
     case "measure": {
       const { valuesIn, note } = entry.item;

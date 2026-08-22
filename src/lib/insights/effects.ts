@@ -1,4 +1,5 @@
 import type { AppData } from "../../types";
+import { symptomEntries } from "../effects";
 import { cycleOffsetDays, offsetLabel } from "./shared";
 
 export interface TimingBucket {
@@ -9,10 +10,11 @@ export interface TimingBucket {
 
 /** How side-effect entries cluster around shot day. */
 export function effectTimingBuckets(data: AppData): TimingBucket[] {
-  if (data.shots.length === 0 || data.effects.length === 0) return [];
+  const symptoms = symptomEntries(data.effects);
+  if (data.shots.length === 0 || symptoms.length === 0) return [];
   const span = Math.min(data.settings.scheduleDays, 14);
   const counts = new Array<number>(span).fill(0);
-  for (const effect of data.effects) {
+  for (const effect of symptoms) {
     const offset = cycleOffsetDays(effect.ts, data.shots);
     if (offset != null && offset < span) counts[offset]++;
   }

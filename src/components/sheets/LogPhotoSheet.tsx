@@ -50,7 +50,7 @@ export default function LogPhotoSheet({ onClose, onDone, existing }: EntrySheetP
     const entry: PhotoEntry = { id: existing?.id ?? uid(), ts, note: note.trim() || undefined, focus };
     if (pending) await savePhotoBlob(entry.id, pending);
     dispatch({ type: "upsert", collection: "photos", item: entry });
-    finish(existing ? "Photo updated" : "Photo saved 📸");
+    finish(existing ? "Photo updated" : "Photo saved 📸 — see them all under Trends → Body");
   };
 
   const remove = () => {

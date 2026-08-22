@@ -1,6 +1,7 @@
 import type { AppData } from "../../types";
 import { fmtDayFull } from "../../lib/dates";
 import { effectTimingBuckets, effectTimingSummary } from "../../lib/insights";
+import { symptomEntries } from "../../lib/effects";
 import EmptyState from "../../components/EmptyState";
 import ChartStats from "../../components/ChartStats";
 
@@ -11,7 +12,7 @@ interface EffectCount {
 
 function countEffects(data: AppData): EffectCount[] {
   const counts = new Map<string, number>();
-  for (const entry of data.effects) {
+  for (const entry of symptomEntries(data.effects)) {
     for (const name of entry.effects) {
       counts.set(name, (counts.get(name) ?? 0) + 1);
     }
@@ -54,6 +55,7 @@ function TimingInsight({ data }: { data: AppData }) {
 export default function EffectsPanel({ data }: { data: AppData }) {
   const counts = countEffects(data);
   const latest = [...data.effects].sort((a, b) => b.ts - a.ts)[0];
+  const fineCount = data.effects.length - symptomEntries(data.effects).length;
 
   return (
     <>
@@ -78,7 +80,8 @@ export default function EffectsPanel({ data }: { data: AppData }) {
             ))}
             <ChartStats
               stats={[
-                { value: `${data.effects.length}`, label: "entries" },
+                { value: `${data.effects.length - fineCount}`, label: "symptom entries" },
+                ...(fineCount > 0 ? [{ value: `${fineCount}`, label: "feeling-fine logs" }] : []),
                 { value: counts[0].name, label: "most frequent" },
                 ...(latest ? [{ value: fmtDayFull(latest.ts), label: "last entry" }] : []),
               ]}
@@ -86,8 +89,8 @@ export default function EffectsPanel({ data }: { data: AppData }) {
           </>
         ) : (
           <EmptyState
-            emoji="🌈"
-            title="Nothing logged — that's great!"
+            emoji={fineCount > 0 ? "😊" : "🌈"}
+            title={fineCount > 0 ? `${fineCount} feeling-fine ${fineCount === 1 ? "log" : "logs"}, no symptoms` : "Nothing logged — that's great!"}
             sub="If a side effect shows up, log it here to spot patterns around shot days."
           />
         )}

@@ -14,6 +14,7 @@ import type {
 } from "../types";
 import { DAY, HOUR, startOfDay } from "./dates";
 import { uid } from "./ids";
+import { FEELING_FINE, STILL_HUNGRY } from "./effects";
 
 /** Deterministic pseudo-random so the demo always looks good. */
 function mulberry(seed: number) {
@@ -85,11 +86,15 @@ function sampleEffects(firstShot: number): EffectEntry[] {
   return [
     entry(1.2, ["Nausea", "Fatigue"], 2, "Worst the day after the shot."),
     entry(8.4, ["Nausea"], 1),
+    entry(12.5, [FEELING_FINE], 1),
     entry(22, ["Constipation"], 2, "More water + fiber helped."),
+    entry(26.6, [STILL_HUNGRY], 2, "Appetite creeping back by day 6."),
     entry(29.3, ["Nausea", "Sulfur burps"], 2, "Started 5 mg this week."),
     entry(36, ["Fatigue"], 1),
+    entry(44, [FEELING_FINE], 1, "Best week so far."),
     entry(57.5, ["Nausea"], 1, "Mild, passed by evening."),
     entry(64.2, ["Low appetite"], 1),
+    entry(71, [FEELING_FINE], 1),
   ];
 }
 

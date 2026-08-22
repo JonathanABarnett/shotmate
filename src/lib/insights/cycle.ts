@@ -2,6 +2,7 @@ import type { AppData, WeightEntry } from "../../types";
 import { daysBetween, startOfDay } from "../dates";
 import { proteinGoal } from "../intake";
 import { sortedShots } from "../shots";
+import { symptomEntries } from "../effects";
 import { sortedWeights } from "../weight";
 
 export interface CycleReview {
@@ -53,8 +54,8 @@ export function cycleReview(data: AppData, now = Date.now()): CycleReview | unde
     prevActiveMinutes: prevStart != null ? minutesOf(within(data.activities, prevStart, start)) : undefined,
     proteinDaysHit: intakeDays.filter((i) => i.proteinG >= goal).length,
     proteinDaysTracked: intakeDays.length,
-    effectCount: within(data.effects, start, end).length,
-    prevEffectCount: prevStart != null ? within(data.effects, prevStart, start).length : undefined,
+    effectCount: within(symptomEntries(data.effects), start, end).length,
+    prevEffectCount: prevStart != null ? within(symptomEntries(data.effects), prevStart, start).length : undefined,
     winCount: within(data.wins, start, end).length,
   };
 }
