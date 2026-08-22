@@ -1,15 +1,15 @@
 import type { Shot } from "../../types";
-import { DAY } from "../dates";
+import { daysBetween } from "../dates";
 import { sortedShots } from "../shots";
 
-/** Days since the most recent shot at or before ts; undefined before the first shot. */
+/** Calendar days since the most recent shot at or before ts (shot day = 0); undefined before the first shot. */
 export function cycleOffsetDays(ts: number, shots: Shot[]): number | undefined {
   let last: Shot | undefined;
   for (const s of sortedShots(shots)) {
     if (s.ts <= ts) last = s;
     else break;
   }
-  return last ? Math.floor((ts - last.ts) / DAY) : undefined;
+  return last ? daysBetween(last.ts, ts) : undefined;
 }
 
 export function mean(values: number[]): number | undefined {

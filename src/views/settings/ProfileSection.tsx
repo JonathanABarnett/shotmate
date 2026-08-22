@@ -5,7 +5,7 @@ export default function ProfileSection() {
   const { data, dispatch } = useStore();
   return (
     <section className="card">
-      <Field label="Your name" hint="Just for the friendly hello — never leaves your device.">
+      <Field label="Your name" hint="Just for the friendly hello.">
         <input
           className="input"
           placeholder="What should we call you?"

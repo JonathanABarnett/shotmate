@@ -1,7 +1,8 @@
 # ShotMate 💜
 
 Your own GLP-1 companion — shots, weight, and how you feel, tracked in one friendly place.
-No subscription, no account, no cloud: **everything stays in your browser's local storage.**
+No subscription and local-first: **your data lives on your device**, with optional sign-in to sync between your
+own devices and get shot-day reminders.
 
 ![ShotMate](public/icon.svg)
 

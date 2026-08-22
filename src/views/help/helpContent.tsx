@@ -108,8 +108,10 @@ export const HELP_SECTIONS: HelpSection[] = [
     body: (
       <>
         <p>
-          ShotMate keeps everything <strong>on your device</strong> — no account, no cloud, no subscription. Use
-          Settings → Data to back up or move your data.
+          ShotMate is <strong>private by default</strong>: your data lives on your device, with no subscription and
+          no ads. If you sign in (Settings → Sync &amp; reminders) it syncs between your own devices and powers
+          shot-day reminders — photos always stay on the device they were taken on. Settings → Data backs up or moves
+          your data either way.
         </p>
         <p>
           It's a tracking companion, not a medical device: nothing here is medical advice, and the medication-level

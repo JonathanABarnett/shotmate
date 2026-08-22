@@ -1,5 +1,5 @@
 import type { AppData, WeightEntry } from "../../types";
-import { DAY, startOfDay } from "../dates";
+import { daysBetween, startOfDay } from "../dates";
 import { proteinGoal } from "../intake";
 import { sortedShots } from "../shots";
 import { sortedWeights } from "../weight";
@@ -46,7 +46,7 @@ export function cycleReview(data: AppData, now = Date.now()): CycleReview | unde
 
   return {
     cycleStart: start,
-    daysIn: Math.floor((now - start) / DAY),
+    daysIn: daysBetween(start, now),
     weightChangeLbs: weightChangeIn(data.weights, start, end),
     prevWeightChangeLbs: prevStart != null ? weightChangeIn(data.weights, prevStart, start) : undefined,
     activeMinutes: minutesOf(within(data.activities, start, end)),

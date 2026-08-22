@@ -33,7 +33,7 @@ export function WelcomeStep({ draft, patch }: StepProps) {
             Meet <span className="grad-text">ShotMate</span>
           </>
         }
-        sub="Your friendly GLP-1 companion — shots, weight, and how you feel, all in one cozy place. Private, on your device."
+        sub="Your friendly GLP-1 companion — shots, weight, and how you feel, all in one cozy place. Private by default — sync between your devices only if you want to."
       />
       <Field label="What should we call you? (optional)">
         <input
@@ -124,7 +124,7 @@ export function ReadyStep({ draft }: StepProps) {
           <li>💉 Log your first shot — you can backdate it if it was days ago.</li>
           <li>🔄 Follow the <strong>✦ next up</strong> tag to rotate injection sites.</li>
           <li>⚖️ Weigh in a few times a week — trends beat single days.</li>
-          <li>📦 Your data stays on this device; export backups in Settings.</li>
+          <li>📦 Your data lives on your device — sign in under Settings → Sync only if you want phone and laptop to share it.</li>
         </ul>
       </div>
     </>

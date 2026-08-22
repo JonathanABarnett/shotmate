@@ -6,9 +6,11 @@ import ConfirmButton from "../../components/ConfirmButton";
 
 interface Props {
   showToast: (message: string) => void;
+  /** signed in and syncing — changes the advice below */
+  synced: boolean;
 }
 
-export default function DataSection({ showToast }: Props) {
+export default function DataSection({ showToast, synced }: Props) {
   const { data, dispatch } = useStore();
   const fileRef = useRef<HTMLInputElement>(null);
   const hasEntries = data.shots.length + data.weights.length + data.effects.length > 0;
@@ -71,7 +73,9 @@ export default function DataSection({ showToast }: Props) {
         }}
       />
       <p className="field-hint" style={{ marginTop: 12 }}>
-        Everything lives in this browser only. Export a backup before switching devices or clearing browser data.
+        {synced
+          ? "Your history is synced to your account (photos excluded) — still export a backup before clearing browser data, since photos live only here."
+          : "Everything lives in this browser only until you sign in under Sync & reminders. Export a backup before switching devices or clearing browser data."}
       </p>
     </section>
   );

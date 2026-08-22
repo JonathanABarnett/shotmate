@@ -29,7 +29,7 @@ export default function SettingsView({ showToast, onOpenReport, sync }: Props) {
       <div className="section-label">Share &amp; remind</div>
       <ShareSection showToast={showToast} onOpenReport={onOpenReport} />
       <div className="section-label">Data</div>
-      <DataSection showToast={showToast} />
+      <DataSection showToast={showToast} synced={!!sync.userId} />
       <p className="tiny muted" style={{ textAlign: "center", padding: "6px 0 12px" }}>
         ShotMate v1.0 · made with 💜 · not medical advice
       </p>

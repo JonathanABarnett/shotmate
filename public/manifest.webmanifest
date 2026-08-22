@@ -1,7 +1,7 @@
 {
   "name": "ShotMate — GLP-1 companion",
   "short_name": "ShotMate",
-  "description": "Track your GLP-1 shots, weight, and how you feel — privately, on your device.",
+  "description": "Track your GLP-1 shots, weight, and how you feel — private by default, synced between your devices only if you choose.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#F4F2FB",
