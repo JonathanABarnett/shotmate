@@ -50,8 +50,11 @@ export default function LogShotSheet({ onClose, onDone, existing }: EntrySheetPr
       <Field label={`Dose · ${med.brand}`} hint={draw ? `Draw ≈ ${fmtDraw(draw)}` : undefined}>
         <DosePicker med={med} value={doseMg} onChange={setDoseMg} />
       </Field>
-      <Field label="Injection site">
-        <BodyMap shots={otherShots} selected={site} onSelect={setSite} />
+      <Field
+        label="Injection site"
+        hint={data.settings.siteMapMirror ? "Shown as you look down at yourself — your left is on the left." : "Shown facing you — your left is on the right (switch in Settings → Appearance)."}
+      >
+        <BodyMap shots={otherShots} selected={site} onSelect={setSite} bodyType={data.settings.bodyType} mirror={data.settings.siteMapMirror} />
       </Field>
       <DateTimeField value={ts} onChange={setTs} />
       <NoteField value={note} onChange={setNote} />

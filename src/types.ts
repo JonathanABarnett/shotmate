@@ -95,6 +95,8 @@ export interface CheckinEntry {
 
 export type ThemePref = "auto" | "light" | "dark";
 
+export type BodyType = "neutral" | "slim" | "broad" | "curvy";
+
 export interface Settings {
   name: string;
   medKey: string;
@@ -117,6 +119,10 @@ export interface Settings {
   /** days before running out that you want to reorder by */
   reorderLeadDays?: number;
   theme?: ThemePref;
+  /** silhouette used by the body snapshot and the injection-site picker */
+  bodyType?: BodyType;
+  /** show the site picker as you look down at yourself (your left on the left) */
+  siteMapMirror?: boolean;
   proteinGoalG?: number;
   waterGoalFlOz?: number;
 }
