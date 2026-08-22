@@ -58,8 +58,10 @@ export default function IntakeCard({ data }: { data: AppData }) {
   return (
     <section className="card intake-card">
       <div className="card-title-row">
-        <h3 className="card-title">Today's fuel</h3>
-        <div className="card-sub">Drag or tap — protein keeps muscle on board</div>
+        <div>
+          <h3 className="card-title">Today's fuel</h3>
+          <div className="card-sub">Drag or tap — protein keeps muscle on board</div>
+        </div>
       </div>
       <MeterRow
         icon={<Beef size={19} />}
