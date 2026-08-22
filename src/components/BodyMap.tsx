@@ -17,8 +17,8 @@ const ZONES: ZoneShape[] = [
   { id: "ab-l", x: 103, y: 106, w: 27, h: 27 },
   { id: "th-r", x: 70, y: 160, w: 27, h: 38 },
   { id: "th-l", x: 103, y: 160, w: 27, h: 38 },
-  { id: "arm-r", x: 37, y: 66, w: 21, h: 32 },
-  { id: "arm-l", x: 142, y: 66, w: 21, h: 32 },
+  { id: "arm-r", x: 39, y: 76, w: 19, h: 30 },
+  { id: "arm-l", x: 142, y: 76, w: 19, h: 30 },
 ];
 
 function usedLabel(lastUsedTs: number | undefined, now: number): string {
