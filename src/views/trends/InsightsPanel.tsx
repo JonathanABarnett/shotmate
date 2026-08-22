@@ -9,10 +9,11 @@ import {
   paceShift,
   shotDayBump,
   siteRotationHealth,
+  sleepVsHunger,
   tapeVsScale,
 } from "../../lib/insights";
 import { OutlookCard, PaceCard, TapeCard, WaterWeightCard } from "./insights/weightInsights";
-import { ActivityPaceCard, AdherenceCard, CreepCard } from "./insights/habitInsights";
+import { ActivityPaceCard, AdherenceCard, CreepCard, SleepCard } from "./insights/habitInsights";
 import { DoseStepsCard, SitesCard } from "./insights/shotInsights";
 import AchievementsCard from "./insights/AchievementsCard";
 import { achievements } from "../../lib/achievements";
@@ -51,6 +52,7 @@ function LockedList({ items }: { items: Locked[] }) {
 export default function InsightsPanel({ data }: { data: AppData }) {
   const unit = data.settings.unit;
   const creep = hungerEnergyByCycleDay(data);
+  const sleep = sleepVsHunger(data);
   const pace = paceShift(data);
   const tape = tapeVsScale(data);
   const outlook = goalOutlook(data);
@@ -62,6 +64,7 @@ export default function InsightsPanel({ data }: { data: AppData }) {
 
   const locked: Locked[] = [
     ...(creep ? [] : [{ title: "Hunger & energy across your cycle", needs: "about 8 daily check-ins on Home" }]),
+    ...(sleep ? [] : [{ title: "Sleep vs. hunger", needs: "about 8 check-ins with sleep rated, mixing rough and good nights" }]),
     ...(pace ? [] : [{ title: "Pace & plateau check", needs: "3+ weeks of weigh-ins" }]),
     ...(tape ? [] : [{ title: "Tape vs. scale", needs: "two tape check-ins 2+ weeks apart" }]),
     ...(outlook ? [] : [{ title: "Milestones & outlook", needs: "a starting weight and a weigh-in below it" }]),
@@ -78,6 +81,7 @@ export default function InsightsPanel({ data }: { data: AppData }) {
       {outlook && <OutlookCard outlook={outlook} unit={unit} goalLbs={data.settings.goalLbs} />}
       {pace && <PaceCard pace={pace} unit={unit} />}
       {creep && <CreepCard creep={creep} />}
+      {sleep && <SleepCard sleep={sleep} />}
       {tape && <TapeCard tape={tape} unit={unit} />}
       {bump && <WaterWeightCard bump={bump} unit={unit} />}
       {steps && <DoseStepsCard steps={steps} />}

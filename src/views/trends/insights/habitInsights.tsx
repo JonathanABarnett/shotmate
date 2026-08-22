@@ -1,5 +1,5 @@
 import type { Unit } from "../../../types";
-import type { ActivityPace, Adherence, CreepInsight } from "../../../lib/insights";
+import type { ActivityPace, Adherence, CreepInsight, SleepHunger } from "../../../lib/insights";
 import InsightCard from "../../../components/InsightCard";
 import { absWeight, signedWeight } from "../../../lib/format";
 
@@ -28,6 +28,24 @@ export function CreepCard({ creep }: { creep: CreepInsight }) {
         ))}
       </div>
     </InsightCard>
+  );
+}
+
+const signedShift = (n: number) => `${n > 0.05 ? "+" : n < -0.05 ? "−" : "±"}${Math.abs(n).toFixed(1)}`;
+
+export function SleepCard({ sleep }: { sleep: SleepHunger }) {
+  return (
+    <InsightCard
+      emoji="😴"
+      title="Sleep vs. hunger"
+      sub="Hunger vs. your usual for that cycle day, after rough (1–2) and good (4–5) nights"
+      tone={sleep.delta >= 0.5 ? "note" : "info"}
+      stats={[
+        { value: signedShift(sleep.poorShift), label: `after ${sleep.poorNights} rough nights` },
+        { value: signedShift(sleep.goodShift), label: `after ${sleep.goodNights} good nights` },
+      ]}
+      headline={sleep.energyNote ? `${sleep.summary} ${sleep.energyNote}` : sleep.summary}
+    />
   );
 }
 

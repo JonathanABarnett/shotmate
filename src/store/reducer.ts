@@ -33,7 +33,7 @@ export type Action =
   | { type: "remove"; collection: CollectionKey; id: string }
   | { type: "addIntake"; ts: number; proteinG?: number; waterFlOz?: number }
   | { type: "addActivities"; items: ActivityEntry[] }
-  | { type: "setCheckin"; ts: number; hunger?: Scale5; energy?: Scale5 }
+  | { type: "setCheckin"; ts: number; hunger?: Scale5; energy?: Scale5; sleep?: Scale5 }
   | { type: "markAchievementsSeen"; keys: string[] }
   | { type: "loadSample" }
   | { type: "importData"; data: AppData }
@@ -125,6 +125,7 @@ function applySetCheckin(state: AppData, action: Extract<Action, { type: "setChe
     day,
     hunger: action.hunger ?? existing?.hunger,
     energy: action.energy ?? existing?.energy,
+    sleep: action.sleep ?? existing?.sleep,
   };
   return { ...state, checkins: upsertById(state.checkins, updated) };
 }

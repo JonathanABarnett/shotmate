@@ -98,6 +98,8 @@ export interface CheckinEntry {
   day: number;
   hunger?: Scale5;
   energy?: Scale5;
+  /** last night's sleep quality */
+  sleep?: Scale5;
 }
 
 export type ThemePref = "auto" | "light" | "dark";

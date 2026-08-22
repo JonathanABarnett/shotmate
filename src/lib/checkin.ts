@@ -19,6 +19,15 @@ export const ENERGY_LABELS: Record<Scale5, string> = {
   5: "Great",
 };
 
+/** Last night's sleep — quality, not hours, so it's one tap. */
+export const SLEEP_LABELS: Record<Scale5, string> = {
+  1: "Rough night",
+  2: "Broken",
+  3: "Okay",
+  4: "Solid",
+  5: "Great",
+};
+
 export function todayCheckin(data: AppData, now = Date.now()): CheckinEntry | undefined {
   const day = startOfDay(now);
   return data.checkins.find((c) => c.day === day);

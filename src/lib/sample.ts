@@ -150,7 +150,7 @@ function sampleActivities(firstShot: number): AppData["activities"] {
   ];
 }
 
-/** Five weeks of daily check-ins: hunger creeps up late in each cycle, energy dips after shots. */
+/** Five weeks of daily check-ins: hunger creeps up late in each cycle, energy dips after shots, rough nights mean hungrier days. */
 function sampleCheckins(shots: Shot[], now: number, rnd: () => number): CheckinEntry[] {
   const clamp = (n: number): Scale5 => Math.max(1, Math.min(5, Math.round(n))) as Scale5;
   const entries: CheckinEntry[] = [];
@@ -159,11 +159,13 @@ function sampleCheckins(shots: Shot[], now: number, rnd: () => number): CheckinE
     const lastShot = [...shots].reverse().find((s) => s.ts <= day + 12 * HOUR);
     if (!lastShot) continue;
     const offset = Math.floor((day + 12 * HOUR - lastShot.ts) / DAY);
+    const sleep = clamp(3.3 + (rnd() - 0.5) * 3.2);
     entries.push({
       id: uid(),
       day,
-      hunger: clamp(1.6 + offset * 0.45 + (rnd() - 0.5) * 1.2),
-      energy: clamp((offset <= 1 ? 2.4 : 3.7) + (rnd() - 0.5) * 1.2),
+      hunger: clamp(1.3 + offset * 0.42 + (sleep <= 2 ? 1.2 : 0) + (rnd() - 0.5) * 1.2),
+      energy: clamp((offset <= 1 ? 2.4 : 3.7) + (sleep >= 4 ? 0.5 : sleep <= 2 ? -0.7 : 0) + (rnd() - 0.5) * 1.2),
+      sleep,
     });
   }
   return entries;

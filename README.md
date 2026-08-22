@@ -25,7 +25,7 @@ own devices and get shot-day reminders.
 - **Provider report** — a one-tap printable summary (weight chart, injections, side
   effects, measurements) for appointments.
 - **Shot-day calendar** — download a repeating calendar event with a reminder (.ics).
-- **Daily check-in** — two taps (hunger, energy) on Home; feeds the cycle-pattern insight.
+- **Daily check-in** — three taps (hunger, energy, last night's sleep) on Home; feeds the cycle-pattern and sleep-vs-hunger insights.
 - **Insights** — a dedicated Trends tab of cross-referenced patterns, each unlocking only once
   there's enough data to be honest: milestones & goal ETA, pace/plateau detection, hunger &
   energy across the shot cycle, tape vs. scale, shot-day water weight, side effects after dose

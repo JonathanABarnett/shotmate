@@ -81,7 +81,7 @@ export function achievements(data: AppData): Achievement[] {
     make("weigh-7", "📅", "Scale regular", "Weighed in 7 days straight", weighInDayStreak(data), 7),
     make("tape-1", "📏", "Tape's out", "First body measurements logged", data.measures.length, 1),
     make("tape-6", "🧵", "Measured up", "Six tape check-ins", data.measures.length, 6),
-    make("checkin-7", "🍽️", "Week of check-ins", "7 daily hunger & energy check-ins", data.checkins.length, 7),
+    make("checkin-7", "🍽️", "Week of check-ins", "7 daily hunger, energy & sleep check-ins", data.checkins.length, 7),
     make("checkin-30", "🧭", "Pattern spotter", "30 daily check-ins", data.checkins.length, 30),
     make("move-1", "👟", "Moving", "First activity logged", data.activities.length, 1),
     make("move-500", "🏃", "500 active minutes", "500 minutes of movement logged", activeMinutes, 500),
