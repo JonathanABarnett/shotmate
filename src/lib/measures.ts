@@ -10,6 +10,7 @@ export interface MeasureInfo {
 export const MEASURES: MeasureInfo[] = [
   { key: "chest", label: "Chest" },
   { key: "waist", label: "Waist" },
+  { key: "stomach", label: "Stomach" },
   { key: "hips", label: "Hips" },
   { key: "arm", label: "Arm" },
   { key: "thigh", label: "Thigh" },

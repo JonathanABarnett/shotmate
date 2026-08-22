@@ -19,7 +19,8 @@ interface CalloutSpec {
 const CALLOUTS: CalloutSpec[] = [
   { key: "chest", side: "left", y: 84, anchor: { x: 140, y: 86 } },
   { key: "arm", side: "right", y: 72, anchor: { x: 212, y: 80 } },
-  { key: "waist", side: "right", y: 120, anchor: { x: 188, y: 118 } },
+  { key: "waist", side: "right", y: 112, anchor: { x: 188, y: 112 } },
+  { key: "stomach", side: "right", y: 152, anchor: { x: 184, y: 134 } },
   { key: "hips", side: "left", y: 146, anchor: { x: 136, y: 140 } },
   { key: "thigh", side: "left", y: 192, anchor: { x: 143, y: 186 } },
 ];

@@ -52,7 +52,7 @@ export default function LogMeasureSheet({ onClose, onDone, existing }: EntryShee
 
   return (
     <Sheet title={existing ? "Edit measurements" : "Measure up"} icon={<EntryBadge kind="measure" />} onClose={onClose}>
-      <Field label="Tape measure" hint="Fill in whichever you measured — relaxed tape, same spots each time.">
+      <Field label="Tape measure" hint="Fill in whichever you measured — relaxed tape, same spots each time. Waist = narrowest point; stomach = around the navel.">
         <div className="measure-grid">
           {MEASURES.map(({ key, label }) => (
             <OptionalNumberField

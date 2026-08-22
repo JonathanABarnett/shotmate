@@ -27,7 +27,7 @@ export interface EffectEntry {
   note?: string;
 }
 
-export type MeasureKey = "chest" | "waist" | "hips" | "arm" | "thigh";
+export type MeasureKey = "chest" | "waist" | "stomach" | "hips" | "arm" | "thigh";
 
 export interface MeasurementEntry {
   id: string;

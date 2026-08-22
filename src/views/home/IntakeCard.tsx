@@ -3,16 +3,24 @@ import type { AppData } from "../../types";
 import { fmtWater, GLASS_FL_OZ, proteinGoal, todayIntake, waterGoalFlOz } from "../../lib/intake";
 import { useStore } from "../../store/StoreProvider";
 
+const PROTEIN_STEP_G = 5;
+
 interface MeterRowProps {
   icon: React.ReactNode;
   tone: "coral" | "teal";
   label: string;
   valueText: string;
-  pct: number;
+  value: number;
+  goal: number;
+  step: number;
+  onSet: (value: number) => void;
   actions: React.ReactNode;
 }
 
-function MeterRow({ icon, tone, label, valueText, pct, actions }: MeterRowProps) {
+/** Label, draggable slider (fill = progress to goal), and quick-add buttons. */
+function MeterRow({ icon, tone, label, valueText, value, goal, step, onSet, actions }: MeterRowProps) {
+  const max = Math.max(goal * 1.5, value, step);
+  const pct = Math.min(100, (value / max) * 100);
   return (
     <div className="intake-row">
       <span className={`entry-ico ${tone}`}>{icon}</span>
@@ -21,9 +29,17 @@ function MeterRow({ icon, tone, label, valueText, pct, actions }: MeterRowProps)
           <span className="intake-label">{label}</span>
           <span className="intake-value">{valueText}</span>
         </div>
-        <div className={`meter-track ${tone}`}>
-          <div className="meter-fill" style={{ width: `${Math.min(100, pct * 100)}%` }} />
-        </div>
+        <input
+          type="range"
+          className={`intake-slider ${tone}`}
+          min={0}
+          max={max}
+          step={step}
+          value={value}
+          aria-label={`${label} today`}
+          style={{ "--pct": `${pct}%`, "--goal": `${Math.min(100, (goal / max) * 100)}%` } as React.CSSProperties}
+          onChange={(e) => onSet(Number(e.target.value))}
+        />
       </div>
       <div className="intake-actions">{actions}</div>
     </div>
@@ -37,21 +53,23 @@ export default function IntakeCard({ data }: { data: AppData }) {
   const water = today?.waterFlOz ?? 0;
   const unit = data.settings.unit;
 
-  const add = (proteinG?: number, waterFlOz?: number) =>
-    dispatch({ type: "addIntake", ts: Date.now(), proteinG, waterFlOz });
+  const add = (proteinG?: number, waterFlOz?: number) => dispatch({ type: "addIntake", ts: Date.now(), proteinG, waterFlOz });
 
   return (
     <section className="card intake-card">
       <div className="card-title-row">
         <h3 className="card-title">Today's fuel</h3>
-        <div className="card-sub">Protein keeps muscle on board</div>
+        <div className="card-sub">Drag or tap — protein keeps muscle on board</div>
       </div>
       <MeterRow
         icon={<Beef size={19} />}
         tone="coral"
         label="Protein"
         valueText={`${Math.round(protein)} / ${proteinGoal(data)} g`}
-        pct={protein / proteinGoal(data)}
+        value={protein}
+        goal={proteinGoal(data)}
+        step={PROTEIN_STEP_G}
+        onSet={(v) => add(v - protein, 0)}
         actions={
           <>
             <button className="intake-btn" onClick={() => add(10, 0)}>
@@ -71,7 +89,10 @@ export default function IntakeCard({ data }: { data: AppData }) {
         tone="teal"
         label="Water"
         valueText={`${fmtWater(water, unit)} / ${fmtWater(waterGoalFlOz(data), unit)}`}
-        pct={water / waterGoalFlOz(data)}
+        value={water}
+        goal={waterGoalFlOz(data)}
+        step={GLASS_FL_OZ / 2}
+        onSet={(v) => add(0, v - water)}
         actions={
           <>
             <button className="intake-btn" onClick={() => add(0, GLASS_FL_OZ)}>
