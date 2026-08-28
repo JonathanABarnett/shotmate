@@ -25,10 +25,10 @@ export const MEDS: MedInfo[] = [
 /** The slice of settings that identifies a medication. */
 export type MedSelection = Pick<Settings, "medKey" | "customMedName" | "customHalfLifeH">;
 
-/** The user's medication, with custom name/half-life applied when relevant. */
 /** Compounded vial meds get the draw calculator and supply tracking. */
 export const isCompoundedMed = (key: string): boolean => key.endsWith("-compound");
 
+/** The user's medication, with custom name/half-life applied when relevant. */
 export function medFor(settings: MedSelection): MedInfo {
   const med = MEDS.find((m) => m.key === settings.medKey) ?? MEDS[0];
   if (med.key !== "custom") return med;
