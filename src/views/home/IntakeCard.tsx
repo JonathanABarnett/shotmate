@@ -5,6 +5,16 @@ import { useStore } from "../../store/StoreProvider";
 
 const PROTEIN_STEP_G = 5;
 
+/** One-tap foods — close-enough grams beat a food diary nobody keeps. */
+const FOODS: { label: string; grams: number }[] = [
+  { label: "🥤 Shake", grams: 25 },
+  { label: "🍗 Chicken", grams: 30 },
+  { label: "🥩 Palm of meat", grams: 25 },
+  { label: "🥣 Greek yogurt", grams: 17 },
+  { label: "🥚 2 eggs", grams: 12 },
+  { label: "🧀 Cheese stick", grams: 7 },
+];
+
 interface MeterRowProps {
   icon: React.ReactNode;
   tone: "coral" | "teal";
@@ -86,6 +96,16 @@ export default function IntakeCard({ data }: { data: AppData }) {
           </>
         }
       />
+      <div className="chip-row food-row">
+        {FOODS.map((f) => (
+          <button key={f.label} className="chip food-chip" aria-label={`Add ${f.grams} g — ${f.label}`} onClick={() => add(f.grams, 0)}>
+            {f.label} <strong>+{f.grams}</strong>
+          </button>
+        ))}
+      </div>
+      <p className="field-hint food-hint">
+        No food diary needed — tap what you ate. A palm-sized portion ≈ 25 g; four palms across the day lands near your goal.
+      </p>
       <MeterRow
         icon={<GlassWater size={19} />}
         tone="teal"

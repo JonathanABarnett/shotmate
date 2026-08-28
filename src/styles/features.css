@@ -878,3 +878,25 @@
   padding: 6px;
   color: var(--ink-3);
 }
+
+/* one-tap protein foods under the intake slider */
+.food-row {
+  margin: 2px 0 4px;
+}
+
+.food-chip {
+  font-size: 12px;
+  padding: 6px 10px;
+}
+
+.food-chip strong {
+  color: var(--coral);
+}
+
+.food-chip.chip:active {
+  transform: scale(0.96);
+}
+
+.food-hint {
+  margin: 0 0 6px;
+}
