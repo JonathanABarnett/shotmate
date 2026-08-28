@@ -9,6 +9,7 @@ import { DateTimeField, Field, NoteField } from "../form/fields";
 import ChipGroup from "../form/ChipGroup";
 import SeverityPicker from "../form/SeverityPicker";
 import EntrySheetFooter from "../form/EntrySheetFooter";
+import { effectReply } from "../../lib/logReplies";
 import type { EntrySheetProps } from "./types";
 
 /** "Feeling fine" stands alone: picking it clears the symptoms, and picking a symptom clears it. */
@@ -18,11 +19,8 @@ function toggleTag(selected: string[], key: string): string[] {
   return rest.includes(key) ? rest.filter((x) => x !== key) : [...rest, key];
 }
 
-const savedMessage = (editing: boolean, fine: boolean) =>
-  editing ? "Entry updated" : fine ? "Logged — here's to more days like this 💛" : "Noted — hope you feel better soon 💛";
-
 export default function LogEffectSheet({ onClose, onDone, existing }: EntrySheetProps & { existing?: EffectEntry }) {
-  const { dispatch } = useStore();
+  const { data, dispatch } = useStore();
   const [effects, setEffects] = useState<string[]>(existing?.effects ?? []);
   const [severity, setSeverity] = useState<Severity>(existing?.severity ?? 1);
   const [ts, setTs] = useState(existing?.ts ?? Date.now());
@@ -46,7 +44,7 @@ export default function LogEffectSheet({ onClose, onDone, existing }: EntrySheet
       note: note.trim() || undefined,
     };
     dispatch({ type: "upsert", collection: "effects", item: entry });
-    finish(savedMessage(Boolean(existing), fine));
+    finish(existing ? "Entry updated" : effectReply(data, entry));
   };
 
   const remove = () => {

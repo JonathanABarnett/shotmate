@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { heroLine } from "./lib/encouragement";
+import { companionLine } from "./lib/companion";
 import type { Entry } from "./types";
 import { useStore } from "./store/StoreProvider";
 import { Toast, useToast } from "./hooks/useToast";
@@ -82,7 +82,7 @@ export default function App() {
 
   return (
     <div className="app">
-      <TopBar name={data.settings.name} inSettings={inSettings} onToggleSettings={() => setInSettings((s) => !s)} line={heroLine(data)} />
+      <TopBar name={data.settings.name} inSettings={inSettings} onToggleSettings={() => setInSettings((s) => !s)} line={companionLine(data)} />
 
       {inSettings ? (
         <SettingsView showToast={showToast} onOpenReport={() => setInReport(true)} sync={sync} />

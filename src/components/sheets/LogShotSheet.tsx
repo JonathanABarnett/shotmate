@@ -11,6 +11,7 @@ import { EntryBadge } from "../entryKinds";
 import { DateTimeField, Field, NoteField } from "../form/fields";
 import DosePicker from "../form/DosePicker";
 import EntrySheetFooter from "../form/EntrySheetFooter";
+import { shotReply } from "../../lib/logReplies";
 import type { EntrySheetProps } from "./types";
 
 export default function LogShotSheet({ onClose, onDone, existing }: EntrySheetProps & { existing?: Shot }) {
@@ -34,7 +35,7 @@ export default function LogShotSheet({ onClose, onDone, existing }: EntrySheetPr
     if (!existing && doseMg !== data.settings.plannedDoseMg) {
       dispatch({ type: "updateSettings", patch: { plannedDoseMg: doseMg } });
     }
-    finish(existing ? "Shot updated" : "Shot logged 💪");
+    finish(existing ? "Shot updated" : shotReply(data, shot));
   };
 
   const remove = () => {

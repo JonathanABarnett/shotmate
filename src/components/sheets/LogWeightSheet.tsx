@@ -8,6 +8,7 @@ import { EntryBadge } from "../entryKinds";
 import { DateTimeField, Field, NoteField } from "../form/fields";
 import WeightInput, { parseWeightInput } from "../form/WeightInput";
 import EntrySheetFooter from "../form/EntrySheetFooter";
+import { weightReply } from "../../lib/logReplies";
 import type { EntrySheetProps } from "./types";
 
 const displayString = (lbs: number, unit: "lbs" | "kg") => String(Math.round(toDisplayWeight(lbs, unit) * 10) / 10);
@@ -37,7 +38,7 @@ export default function LogWeightSheet({ onClose, onDone, existing }: EntrySheet
       note: note.trim() || undefined,
     };
     dispatch({ type: "upsert", collection: "weights", item: entry });
-    finish(existing ? "Weight updated" : "Weight logged ⚖️");
+    finish(existing ? "Weight updated" : weightReply(data, entry));
   };
 
   const remove = () => {

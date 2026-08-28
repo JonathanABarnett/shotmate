@@ -10,6 +10,7 @@ import ChipGroup from "../form/ChipGroup";
 import Stepper from "../form/Stepper";
 import OptionalNumberField from "../form/OptionalNumberField";
 import EntrySheetFooter from "../form/EntrySheetFooter";
+import { activityReply } from "../../lib/logReplies";
 import type { EntrySheetProps } from "./types";
 
 export default function LogActivitySheet({ onClose, onDone, existing }: EntrySheetProps & { existing?: ActivityEntry }) {
@@ -39,7 +40,7 @@ export default function LogActivitySheet({ onClose, onDone, existing }: EntryShe
       imported: existing?.imported,
     };
     dispatch({ type: "upsert", collection: "activities", item: entry });
-    finish(existing ? "Activity updated" : "Nice moving! 🏃");
+    finish(existing ? "Activity updated" : activityReply(data, entry));
   };
 
   const remove = () => {
