@@ -32,3 +32,10 @@ export function trendVsToday(data: AppData, now = Date.now()): TrendCheck | unde
   const lastBlipLbs = sorted[sorted.length - 1].lbs - sorted[sorted.length - 2].lbs;
   return { trendLbs, weeklyChangeLbs, lastBlipLbs, reassure: lastBlipLbs >= BLIP && weeklyChangeLbs <= -BLIP };
 }
+
+/** The trend's current value: mean of the last 7 days of weigh-ins, or the latest reading before there are two. */
+export function trendWeightLbs(data: AppData, now = Date.now()): number | undefined {
+  const recent = data.weights.filter((w) => w.ts >= now - 7 * DAY && w.ts <= now + 1).map((w) => w.lbs);
+  if (recent.length >= 2) return mean(recent);
+  return [...data.weights].sort((a, b) => a.ts - b.ts).at(-1)?.lbs;
+}

@@ -1,8 +1,9 @@
 import type { AppData, Unit } from "../types";
-import { DAY, startOfDay } from "./dates";
+import { dayStreak, startOfDay } from "./dates";
 import { proteinGoal } from "./intake";
 import { sortedShots, streak } from "./shots";
-import { latestWeight, startWeightLbs, toDisplayWeight } from "./weight";
+import { trendWeightLbs } from "./insights/noiseTrend";
+import { startWeightLbs, toDisplayWeight } from "./weight";
 
 export interface Achievement {
   key: string;
@@ -20,9 +21,10 @@ function make(key: string, emoji: string, title: string, desc: string, value: nu
   return { key, emoji, title, desc, earned: value >= target, progress: Math.max(0, Math.min(1, value / target)) };
 }
 
+/** Loss measured on the 7-day trend, so a single light morning can't award a badge. */
 function lostLbs(data: AppData): number {
   const start = startWeightLbs(data);
-  const current = latestWeight(data.weights)?.lbs;
+  const current = trendWeightLbs(data);
   return start != null && current != null ? Math.max(0, start - current) : 0;
 }
 
@@ -32,16 +34,8 @@ function pctLost(data: AppData): number {
 }
 
 /** Consecutive days with a weigh-in, ending today or yesterday. */
-function weighInDayStreak(data: AppData, now = Date.now()): number {
-  const days = new Set(data.weights.map((w) => startOfDay(w.ts)));
-  let day = startOfDay(now);
-  if (!days.has(day)) day -= DAY;
-  let count = 0;
-  while (days.has(day)) {
-    count++;
-    day -= DAY;
-  }
-  return count;
+export function weighInDayStreak(data: AppData, now = Date.now()): number {
+  return dayStreak(new Set(data.weights.map((w) => startOfDay(w.ts))), now);
 }
 
 function distinctRecentSites(data: AppData): number {

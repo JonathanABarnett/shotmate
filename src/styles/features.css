@@ -900,3 +900,76 @@
 .food-hint {
   margin: 0 0 6px;
 }
+
+/* the daily encouragement line under the greeting */
+.greet-line {
+  margin-top: 1px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--good);
+}
+
+/* milestone celebration */
+.celebrate-card {
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  padding: 26px 18px 20px;
+}
+
+.celebrate-emoji {
+  font-size: 44px;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.celebrate-title {
+  font-size: 23px;
+  font-weight: 900;
+  margin: 0 0 6px;
+}
+
+.celebrate-sub {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+  margin: 0 auto 16px;
+  max-width: 30em;
+}
+
+.celebrate-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.confetti {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.confetti span {
+  position: absolute;
+  top: -14px;
+  width: 8px;
+  height: 13px;
+  border-radius: 2px;
+  opacity: 0;
+  animation: confetti-fall linear forwards;
+}
+
+@keyframes confetti-fall {
+  0% {
+    opacity: 1;
+    transform: translateY(-10px) rotate(0deg);
+  }
+  100% {
+    opacity: 0.15;
+    transform: translateY(340px) rotate(540deg);
+  }
+}

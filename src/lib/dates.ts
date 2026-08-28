@@ -52,3 +52,15 @@ export function greeting(now = new Date()): string {
   if (h < 17) return "Good afternoon";
   return "Good evening";
 }
+
+/** Consecutive days present in the set, ending today (or yesterday, so mornings don't zero it). */
+export function dayStreak(days: Set<number>, now = Date.now()): number {
+  let day = startOfDay(now);
+  if (!days.has(day)) day -= DAY;
+  let count = 0;
+  while (days.has(day)) {
+    count++;
+    day -= DAY;
+  }
+  return count;
+}

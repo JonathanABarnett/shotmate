@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import type { AppData } from "../types";
 import { achievements, newlyEarned } from "../lib/achievements";
+import { MILESTONE_KEYS } from "../lib/milestones";
 import type { Action } from "../store/reducer";
 
 /**
@@ -19,7 +20,10 @@ export function useAchievementToasts(data: AppData, showToast: (message: string)
       dispatch({ type: "markAchievementsSeen", keys: fresh.map((a) => a.key) });
       return;
     }
-    const next = fresh[0];
+    // weight milestones get the full celebration card instead of a toast
+    const toastable = fresh.filter((a) => !MILESTONE_KEYS.has(a.key));
+    if (toastable.length === 0) return;
+    const next = toastable[0];
     showToast(`${next.emoji} Unlocked: ${next.title}`);
     dispatch({ type: "markAchievementsSeen", keys: [next.key] });
   }, [data, showToast, dispatch]);

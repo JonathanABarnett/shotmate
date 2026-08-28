@@ -5,7 +5,7 @@ import InstallBanner from "../../components/InstallBanner";
 import { useStore } from "../../store/StoreProvider";
 import HeroCard from "./HeroCard";
 import StatTilesRow from "./StatTilesRow";
-import NudgeHost from "./NudgeHost";
+import HomeSpotlight from "./HomeSpotlight";
 import CheckinCard from "./CheckinCard";
 import CycleReviewCard from "./CycleReviewCard";
 import SupplyCard from "./SupplyCard";
@@ -39,7 +39,7 @@ export default function HomeView({ installPrompt, sync, showToast, onLogShot, on
       <InstallBanner prompt={installPrompt} />
       <HeroCard data={data} onLogShot={onLogShot} />
       <StatTilesRow data={data} />
-      <NudgeHost data={data} sync={sync} showToast={showToast} onOpenSettings={onOpenSettings} onLogMeasure={onLogMeasure} />
+      <HomeSpotlight data={data} sync={sync} showToast={showToast} onOpenSettings={onOpenSettings} onLogMeasure={onLogMeasure} />
       {!hidden.has("checkin") && <CheckinCard data={data} />}
       {!hidden.has("cycle") && <CycleReviewCard data={data} />}
       <SupplyCard data={data} />
