@@ -12,13 +12,12 @@ import PhotosCard from "./PhotosCard";
 import ActivityPanel from "./ActivityPanel";
 import EffectsPanel from "./EffectsPanel";
 
-type PanelKey = "weight" | "insights" | "level" | "dose" | "body" | "vitals" | "activity" | "effects";
+type PanelKey = "weight" | "insights" | "level" | "body" | "vitals" | "activity" | "effects";
 
 const PANELS = [
   { key: "weight", label: "Weight" },
   { key: "insights", label: "Insights" },
-  { key: "level", label: "Med level" },
-  { key: "dose", label: "Doses" },
+  { key: "level", label: "Medication" },
   { key: "body", label: "Body" },
   { key: "vitals", label: "Vitals" },
   { key: "activity", label: "Moves" },
@@ -34,28 +33,36 @@ export default function TrendsView({ onAddPhoto, showToast }: Props) {
   const { data } = useStore();
   const [panel, setPanel] = useState<PanelKey>("weight");
 
+  // The Vitals tab earns its spot with the first labs entry — logging it stays in the + menu.
+  const panels = PANELS.filter((p) => p.key !== "vitals" || data.vitals.length > 0);
+  const active: PanelKey = panels.some((p) => p.key === panel) ? panel : "weight";
+
   return (
     <div className="view">
       <SegmentedControl
         ariaLabel="Trend charts"
-        options={PANELS.map((p) => ({ key: p.key as PanelKey, label: p.label }))}
-        value={panel}
+        options={panels.map((p) => ({ key: p.key as PanelKey, label: p.label }))}
+        value={active}
         onChange={setPanel}
       />
-      {panel === "weight" && <WeightPanel data={data} />}
-      {panel === "insights" && <InsightsPanel data={data} />}
-      {panel === "level" && <LevelPanel data={data} />}
-      {panel === "dose" && <DosePanel data={data} />}
-      {panel === "body" && (
+      {active === "weight" && <WeightPanel data={data} />}
+      {active === "insights" && <InsightsPanel data={data} />}
+      {active === "level" && (
+        <>
+          <LevelPanel data={data} />
+          <DosePanel data={data} />
+        </>
+      )}
+      {active === "body" && (
         <>
           <BodySnapshot data={data} />
           <BodyPanel data={data} />
           <PhotosCard data={data} onAddPhoto={onAddPhoto} />
         </>
       )}
-      {panel === "vitals" && <VitalsPanel data={data} />}
-      {panel === "activity" && <ActivityPanel data={data} showToast={showToast} />}
-      {panel === "effects" && <EffectsPanel data={data} />}
+      {active === "vitals" && <VitalsPanel data={data} />}
+      {active === "activity" && <ActivityPanel data={data} showToast={showToast} />}
+      {active === "effects" && <EffectsPanel data={data} />}
     </div>
   );
 }

@@ -114,6 +114,9 @@ export interface CheckinEntry {
 
 export type ThemePref = "auto" | "light" | "dark";
 
+/** Optional Home cards the user can hide in Settings → Appearance. */
+export type HomeCardKey = "checkin" | "cycle" | "intake" | "goal";
+
 export type BodyType = "neutral" | "slim" | "broad" | "curvy";
 
 export interface Settings {
@@ -142,6 +145,8 @@ export interface Settings {
   bodyType?: BodyType;
   /** show the site picker as you look down at yourself (your left on the left) */
   siteMapMirror?: boolean;
+  /** Home cards the user chose to hide */
+  hiddenHomeCards?: HomeCardKey[];
   proteinGoalG?: number;
   waterGoalFlOz?: number;
 }

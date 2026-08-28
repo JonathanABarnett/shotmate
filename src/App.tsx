@@ -93,6 +93,9 @@ export default function App() {
               onLogShot={() => setSheet({ kind: "shot" })}
               onSeeTrends={() => goTo("trends")}
               onSeeHistory={() => goTo("history")}
+              sync={sync}
+              showToast={showToast}
+              onLogMeasure={() => setSheet({ kind: "measure" })}
               onOpenSettings={() => setInSettings(true)}
               onEdit={(entry) => setSheet(sheetForEntry(entry))}
             />

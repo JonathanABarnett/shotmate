@@ -1,9 +1,11 @@
 import type { Entry } from "../../types";
 import type { InstallPrompt } from "../../hooks/useInstallPrompt";
+import type { SyncState } from "../../sync/useSync";
 import InstallBanner from "../../components/InstallBanner";
 import { useStore } from "../../store/StoreProvider";
 import HeroCard from "./HeroCard";
 import StatTilesRow from "./StatTilesRow";
+import NudgeHost from "./NudgeHost";
 import CheckinCard from "./CheckinCard";
 import CycleReviewCard from "./CycleReviewCard";
 import SupplyCard from "./SupplyCard";
@@ -14,15 +16,19 @@ import RecentActivity from "./RecentActivity";
 
 interface Props {
   installPrompt: InstallPrompt;
+  sync: SyncState;
+  showToast: (message: string) => void;
   onLogShot: () => void;
+  onLogMeasure: () => void;
   onSeeTrends: () => void;
   onSeeHistory: () => void;
   onOpenSettings: () => void;
   onEdit: (entry: Entry) => void;
 }
 
-export default function HomeView({ installPrompt, onLogShot, onSeeTrends, onSeeHistory, onOpenSettings, onEdit }: Props) {
+export default function HomeView({ installPrompt, sync, showToast, onLogShot, onLogMeasure, onSeeTrends, onSeeHistory, onOpenSettings, onEdit }: Props) {
   const { data } = useStore();
+  const hidden = new Set(data.settings.hiddenHomeCards ?? []);
   return (
     <div className="view">
       {data.sample && (
@@ -33,12 +39,13 @@ export default function HomeView({ installPrompt, onLogShot, onSeeTrends, onSeeH
       <InstallBanner prompt={installPrompt} />
       <HeroCard data={data} onLogShot={onLogShot} />
       <StatTilesRow data={data} />
-      <CheckinCard data={data} />
-      <CycleReviewCard data={data} />
+      <NudgeHost data={data} sync={sync} showToast={showToast} onOpenSettings={onOpenSettings} onLogMeasure={onLogMeasure} />
+      {!hidden.has("checkin") && <CheckinCard data={data} />}
+      {!hidden.has("cycle") && <CycleReviewCard data={data} />}
       <SupplyCard data={data} />
-      <IntakeCard data={data} />
+      {!hidden.has("intake") && <IntakeCard data={data} />}
       <WeightTrendCard data={data} onSeeTrends={onSeeTrends} />
-      <GoalCard data={data} onOpenSettings={onOpenSettings} />
+      {!hidden.has("goal") && <GoalCard data={data} onOpenSettings={onOpenSettings} />}
       <RecentActivity data={data} onEdit={onEdit} onSeeAll={onSeeHistory} />
     </div>
   );

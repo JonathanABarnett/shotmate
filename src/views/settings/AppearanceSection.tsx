@@ -1,4 +1,4 @@
-import type { BodyType, ThemePref } from "../../types";
+import type { BodyType, HomeCardKey, ThemePref } from "../../types";
 import { useStore } from "../../store/StoreProvider";
 import { BODY_TYPES } from "../../lib/figure";
 import { Field } from "../../components/form/fields";
@@ -16,9 +16,25 @@ const ORIENTATION_OPTIONS: { key: Orientation; label: string }[] = [
   { key: "mirror", label: "As I look down" },
 ];
 
+const HOME_CARDS: { key: HomeCardKey; label: string }[] = [
+  { key: "checkin", label: "Daily check-in" },
+  { key: "cycle", label: "This cycle" },
+  { key: "intake", label: "Protein & water" },
+  { key: "goal", label: "Goal & milestones" },
+];
+
 export default function AppearanceSection() {
   const { data, dispatch } = useStore();
   const { settings } = data;
+  const hidden = new Set(settings.hiddenHomeCards ?? []);
+
+  const toggleCard = (key: HomeCardKey) => {
+    const next = new Set(hidden);
+    if (next.has(key)) next.delete(key);
+    else next.add(key);
+    dispatch({ type: "updateSettings", patch: { hiddenHomeCards: [...next] } });
+  };
+
   return (
     <section className="card">
       <Field label="Theme" hint="Auto follows your device setting.">
@@ -47,6 +63,20 @@ export default function AppearanceSection() {
           value={settings.siteMapMirror ? "mirror" : "facing"}
           onChange={(value) => dispatch({ type: "updateSettings", patch: { siteMapMirror: value === "mirror" } })}
         />
+      </Field>
+      <Field label="Home cards" hint="Turn off what you don't use — logging and history keep working either way.">
+        <div className="chip-row">
+          {HOME_CARDS.map((c) => (
+            <button
+              key={c.key}
+              className={`chip${hidden.has(c.key) ? "" : " active"}`}
+              aria-pressed={!hidden.has(c.key)}
+              onClick={() => toggleCard(c.key)}
+            >
+              {c.label}
+            </button>
+          ))}
+        </div>
       </Field>
     </section>
   );
