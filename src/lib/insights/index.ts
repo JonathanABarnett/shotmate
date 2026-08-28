@@ -10,5 +10,7 @@ export { doseStepEffects, type DoseStepEffects } from "./doseSteps";
 export { activityVsPace, type ActivityPace } from "./activityPace";
 export { siteRotationHealth, type SiteHealth } from "./sites";
 export { adherenceStats, type Adherence } from "./adherence";
-export { sleepVsHunger, type SleepHunger } from "./sleep";
+export { sleepInsight, type SleepInsight, type SleepPattern } from "./sleep";
+export { movementHabit, type MovementHabit } from "./movement";
+export { trendVsToday, type TrendCheck } from "./noiseTrend";
 export { hungerByTimeOfDay, type TimeOfDay, type SlotAverage } from "./timeOfDay";

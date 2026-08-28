@@ -7,14 +7,16 @@ import {
   goalOutlook,
   hungerByTimeOfDay,
   hungerEnergyByCycleDay,
+  movementHabit,
   paceShift,
   shotDayBump,
   siteRotationHealth,
-  sleepVsHunger,
+  sleepInsight,
   tapeVsScale,
+  trendVsToday,
 } from "../../lib/insights";
-import { OutlookCard, PaceCard, TapeCard, WaterWeightCard } from "./insights/weightInsights";
-import { ActivityPaceCard, AdherenceCard, CreepCard, SleepCard, TimeOfDayCard } from "./insights/habitInsights";
+import { OutlookCard, PaceCard, TapeCard, TrendCard, WaterWeightCard } from "./insights/weightInsights";
+import { ActivityPaceCard, AdherenceCard, CreepCard, MovementCard, SleepCard, TimeOfDayCard } from "./insights/habitInsights";
 import { DoseStepsCard, SitesCard } from "./insights/shotInsights";
 import AchievementsCard from "./insights/AchievementsCard";
 import { achievements } from "../../lib/achievements";
@@ -53,8 +55,10 @@ function LockedList({ items }: { items: Locked[] }) {
 export default function InsightsPanel({ data }: { data: AppData }) {
   const unit = data.settings.unit;
   const creep = hungerEnergyByCycleDay(data);
-  const sleep = sleepVsHunger(data);
+  const sleep = sleepInsight(data);
   const timeOfDay = hungerByTimeOfDay(data);
+  const trend = trendVsToday(data);
+  const movement = movementHabit(data);
   const pace = paceShift(data);
   const tape = tapeVsScale(data);
   const outlook = goalOutlook(data);
@@ -66,14 +70,16 @@ export default function InsightsPanel({ data }: { data: AppData }) {
 
   const locked: Locked[] = [
     ...(creep ? [] : [{ title: "Hunger & energy across your cycle", needs: "about 8 daily check-ins on Home" }]),
-    ...(sleep ? [] : [{ title: "Sleep vs. hunger", needs: "about 8 check-ins with sleep rated, mixing rough and good nights" }]),
+    ...(sleep ? [] : [{ title: "Sleep", needs: "5+ nights rated on Home" }]),
     ...(timeOfDay ? [] : [{ title: "Hunger through the day", needs: "a few days with morning and evening check-ins" }]),
     ...(pace ? [] : [{ title: "Pace & plateau check", needs: "3+ weeks of weigh-ins" }]),
+    ...(trend ? [] : [{ title: "The trend vs. today", needs: "weigh-ins spread across two straight weeks" }]),
     ...(tape ? [] : [{ title: "Tape vs. scale", needs: "two tape check-ins 2+ weeks apart" }]),
     ...(outlook ? [] : [{ title: "Milestones & outlook", needs: "a starting weight and a weigh-in below it" }]),
     ...(bump ? [] : [{ title: "Shot-day water weight", needs: "a month or so of regular weigh-ins" }]),
     ...(steps ? [] : [{ title: "Dose step-ups", needs: "a dose increase and a few side-effect entries" }]),
     ...(activity ? [] : [{ title: "Moving vs. the scale", needs: "a few weeks with activity and 2+ weigh-ins each" }]),
+    ...(movement ? [] : [{ title: "Movement habit", needs: "5 active days in the last two weeks" }]),
     ...(sites ? [] : [{ title: "Injection sites", needs: "3+ shots" }]),
     ...(adherence ? [] : [{ title: "Consistency", needs: "3+ shots" }]),
   ];
@@ -82,6 +88,7 @@ export default function InsightsPanel({ data }: { data: AppData }) {
     <>
       <AchievementsCard items={achievements(data)} />
       {outlook && <OutlookCard outlook={outlook} unit={unit} goalLbs={data.settings.goalLbs} />}
+      {trend && <TrendCard trend={trend} unit={unit} />}
       {pace && <PaceCard pace={pace} unit={unit} />}
       {creep && <CreepCard creep={creep} />}
       {sleep && <SleepCard sleep={sleep} />}
@@ -89,6 +96,7 @@ export default function InsightsPanel({ data }: { data: AppData }) {
       {tape && <TapeCard tape={tape} unit={unit} />}
       {bump && <WaterWeightCard bump={bump} unit={unit} />}
       {steps && <DoseStepsCard steps={steps} />}
+      {movement && <MovementCard habit={movement} unit={unit} />}
       {activity && <ActivityPaceCard pace={activity} unit={unit} />}
       {sites && <SitesCard health={sites} />}
       {adherence && <AdherenceCard adherence={adherence} />}

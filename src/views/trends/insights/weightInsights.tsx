@@ -1,6 +1,6 @@
 import type { Unit } from "../../../types";
 import { fmtDay } from "../../../lib/dates";
-import type { GoalOutlook, PaceShift, ShotDayBump, TapeVsScale } from "../../../lib/insights";
+import type { GoalOutlook, PaceShift, ShotDayBump, TapeVsScale, TrendCheck } from "../../../lib/insights";
 import InsightCard from "../../../components/InsightCard";
 import { absWeight, signedLength, signedWeight, weeklyRateText } from "../../../lib/format";
 
@@ -32,6 +32,29 @@ export function OutlookCard({ outlook, unit, goalLbs }: WithUnit & { outlook: Go
         </div>
       )}
     </InsightCard>
+  );
+}
+
+export function TrendCard({ trend, unit }: WithUnit & { trend: TrendCheck }) {
+  const change = `${trend.weeklyChangeLbs <= -0.05 ? "down" : trend.weeklyChangeLbs >= 0.05 ? "up" : "even at"} ${absWeight(Math.abs(trend.weeklyChangeLbs), unit)}`;
+  const headline = trend.reassure
+    ? `The latest weigh-in ticked up ${absWeight(trend.lastBlipLbs, unit)}, but your 7-day average is ${absWeight(trend.trendLbs, unit)} — ${change} from the week before. Single mornings are mostly water; the average is you.`
+    : trend.weeklyChangeLbs <= -0.5
+      ? `Your 7-day average is ${absWeight(trend.trendLbs, unit)}, ${change} from the week before — steady as she goes.`
+      : `Your 7-day average is holding around ${absWeight(trend.trendLbs, unit)} (${change} vs the week before). Flat stretches are normal — protein, water, and walks still count.`;
+  return (
+    <InsightCard
+      emoji="📉"
+      title="The trend vs. today"
+      sub="7-day average of your weigh-ins, so one morning can't yank you around"
+      tone={trend.reassure || trend.weeklyChangeLbs <= -0.5 ? "info" : "note"}
+      stats={[
+        { value: absWeight(trend.trendLbs, unit), label: "7-day average" },
+        { value: signedWeight(trend.weeklyChangeLbs, unit), label: "vs the week before" },
+        { value: signedWeight(trend.lastBlipLbs, unit), label: "latest weigh-in" },
+      ]}
+      headline={headline}
+    />
   );
 }
 

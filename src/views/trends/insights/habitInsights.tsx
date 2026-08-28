@@ -1,5 +1,6 @@
 import type { Unit } from "../../../types";
-import type { ActivityPace, Adherence, CreepInsight, SleepHunger, TimeOfDay } from "../../../lib/insights";
+import type { ActivityPace, Adherence, CreepInsight, MovementHabit, SleepInsight, TimeOfDay } from "../../../lib/insights";
+import { fmtDistance } from "../../../lib/activity";
 import InsightCard from "../../../components/InsightCard";
 import { absWeight, signedWeight } from "../../../lib/format";
 
@@ -33,18 +34,52 @@ export function CreepCard({ creep }: { creep: CreepInsight }) {
 
 const signedShift = (n: number) => `${n > 0.05 ? "+" : n < -0.05 ? "−" : "±"}${Math.abs(n).toFixed(1)}`;
 
-export function SleepCard({ sleep }: { sleep: SleepHunger }) {
+export function SleepCard({ sleep }: { sleep: SleepInsight }) {
+  if (sleep.kind === "quality") {
+    return (
+      <InsightCard
+        emoji="😴"
+        title="Sleep"
+        sub="Your nightly ratings so far"
+        tone="note"
+        stats={[
+          { value: sleep.avg.toFixed(1), label: `avg across ${sleep.nights} nights` },
+          { value: `${Math.round(sleep.roughShare * 100)}%`, label: "rough or broken" },
+        ]}
+        headline={sleep.summary}
+      />
+    );
+  }
+  const goodShort = sleep.goodLabel.split(" ")[0];
   return (
     <InsightCard
       emoji="😴"
       title="Sleep vs. hunger"
-      sub="Hunger vs. your usual for that cycle day, after rough (1–2) and good (4–5) nights"
+      sub={`Hunger vs. your usual for that cycle day, after rough (1–2) and ${sleep.goodLabel}`}
       tone={sleep.delta >= 0.5 ? "note" : "info"}
       stats={[
         { value: signedShift(sleep.poorShift), label: `after ${sleep.poorNights} rough nights` },
-        { value: signedShift(sleep.goodShift), label: `after ${sleep.goodNights} good nights` },
+        { value: signedShift(sleep.goodShift), label: `after ${sleep.goodNights} ${goodShort} nights` },
       ]}
       headline={sleep.energyNote ? `${sleep.summary} ${sleep.energyNote}` : sleep.summary}
+    />
+  );
+}
+
+export function MovementCard({ habit, unit }: { habit: MovementHabit; unit: Unit }) {
+  return (
+    <InsightCard
+      emoji="🚶"
+      title="Movement habit"
+      sub="Walks and workouts over the last two weeks"
+      stats={[
+        habit.streakDays >= 3
+          ? { value: `${habit.streakDays}`, label: "day streak" }
+          : { value: `${habit.activeDays14}/14`, label: "active days" },
+        { value: `${habit.weekMinutes}`, label: "min, last 7 days" },
+        ...(habit.weekMiles != null ? [{ value: fmtDistance(habit.weekMiles, unit), label: "distance" }] : []),
+      ]}
+      headline={habit.summary}
     />
   );
 }
