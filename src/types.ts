@@ -115,7 +115,7 @@ export interface CheckinEntry {
 export type ThemePref = "auto" | "light" | "dark";
 
 /** Optional Home cards the user can hide in Settings → Appearance. */
-export type HomeCardKey = "checkin" | "cycle" | "intake" | "goal";
+export type HomeCardKey = "checkin" | "cycle" | "intake" | "goal" | "photos";
 
 export type BodyType = "neutral" | "slim" | "broad" | "curvy";
 

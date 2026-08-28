@@ -13,6 +13,7 @@ import IntakeCard from "./IntakeCard";
 import WeightTrendCard from "./WeightTrendCard";
 import GoalCard from "./GoalCard";
 import RecentActivity from "./RecentActivity";
+import PhotosCard from "../trends/PhotosCard";
 
 interface Props {
   installPrompt: InstallPrompt;
@@ -20,13 +21,14 @@ interface Props {
   showToast: (message: string) => void;
   onLogShot: () => void;
   onLogMeasure: () => void;
+  onAddPhoto: () => void;
   onSeeTrends: () => void;
   onSeeHistory: () => void;
   onOpenSettings: () => void;
   onEdit: (entry: Entry) => void;
 }
 
-export default function HomeView({ installPrompt, sync, showToast, onLogShot, onLogMeasure, onSeeTrends, onSeeHistory, onOpenSettings, onEdit }: Props) {
+export default function HomeView({ installPrompt, sync, showToast, onLogShot, onLogMeasure, onAddPhoto, onSeeTrends, onSeeHistory, onOpenSettings, onEdit }: Props) {
   const { data } = useStore();
   const hidden = new Set(data.settings.hiddenHomeCards ?? []);
   return (
@@ -39,11 +41,12 @@ export default function HomeView({ installPrompt, sync, showToast, onLogShot, on
       <InstallBanner prompt={installPrompt} />
       <HeroCard data={data} onLogShot={onLogShot} />
       <StatTilesRow data={data} />
-      <HomeSpotlight data={data} sync={sync} showToast={showToast} onOpenSettings={onOpenSettings} onLogMeasure={onLogMeasure} />
+      <HomeSpotlight data={data} sync={sync} showToast={showToast} onOpenSettings={onOpenSettings} onLogMeasure={onLogMeasure} onLogPhoto={onAddPhoto} />
       {!hidden.has("checkin") && <CheckinCard data={data} />}
       {!hidden.has("cycle") && <CycleReviewCard data={data} />}
       <SupplyCard data={data} />
       {!hidden.has("intake") && <IntakeCard data={data} />}
+      {!hidden.has("photos") && <PhotosCard data={data} onAddPhoto={onAddPhoto} />}
       <WeightTrendCard data={data} onSeeTrends={onSeeTrends} />
       {!hidden.has("goal") && <GoalCard data={data} onOpenSettings={onOpenSettings} />}
       <RecentActivity data={data} onEdit={onEdit} onSeeAll={onSeeHistory} />

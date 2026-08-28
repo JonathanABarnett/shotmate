@@ -19,10 +19,11 @@ interface Props {
   showToast: (message: string) => void;
   onOpenSettings: () => void;
   onLogMeasure: () => void;
+  onLogPhoto: () => void;
 }
 
 /** One spotlight at a time: celebration, then story, then the Sunday letter, then a win suggestion, then a nudge. */
-export default function HomeSpotlight({ data, sync, showToast, onOpenSettings, onLogMeasure }: Props) {
+export default function HomeSpotlight({ data, sync, showToast, onOpenSettings, onLogMeasure, onLogPhoto }: Props) {
   const { dispatch } = useStore();
   const [, setBumped] = useState(0);
   const refresh = () => setBumped((n) => n + 1);
@@ -99,5 +100,5 @@ export default function HomeSpotlight({ data, sync, showToast, onOpenSettings, o
     );
   }
 
-  return <NudgeHost data={data} sync={sync} showToast={showToast} onOpenSettings={onOpenSettings} onLogMeasure={onLogMeasure} />;
+  return <NudgeHost data={data} sync={sync} showToast={showToast} onOpenSettings={onOpenSettings} onLogMeasure={onLogMeasure} onLogPhoto={onLogPhoto} />;
 }

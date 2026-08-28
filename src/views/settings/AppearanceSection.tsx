@@ -21,6 +21,7 @@ const HOME_CARDS: { key: HomeCardKey; label: string }[] = [
   { key: "cycle", label: "This cycle" },
   { key: "intake", label: "Protein & water" },
   { key: "goal", label: "Goal & milestones" },
+  { key: "photos", label: "Progress photos" },
 ];
 
 export default function AppearanceSection() {

@@ -3,7 +3,7 @@ import { DAY } from "./dates";
 import { isCompoundedMed } from "./meds";
 import { isPushSupported, remindersWanted } from "../sync/pushReminders";
 
-export type NudgeKey = "setup" | "reminders" | "tape";
+export type NudgeKey = "setup" | "reminders" | "tape" | "photo";
 
 export interface Nudge {
   key: NudgeKey;
@@ -12,7 +12,7 @@ export interface Nudge {
   cta: string;
 }
 
-const TAPE_GAP_DAYS = 13;
+const RITUAL_GAP_DAYS = 7;
 const snoozeStorageKey = (key: NudgeKey) => `shotmate-nudge-${key}`;
 
 export function snoozeNudge(key: NudgeKey, days = 30): void {
@@ -53,12 +53,21 @@ export function topNudge(data: AppData, signedIn: boolean, now = Date.now()): Nu
     };
   }
   const lastTape = measures.reduce((max, m) => Math.max(max, m.ts), 0);
-  if (!snoozed("tape", now) && measures.length > 0 && now - lastTape >= TAPE_GAP_DAYS * DAY) {
+  if (!snoozed("tape", now) && measures.length > 0 && now - lastTape >= RITUAL_GAP_DAYS * DAY) {
     return {
       key: "tape",
       emoji: "📏",
-      text: "Two weeks since your last tape check-in — the tape often moves when the scale sulks.",
+      text: "Tape day — a week since your last measurements. The tape often moves when the scale sulks.",
       cta: "Measure",
+    };
+  }
+  const lastPhoto = data.photos.reduce((max, p) => Math.max(max, p.ts), 0);
+  if (!snoozed("photo", now) && data.photos.length > 0 && now - lastPhoto >= RITUAL_GAP_DAYS * DAY) {
+    return {
+      key: "photo",
+      emoji: "📸",
+      text: "Photo day — same pose, same spot, same light. Future you will love this one.",
+      cta: "Take it",
     };
   }
   return undefined;

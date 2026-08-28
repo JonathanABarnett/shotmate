@@ -96,6 +96,7 @@ export default function App() {
               onSeeHistory={() => goTo("history")}
               sync={sync}
               showToast={showToast}
+              onAddPhoto={() => setSheet({ kind: "photo" })}
               onLogMeasure={() => setSheet({ kind: "measure" })}
               onOpenSettings={() => setInSettings(true)}
               onEdit={(entry) => setSheet(sheetForEntry(entry))}

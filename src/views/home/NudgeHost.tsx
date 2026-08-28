@@ -12,10 +12,11 @@ interface Props {
   showToast: (message: string) => void;
   onOpenSettings: () => void;
   onLogMeasure: () => void;
+  onLogPhoto: () => void;
 }
 
 /** Picks the one nudge worth showing and carries out its action. */
-export default function NudgeHost({ data, sync, showToast, onOpenSettings, onLogMeasure }: Props) {
+export default function NudgeHost({ data, sync, showToast, onOpenSettings, onLogMeasure, onLogPhoto }: Props) {
   const [, setBumped] = useState(0);
   const refresh = () => setBumped((n) => n + 1);
   const nudge = topNudge(data, Boolean(sync.userId));
@@ -39,11 +40,12 @@ export default function NudgeHost({ data, sync, showToast, onOpenSettings, onLog
   const act = () => {
     if (nudge.key === "setup") onOpenSettings();
     else if (nudge.key === "tape") onLogMeasure();
+    else if (nudge.key === "photo") onLogPhoto();
     else void enable();
   };
 
   const dismiss = () => {
-    snoozeNudge(nudge.key, nudge.key === "tape" ? 14 : 30);
+    snoozeNudge(nudge.key, nudge.key === "tape" || nudge.key === "photo" ? 5 : 30);
     refresh();
   };
 
