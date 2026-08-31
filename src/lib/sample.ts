@@ -196,12 +196,19 @@ function sampleVitals(firstShot: number): VitalsEntry[] {
   ];
 }
 
-function sampleIntake(now: number): DailyIntake[] {
+function sampleIntake(now: number, rnd: () => number): DailyIntake[] {
   const today = startOfDay(now);
-  return [
-    { id: uid(), day: today - DAY, proteinG: 105, waterFlOz: 64 },
-    { id: uid(), day: today, proteinG: 45, waterFlOz: 24 },
-  ];
+  return Array.from({ length: 14 }, (_, i) => {
+    const day = today - (13 - i) * DAY;
+    if (i === 13) return { id: uid(), day, proteinG: 45, waterFlOz: 24 };
+    return {
+      id: uid(),
+      day,
+      proteinG: Math.round(70 + rnd() * 45),
+      waterFlOz: Math.round(48 + rnd() * 48),
+      kcal: Math.round(1500 + rnd() * 400),
+    };
+  });
 }
 
 export function sampleData(base: Settings): AppData {
@@ -221,7 +228,7 @@ export function sampleData(base: Settings): AppData {
     measures: sampleMeasures(firstShot),
     photos: [],
     wins: sampleWins(firstShot),
-    intake: sampleIntake(now),
+    intake: sampleIntake(now, rnd),
     activities: sampleActivities(firstShot),
     checkins: sampleCheckins(shots, now, rnd),
     vitals: sampleVitals(firstShot),

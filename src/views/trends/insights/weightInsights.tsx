@@ -1,6 +1,6 @@
 import type { Unit } from "../../../types";
 import { fmtDay } from "../../../lib/dates";
-import type { GoalOutlook, PaceShift, ShotDayBump, TapeVsScale, TrendCheck } from "../../../lib/insights";
+import type { FuelCheck, GoalOutlook, PaceShift, ShotDayBump, TapeVsScale, TrendCheck } from "../../../lib/insights";
 import InsightCard from "../../../components/InsightCard";
 import { absWeight, signedLength, signedWeight, weeklyRateText } from "../../../lib/format";
 
@@ -54,6 +54,23 @@ export function TrendCard({ trend, unit }: WithUnit & { trend: TrendCheck }) {
         { value: signedWeight(trend.lastBlipLbs, unit), label: "latest weigh-in" },
       ]}
       headline={headline}
+    />
+  );
+}
+
+export function FuelCard({ fuel, unit }: WithUnit & { fuel: FuelCheck }) {
+  return (
+    <InsightCard
+      emoji="🔥"
+      title="Fuel vs. pace"
+      sub={`Average of ${fuel.days} logged days vs your 3-week trend — an estimate, not gospel`}
+      tone={fuel.careNote ? "note" : "info"}
+      stats={[
+        { value: `${fuel.avgKcal}`, label: "kcal in / day" },
+        { value: `${fuel.impliedBurnKcal}`, label: "implied burn" },
+        { value: `${signedWeight(fuel.weeklyRateLbs, unit)}/wk`, label: "trend" },
+      ]}
+      headline={fuel.careNote ? `${fuel.summary} ${fuel.careNote}` : fuel.summary}
     />
   );
 }

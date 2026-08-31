@@ -82,12 +82,14 @@ export interface VitalsEntry {
   note?: string;
 }
 
-/** One day's running protein/water totals (day = local start-of-day ms). */
+/** One day's running fuel totals (day = local start-of-day ms). */
 export interface DailyIntake {
   id: string;
   day: number;
   proteinG: number;
   waterFlOz: number;
+  /** the day's calorie total — typed in or imported from Lose It */
+  kcal?: number;
 }
 
 export type Scale5 = 1 | 2 | 3 | 4 | 5;
@@ -149,6 +151,8 @@ export interface Settings {
   hiddenHomeCards?: HomeCardKey[];
   proteinGoalG?: number;
   waterGoalFlOz?: number;
+  /** daily calorie budget, e.g. from Lose It — display only */
+  calorieBudgetKcal?: number;
 }
 
 export interface AppData {

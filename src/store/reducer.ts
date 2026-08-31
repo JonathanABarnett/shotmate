@@ -34,7 +34,8 @@ export type Action =
   | { type: "upsert"; collection: "activities"; item: ActivityEntry }
   | { type: "upsert"; collection: "vitals"; item: VitalsEntry }
   | { type: "remove"; collection: CollectionKey; id: string }
-  | { type: "addIntake"; ts: number; proteinG?: number; waterFlOz?: number }
+  | { type: "addIntake"; ts: number; proteinG?: number; waterFlOz?: number; kcal?: number }
+  | { type: "importIntake"; days: { day: number; kcal?: number; proteinG?: number }[] }
   | { type: "addActivities"; items: ActivityEntry[] }
   | { type: "setCheckin"; ts: number; slot?: CheckinSlot; hunger?: Scale5; energy?: Scale5; sleep?: Scale5 }
   | { type: "markAchievementsSeen"; keys: string[] }
@@ -111,12 +112,28 @@ function applyAddIntake(state: AppData, action: Extract<Action, { type: "addInta
   const day = startOfDay(action.ts);
   const existing = state.intake.find((i) => i.day === day);
   const base = existing ?? { id: uid(), day, proteinG: 0, waterFlOz: 0 };
+  const kcal = Math.max(0, (base.kcal ?? 0) + (action.kcal ?? 0));
   const updated = {
     ...base,
     proteinG: Math.max(0, base.proteinG + (action.proteinG ?? 0)),
     waterFlOz: Math.max(0, base.waterFlOz + (action.waterFlOz ?? 0)),
+    kcal: kcal > 0 ? kcal : undefined,
   };
   return { ...state, intake: upsertById(state.intake, updated) };
+}
+
+/** Merge imported day totals — the CSV is the source of truth for calories and protein. */
+function applyImportIntake(state: AppData, action: Extract<Action, { type: "importIntake" }>): AppData {
+  let intake = state.intake;
+  for (const d of action.days) {
+    const base = intake.find((i) => i.day === d.day) ?? { id: uid(), day: d.day, proteinG: 0, waterFlOz: 0 };
+    intake = upsertById(intake, {
+      ...base,
+      ...(d.kcal != null ? { kcal: d.kcal } : {}),
+      ...(d.proteinG != null ? { proteinG: d.proteinG } : {}),
+    });
+  }
+  return { ...state, intake };
 }
 
 /** Record a check-in — sleep merges into the day, hunger/energy into that time-of-day slot. */
@@ -152,6 +169,8 @@ export function reducer(state: AppData, action: Action): AppData {
       return applyRemove(state, action);
     case "addIntake":
       return applyAddIntake(state, action);
+    case "importIntake":
+      return applyImportIntake(state, action);
     case "addActivities":
       return { ...state, activities: [...state.activities, ...action.items] };
     case "setCheckin":

@@ -54,6 +54,15 @@ export default function GoalsSection() {
         onChange={(waterGoalFlOz) => dispatch({ type: "updateSettings", patch: { waterGoalFlOz } })}
         max={400}
       />
+      <OptionalNumberField
+        label="Daily calorie budget"
+        hint="Match your Lose It budget — it shows beside the day's total on Home."
+        suffix="kcal"
+        placeholder="1800"
+        value={settings.calorieBudgetKcal}
+        onChange={(calorieBudgetKcal) => dispatch({ type: "updateSettings", patch: { calorieBudgetKcal } })}
+        max={6000}
+      />
     </section>
   );
 }

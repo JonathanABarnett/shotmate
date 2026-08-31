@@ -47,6 +47,7 @@ export function weeklyRecap(data: AppData, now = Date.now()): WeeklyRecap | unde
   const checkins = data.checkins.filter((c) => inWeek(c.day));
   const shots = data.shots.filter((s) => inWeek(s.ts));
   const sleepAvg = mean(checkins.flatMap((c) => (c.sleep != null ? [c.sleep] : [])));
+  const kcalDays = data.intake.filter((i) => inWeek(i.day) && (i.kcal ?? 0) > 0);
 
   if (weighs.length === 0 && moves.length === 0 && checkins.length <= 1) {
     return { key, narrative: "A quiet week — they happen, and nothing is lost. One small log tomorrow restarts the rhythm 💜", stats: [] };
@@ -70,6 +71,7 @@ export function weeklyRecap(data: AppData, now = Date.now()): WeeklyRecap | unde
       ...(moves.length ? [{ value: `${minutes}`, label: "active min" }] : []),
       ...(checkins.length ? [{ value: `${checkins.length}/7`, label: "check-in days" }] : []),
       ...(sleepAvg != null ? [{ value: sleepAvg.toFixed(1), label: "avg sleep" }] : []),
+      ...(kcalDays.length >= 3 ? [{ value: `${Math.round(mean(kcalDays.map((i) => i.kcal!))!)}`, label: "avg kcal" }] : []),
     ],
   };
 }

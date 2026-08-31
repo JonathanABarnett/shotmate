@@ -18,6 +18,11 @@ export function waterGoalFlOz(data: AppData): number {
   return data.settings.waterGoalFlOz ?? DEFAULT_WATER_GOAL_FL_OZ;
 }
 
+/** No default — a budget only shows once the user sets one (e.g. from Lose It). */
+export function calorieBudget(data: AppData): number | undefined {
+  return data.settings.calorieBudgetKcal;
+}
+
 /** Water displays in fl oz for lbs users and ml for kg users. */
 export function fmtWater(flOz: number, unit: Unit): string {
   return unit === "lbs" ? `${Math.round(flOz)} oz` : `${Math.round(flOz * ML_PER_FL_OZ)} ml`;

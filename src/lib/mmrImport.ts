@@ -1,34 +1,6 @@
 import type { ActivityEntry, ActivityType } from "../types";
+import { findColumn, parseCsvLine } from "./csv";
 import { uid } from "./ids";
-
-/** Parse one CSV line, honoring quoted fields with embedded commas. */
-function parseCsvLine(line: string): string[] {
-  const cells: string[] = [];
-  let cell = "";
-  let quoted = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (ch === '"') {
-      if (quoted && line[i + 1] === '"') {
-        cell += '"';
-        i++;
-      } else {
-        quoted = !quoted;
-      }
-    } else if (ch === "," && !quoted) {
-      cells.push(cell);
-      cell = "";
-    } else {
-      cell += ch;
-    }
-  }
-  cells.push(cell);
-  return cells.map((c) => c.trim());
-}
-
-function findColumn(headers: string[], pattern: RegExp): number {
-  return headers.findIndex((h) => pattern.test(h));
-}
 
 function toActivityType(raw: string): ActivityType {
   if (/run|jog/i.test(raw)) return "run";
