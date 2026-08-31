@@ -1,4 +1,5 @@
 import type { AppData } from "../types";
+import { recordBackup } from "../lib/nudges";
 import { isAppData, withDataDefaults } from "./persistence";
 import { loadPhotoBlob, savePhotoBlob } from "./photoStore";
 
@@ -36,6 +37,7 @@ export async function downloadBackup(data: AppData): Promise<void> {
   a.download = `shotmate-backup-${stamp}.json`;
   a.click();
   URL.revokeObjectURL(url);
+  recordBackup();
 }
 
 async function restorePhotoBlobs(photoBlobs: Record<string, string>): Promise<void> {

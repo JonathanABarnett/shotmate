@@ -4,6 +4,7 @@ import { getSupabase } from "../../sync/supabaseClient";
 import { enableReminders } from "../../sync/pushReminders";
 import { scheduleFor, type SyncState } from "../../sync/useSync";
 import { snoozeNudge, topNudge } from "../../lib/nudges";
+import { downloadBackup } from "../../store/backup";
 import NudgeCard from "../../components/NudgeCard";
 
 interface Props {
@@ -37,10 +38,17 @@ export default function NudgeHost({ data, sync, showToast, onOpenSettings, onLog
     refresh();
   };
 
+  const saveBackup = async () => {
+    await downloadBackup(data);
+    showToast("Backup saved to your downloads 📦");
+    refresh();
+  };
+
   const act = () => {
     if (nudge.key === "setup") onOpenSettings();
     else if (nudge.key === "tape") onLogMeasure();
     else if (nudge.key === "photo") onLogPhoto();
+    else if (nudge.key === "backup") void saveBackup();
     else void enable();
   };
 
