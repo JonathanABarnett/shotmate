@@ -4,6 +4,7 @@ import { ENTRY_KINDS, type EntryKind } from "../entryKinds";
 const SUBTITLES: Record<EntryKind, string> = {
   shot: "Dose, injection site & time",
   weight: "A quick step on the scale",
+  calories: "The day's total, straight from Lose It",
   measure: "Chest, waist & more with a tape",
   activity: "A walk, run, ride, or workout",
   vitals: "Blood pressure, resting HR, A1c & lipids",

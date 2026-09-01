@@ -994,9 +994,3 @@
   color: var(--ink-2);
 }
 
-/* the typed daily-calories input */
-.intake-kcal {
-  margin-top: 2px;
-  font-size: 14px;
-  padding: 9px 12px;
-}

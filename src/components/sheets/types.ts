@@ -11,6 +11,7 @@ export type ActiveSheet =
   | { kind: "menu" }
   | { kind: "shot"; existing?: Shot }
   | { kind: "weight"; existing?: WeightEntry }
+  | { kind: "calories" }
   | { kind: "effect"; existing?: EffectEntry }
   | { kind: "measure"; existing?: MeasurementEntry }
   | { kind: "photo"; existing?: PhotoEntry }

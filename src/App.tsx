@@ -98,6 +98,7 @@ export default function App() {
               showToast={showToast}
               onAddPhoto={() => setSheet({ kind: "photo" })}
               onLogMeasure={() => setSheet({ kind: "measure" })}
+              onLogCalories={() => setSheet({ kind: "calories" })}
               onOpenSettings={() => setInSettings(true)}
               onEdit={(entry) => setSheet(sheetForEntry(entry))}
             />

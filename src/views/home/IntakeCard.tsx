@@ -6,7 +6,6 @@ import { parseLoseItCsv } from "../../lib/loseItImport";
 import { useStore } from "../../store/StoreProvider";
 
 const PROTEIN_STEP_G = 5;
-const MAX_KCAL = 6000;
 
 /** One-tap foods — close-enough grams beat a food diary nobody keeps. */
 const FOODS: { label: string; grams: number }[] = [
@@ -59,15 +58,8 @@ function MeterRow({ icon, tone, label, valueText, value, goal, step, onSet, acti
   );
 }
 
-/** The day's calorie total — typed once from Lose It (or anywhere), no per-food logging. */
-function CaloriesRow({ kcal, budget, onSet }: { kcal: number; budget?: number; onSet: (kcal: number) => void }) {
-  const [draft, setDraft] = useState<string | null>(null);
-  const commit = () => {
-    if (draft == null) return;
-    const parsed = Math.round(Number(draft));
-    if (Number.isFinite(parsed)) onSet(Math.max(0, Math.min(MAX_KCAL, parsed)));
-    setDraft(null);
-  };
+/** The day's calorie total — entered via the + menu's Calories sheet; this row just shows it. */
+function CaloriesRow({ kcal, budget, onEdit }: { kcal: number; budget?: number; onEdit: () => void }) {
   return (
     <div className="intake-row">
       <span className="entry-ico gold">
@@ -78,25 +70,17 @@ function CaloriesRow({ kcal, budget, onSet }: { kcal: number; budget?: number; o
           <span className="intake-label">Calories</span>
           <span className="intake-value">{kcal > 0 ? `${kcal}${budget ? ` / ${budget}` : ""} kcal` : "not logged yet"}</span>
         </div>
-        <input
-          className="input intake-kcal"
-          type="number"
-          inputMode="numeric"
-          min={0}
-          max={MAX_KCAL}
-          placeholder="Day's total — type it or import"
-          aria-label="Calories today"
-          value={draft ?? (kcal > 0 ? String(kcal) : "")}
-          onChange={(e) => setDraft(e.target.value)}
-          onBlur={commit}
-          onKeyDown={(e) => e.key === "Enter" && (e.target as HTMLInputElement).blur()}
-        />
+      </div>
+      <div className="intake-actions">
+        <button className="intake-btn" onClick={onEdit}>
+          {kcal > 0 ? "Edit" : "Add"}
+        </button>
       </div>
     </div>
   );
 }
 
-export default function IntakeCard({ data }: { data: AppData }) {
+export default function IntakeCard({ data, onLogCalories }: { data: AppData; onLogCalories: () => void }) {
   const { dispatch } = useStore();
   const fileRef = useRef<HTMLInputElement>(null);
   const [importNote, setImportNote] = useState<string | null>(null);
@@ -107,7 +91,6 @@ export default function IntakeCard({ data }: { data: AppData }) {
   const unit = data.settings.unit;
 
   const add = (proteinG?: number, waterFlOz?: number) => dispatch({ type: "addIntake", ts: Date.now(), proteinG, waterFlOz });
-  const setKcal = (value: number) => dispatch({ type: "addIntake", ts: Date.now(), kcal: value - kcal });
 
   const handleImport = async (file: File | undefined) => {
     if (!file) return;
@@ -166,7 +149,7 @@ export default function IntakeCard({ data }: { data: AppData }) {
       <p className="field-hint food-hint">
         No food diary needed — tap what you ate. A palm-sized portion ≈ 25 g; four palms across the day lands near your goal.
       </p>
-      <CaloriesRow kcal={kcal} budget={calorieBudget(data)} onSet={setKcal} />
+      <CaloriesRow kcal={kcal} budget={calorieBudget(data)} onEdit={onLogCalories} />
       <MeterRow
         icon={<GlassWater size={19} />}
         tone="teal"

@@ -1,4 +1,5 @@
 import type { ActivityEntry, AppData, EffectEntry, Shot, WeightEntry } from "../types";
+import { DAY, startOfDay } from "./dates";
 import { isFeelingFine } from "./effects";
 import { effectTimingBuckets } from "./insights";
 import { cycleOffsetDays } from "./insights/shared";
@@ -30,6 +31,16 @@ export function effectReply(data: AppData, entry: EffectEntry): string {
     return "Noted — right on your usual pattern, and it fades 💛";
   }
   return "Noted — hope you feel better soon 💛";
+}
+
+/** Celebrates the logging habit, never the number — some days run low, some high, and that's the med working. */
+export function calorieReply(data: AppData, now = Date.now()): string {
+  const logged = new Set(data.intake.filter((i) => (i.kcal ?? 0) > 0).map((i) => i.day));
+  logged.add(startOfDay(now));
+  let run = 0;
+  // step to the previous local midnight (not −24h flat) so DST changeovers don't break the run
+  for (let day = startOfDay(now); logged.has(day); day = startOfDay(day - DAY / 2)) run++;
+  return run >= 2 ? `Fuel logged — day ${run} in a row 📒` : "Fuel logged 📒";
 }
 
 export function activityReply(data: AppData, entry: ActivityEntry): string {

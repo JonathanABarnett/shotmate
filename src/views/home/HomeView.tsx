@@ -21,6 +21,7 @@ interface Props {
   showToast: (message: string) => void;
   onLogShot: () => void;
   onLogMeasure: () => void;
+  onLogCalories: () => void;
   onAddPhoto: () => void;
   onSeeTrends: () => void;
   onSeeHistory: () => void;
@@ -28,7 +29,7 @@ interface Props {
   onEdit: (entry: Entry) => void;
 }
 
-export default function HomeView({ installPrompt, sync, showToast, onLogShot, onLogMeasure, onAddPhoto, onSeeTrends, onSeeHistory, onOpenSettings, onEdit }: Props) {
+export default function HomeView({ installPrompt, sync, showToast, onLogShot, onLogMeasure, onLogCalories, onAddPhoto, onSeeTrends, onSeeHistory, onOpenSettings, onEdit }: Props) {
   const { data } = useStore();
   const hidden = new Set(data.settings.hiddenHomeCards ?? []);
   return (
@@ -45,7 +46,7 @@ export default function HomeView({ installPrompt, sync, showToast, onLogShot, on
       {!hidden.has("checkin") && <CheckinCard data={data} />}
       {!hidden.has("cycle") && <CycleReviewCard data={data} />}
       <SupplyCard data={data} />
-      {!hidden.has("intake") && <IntakeCard data={data} />}
+      {!hidden.has("intake") && <IntakeCard data={data} onLogCalories={onLogCalories} />}
       {!hidden.has("photos") && <PhotosCard data={data} onAddPhoto={onAddPhoto} />}
       <WeightTrendCard data={data} onSeeTrends={onSeeTrends} />
       {!hidden.has("goal") && <GoalCard data={data} onOpenSettings={onOpenSettings} />}

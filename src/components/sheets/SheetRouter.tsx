@@ -2,6 +2,7 @@ import type { EntryKind } from "../entryKinds";
 import LogMenuSheet from "./LogMenuSheet";
 import LogShotSheet from "./LogShotSheet";
 import LogWeightSheet from "./LogWeightSheet";
+import LogCaloriesSheet from "./LogCaloriesSheet";
 import LogEffectSheet from "./LogEffectSheet";
 import LogMeasureSheet from "./LogMeasureSheet";
 import LogPhotoSheet from "./LogPhotoSheet";
@@ -27,6 +28,8 @@ export default function SheetRouter({ sheet, onClose, onOpen, onDone }: Props) {
       return <LogShotSheet onClose={onClose} onDone={onDone} existing={sheet.existing} />;
     case "weight":
       return <LogWeightSheet onClose={onClose} onDone={onDone} existing={sheet.existing} />;
+    case "calories":
+      return <LogCaloriesSheet onClose={onClose} onDone={onDone} />;
     case "effect":
       return <LogEffectSheet onClose={onClose} onDone={onDone} existing={sheet.existing} />;
     case "measure":
