@@ -65,6 +65,11 @@ export default function App() {
     }
   });
 
+  // The dock and gear are reachable from any scroll depth — a fresh view starts at the top.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [tab, inSettings, inReport]);
+
   // Photos deleted (and not undone) leave their pixels behind until the next launch.
   useEffect(() => {
     if (!isDemoRequest()) void deleteOrphanPhotoBlobs(data.photos.map((p) => p.id));

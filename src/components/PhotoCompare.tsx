@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Share2, X } from "lucide-react";
 import type { AppData, MeasureKey, PhotoEntry } from "../types";
 import { DAY, fmtDay, fmtDayFull } from "../lib/dates";
@@ -94,6 +95,20 @@ export default function PhotoCompare({ data, photos, initialId, onClose }: Props
   const [status, setStatus] = useState<string>();
   const single = sorted.length < 2;
 
+  // portal + scroll lock so the viewer always opens at the top of the SCREEN,
+  // no matter how far down the page it was launched from
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);
+
   const share = async () => {
     setStatus("Preparing your card…");
     try {
@@ -113,7 +128,7 @@ export default function PhotoCompare({ data, photos, initialId, onClose }: Props
     }
   };
 
-  return (
+  return createPortal(
     <div className="compare-overlay" role="dialog" aria-modal="true">
       <div className="compare-top">
         <div className="sheet-title">{single ? "Progress photo" : "Before & after"}</div>
@@ -135,6 +150,7 @@ export default function PhotoCompare({ data, photos, initialId, onClose }: Props
         <p className="compare-summary">{summaryFor(data, sorted.find((p) => p.id === beforeId)!, sorted.find((p) => p.id === afterId)!)}</p>
       )}
       <p className="compare-note compare-foot">The share card stamps the date, weight, and waist nearest each photo — nothing else leaves your device.</p>
-    </div>
+    </div>,
+    document.body
   );
 }

@@ -23,10 +23,10 @@ export const BODY_TYPES: { key: BodyType; label: string }[] = [
 ];
 
 const SHAPES: Record<BodyType, FigureShape> = {
-  neutral: { shoulder: 40, chest: 34, waist: 28, hip: 36, ankle: 22 },
-  slim: { shoulder: 36, chest: 30, waist: 24, hip: 31, ankle: 19 },
-  broad: { shoulder: 46, chest: 39, waist: 33, hip: 37, ankle: 24 },
-  curvy: { shoulder: 36, chest: 33, waist: 25, hip: 41, ankle: 21 },
+  neutral: { shoulder: 41, chest: 34, waist: 29, hip: 33, ankle: 22 },
+  slim: { shoulder: 37, chest: 30, waist: 25, hip: 29, ankle: 19 },
+  broad: { shoulder: 47, chest: 40, waist: 34, hip: 35, ankle: 24 },
+  curvy: { shoulder: 36, chest: 33, waist: 26, hip: 40, ankle: 21 },
 };
 
 export const figureShape = (type?: BodyType): FigureShape => SHAPES[type ?? "neutral"];
@@ -66,13 +66,13 @@ function corePath({ shoulder: s, chest: c, waist: w, hip: h, ankle: a }: FigureS
   return mirrorClosed(
     [100, 34],
     [
-      [[96, 34.5], [94, 36], [93.5, 44]], // neck, tucked under the head
-      [[93, 52], [100 - s + 14, 57], [100 - s + 5, 61]], // trapezius
-      [[100 - s + 1, 62.5], [100 - s, 65], [100 - s, 70]], // shoulder point
-      [[100 - s + 1, 78], [100 - c - 2, 84], [100 - c, 94]], // into the chest
-      [[100 - c + 2, 106], [100 - w - 1, 114], [100 - w, 124]], // chest → waist
-      [[100 - w + 0.5, 134], [100 - h + 1, 142], [100 - h, 155]], // waist → hip
-      [[100 - h - 0.5, 174], [kneeOut - 3, 192], [kneeOut, 206]], // outer thigh → knee
+      [[95.5, 34.5], [93, 36], [92.5, 42]], // neck, tucked under the head
+      [[92, 49], [100 - s + 16, 53], [100 - s + 6, 57]], // trapezius, held high and square
+      [[100 - s + 1, 58.5], [100 - s, 61], [100 - s, 67]], // shoulder point
+      [[100 - s + 1, 75], [100 - c - 2, 82], [100 - c, 92]], // into the chest
+      [[100 - c + 2, 105], [100 - w - 1, 114], [100 - w, 124]], // chest → waist
+      [[100 - w + 0.5, 134], [100 - h - 0.5, 142], [100 - h, 154]], // waist → hip
+      [[100 - h + 0.5, 172], [kneeOut - 2, 190], [kneeOut, 206]], // outer thigh, tapering right away
       [[kneeOut + 3, 220], [ankleOut - 1, 228], [ankleOut, 236]], // calf → ankle
       [[ankleOut - 0.5, 240], [ankleOut - 3, 244], [ankleOut + 3, 244.8]], // foot, flared slightly out
       [[ankleIn - 2, 244.8], [ankleIn, 242], [ankleIn, 236]],
@@ -86,16 +86,16 @@ function corePath({ shoulder: s, chest: c, waist: w, hip: h, ankle: a }: FigureS
 function armPath(shoulder: number, mirror: boolean): string {
   const S = 100 - shoulder;
   const raw: Seg[] = [
-    [[S - 4, 61.5], [S - 7, 66], [S - 7.5, 73]], // deltoid cap
-    [[S - 8.5, 86], [S - 9, 96], [S - 10, 106]], // upper arm → elbow
-    [[S - 11.5, 120], [S - 12.5, 134], [S - 13.5, 146]], // forearm → wrist
-    [[S - 14.5, 152], [S - 13.5, 158], [S - 9.5, 159]], // hand
-    [[S - 5.5, 159.5], [S - 4, 156], [S - 4.5, 150]],
-    [[S - 5, 138], [S - 4.5, 126], [S - 3, 114]], // inner forearm
-    [[S - 1.5, 102], [S + 0.5, 92], [S + 2, 84]], // inner upper arm
-    [[S + 3.5, 76], [S + 4, 68], [S + 3, 61]], // back to the cap
+    [[S - 5, 58.5], [S - 8, 63], [S - 9, 71]], // deltoid cap
+    [[S - 10, 84], [S - 10.5, 95], [S - 11, 105]], // upper arm → elbow
+    [[S - 12, 120], [S - 13, 134], [S - 13.5, 145]], // forearm → wrist
+    [[S - 15, 151], [S - 14, 158], [S - 9.5, 159.5]], // hand
+    [[S - 5, 160.5], [S - 4.5, 157], [S - 6, 150]],
+    [[S - 6.5, 138], [S - 5, 124], [S - 2.5, 112]], // inner forearm
+    [[S - 1, 100], [S + 1, 91], [S + 2.5, 83]], // inner upper arm
+    [[S + 4, 74], [S + 4.5, 65], [S + 3, 58]], // back to the cap
   ];
-  const start: Pt = [S + 3, 61];
+  const start: Pt = [S + 3, 58];
   return mirror ? closed(flip(start), raw.map(([a, b, e]): Seg => [flip(a), flip(b), flip(e)])) : closed(start, raw);
 }
 
