@@ -2,7 +2,7 @@ import type { AppData, MeasureKey, Unit } from "../../types";
 import { fmtLength, lengthUnit, MEASURES, measureSeries, toDisplayLength } from "../../lib/measures";
 import { fmtWeight, latestWeight, startWeightLbs, toDisplayWeight } from "../../lib/weight";
 import FigureSilhouette from "../../components/FigureSilhouette";
-import { calloutAnchors, figureShape } from "../../lib/figure";
+import { calloutAnchors } from "../../lib/figure";
 
 /* The figure is 200 wide; shift it right to leave room for callouts on both sides. */
 const FIGURE_SHIFT = 60;
@@ -86,7 +86,7 @@ function measureCallout(data: AppData, spec: CalloutSpec, unit: Unit): CalloutPr
 /** Your numbers, drawn on the body they belong to. */
 export default function BodySnapshot({ data }: { data: AppData }) {
   const unit = data.settings.unit;
-  const anchors = calloutAnchors(figureShape(data.settings.bodyType));
+  const anchors = calloutAnchors(data.settings.bodyType);
   const specs: CalloutSpec[] = CALLOUT_LAYOUT.map((c) => ({ ...c, anchor: { x: anchors[c.key].x + FIGURE_SHIFT, y: anchors[c.key].y } }));
   const callouts = specs.map((c) => measureCallout(data, c, unit)).filter((c): c is CalloutProps => !!c);
   const weight = latestWeight(data.weights);

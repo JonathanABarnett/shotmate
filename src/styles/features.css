@@ -283,10 +283,81 @@
 
 /* weight + tape readings under each compared photo */
 .compare-stats {
-  font-size: 12.5px;
+  font-size: 13.5px;
   font-weight: 700;
   color: var(--ink-2);
-  line-height: 1.5;
+  line-height: 1.6;
+}
+
+.compare-stats .stat-main {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.compare-imgbtn {
+  display: block;
+  width: 100%;
+}
+
+/* full-screen single photo with its numbers along the bottom */
+.photo-zoom {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(11, 8, 24, 0.97);
+  display: grid;
+  animation: fade-in 0.15s ease both;
+}
+
+.zoom-img,
+.photo-zoom .photo-loading {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.zoom-close {
+  position: absolute;
+  top: calc(14px + env(safe-area-inset-top));
+  right: 14px;
+  z-index: 2;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.zoom-info {
+  grid-area: 1 / 1;
+  align-self: end;
+  display: grid;
+  gap: 3px;
+  padding: 40px 20px calc(22px + env(safe-area-inset-bottom));
+  background: linear-gradient(transparent, rgba(8, 5, 20, 0.88) 60%);
+  color: #fff;
+}
+
+.zoom-date {
+  font-size: 13px;
+  font-weight: 700;
+  opacity: 0.85;
+}
+
+.zoom-weight {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.zoom-tapes {
+  font-size: 14px;
+  font-weight: 700;
+  opacity: 0.92;
+}
+
+.zoom-note {
+  font-size: 13px;
+  opacity: 0.8;
+  margin-top: 4px;
 }
 
 /* the delta line between before & after */

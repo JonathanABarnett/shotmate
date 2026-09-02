@@ -1,6 +1,6 @@
 import type { BodyType, Shot, SiteId } from "../types";
 import { DAY } from "../lib/dates";
-import { figureShape, siteZones } from "../lib/figure";
+import { siteZones } from "../lib/figure";
 import { lastUsedBySite, SITES, suggestedSite } from "../lib/sites";
 import FigureSilhouette from "./FigureSilhouette";
 
@@ -25,7 +25,7 @@ export default function BodyMap({ shots, selected, onSelect, bodyType, mirror }:
   const suggestion = suggestedSite(shots);
   const lastUsed = lastUsedBySite(shots);
   const now = Date.now();
-  const zones = siteZones(figureShape(bodyType));
+  const zones = siteZones(bodyType);
 
   return (
     <div className="bodymap-wrap">

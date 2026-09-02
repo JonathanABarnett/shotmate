@@ -15,15 +15,18 @@ interface PaneProps {
   photos: PhotoEntry[];
   selectedId: string;
   onSelect: (id: string) => void;
+  onZoom: (id: string) => void;
   label: string;
 }
 
-function ComparePane({ data, photos, selectedId, onSelect, label }: PaneProps) {
+function ComparePane({ data, photos, selectedId, onSelect, onZoom, label }: PaneProps) {
   const photo = photos.find((p) => p.id === selectedId) ?? photos[0];
   const details = detailsFor(data, photo.ts);
   return (
     <div className="compare-pane">
-      <PhotoThumb photoId={photo.id} alt={`${label} photo`} className="compare-img"  focus={photo.focus} />
+      <button className="compare-imgbtn" onClick={() => onZoom(photo.id)} aria-label={`Enlarge ${label.toLowerCase()} photo`}>
+        <PhotoThumb photoId={photo.id} alt={`${label} photo`} className="compare-img"  focus={photo.focus} />
+      </button>
       <select className="input compare-select" value={photo.id} onChange={(e) => onSelect(e.target.value)} aria-label={label}>
         {photos.map((p) => (
           <option key={p.id} value={p.id}>
@@ -31,7 +34,18 @@ function ComparePane({ data, photos, selectedId, onSelect, label }: PaneProps) {
           </option>
         ))}
       </select>
-      <div className="compare-stats">{details.length > 0 ? details.join(" · ") : "No weigh-in or tape near this date"}</div>
+      <div className="compare-stats">
+        {details.weight == null && details.tapes.length === 0 ? (
+          <div>No weigh-in or tape near this date</div>
+        ) : (
+          <>
+            {details.weight && <div className="stat-main">{details.weight}</div>}
+            {details.tapes.map((t) => (
+              <div key={t}>{t}</div>
+            ))}
+          </>
+        )}
+      </div>
       {photo.note && <div className="compare-note">{photo.note}</div>}
     </div>
   );
@@ -45,15 +59,16 @@ const DETAIL_TAPES: { key: MeasureKey; label: string }[] = [
 ];
 
 /** Weight plus every taped measure recorded near the photo's date. */
-function detailsFor(data: AppData, ts: number): string[] {
+function detailsFor(data: AppData, ts: number): { weight?: string; tapes: string[] } {
   const unit = data.settings.unit;
   const lbs = nearestWeightLbs(data.weights, ts);
-  const out = lbs != null ? [fmtWeight(lbs, unit)] : [];
+  const mark = lengthUnit(unit) === "in" ? "″" : " cm";
+  const tapes: string[] = [];
   for (const { key, label } of DETAIL_TAPES) {
     const inches = nearestMeasureIn(data.measures, key, ts);
-    if (inches != null) out.push(`${label} ${fmtLength(inches, unit)} ${lengthUnit(unit)}`);
+    if (inches != null) tapes.push(`${label} ${fmtLength(inches, unit)}${mark}`);
   }
-  return out;
+  return { weight: lbs != null ? fmtWeight(lbs, unit) : undefined, tapes };
 }
 
 /** Weight and waist nearest a photo's date, as short stat strings — the share card's compact pair. */
@@ -80,6 +95,25 @@ function summaryFor(data: AppData, before: PhotoEntry, after: PhotoEntry): strin
   return parts.join("  ·  ");
 }
 
+/** One photo, full screen — its numbers overlaid along the bottom. */
+function PhotoZoom({ data, photo, onClose }: { data: AppData; photo: PhotoEntry; onClose: () => void }) {
+  const details = detailsFor(data, photo.ts);
+  return (
+    <div className="photo-zoom" role="dialog" aria-modal="true" onClick={onClose}>
+      <button className="icon-btn zoom-close" aria-label="Close enlarged photo" onClick={onClose}>
+        <X size={20} />
+      </button>
+      <PhotoThumb photoId={photo.id} alt={`Photo from ${fmtDayFull(photo.ts)}`} className="zoom-img" />
+      <div className="zoom-info">
+        <div className="zoom-date">{fmtDayFull(photo.ts)}</div>
+        {details.weight && <div className="zoom-weight">{details.weight}</div>}
+        {details.tapes.length > 0 && <div className="zoom-tapes">{details.tapes.join("  ·  ")}</div>}
+        {photo.note && <div className="zoom-note">{photo.note}</div>}
+      </div>
+    </div>
+  );
+}
+
 interface Props {
   data: AppData;
   photos: PhotoEntry[];
@@ -93,13 +127,14 @@ export default function PhotoCompare({ data, photos, initialId, onClose }: Props
   const [beforeId, setBeforeId] = useState(sorted[0].id);
   const [afterId, setAfterId] = useState(initialId ?? sorted[sorted.length - 1].id);
   const [status, setStatus] = useState<string>();
+  const [zoomId, setZoomId] = useState<string | null>(null);
   const single = sorted.length < 2;
 
   // portal + scroll lock so the viewer always opens at the top of the SCREEN,
   // no matter how far down the page it was launched from
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") (zoomId ? setZoomId(null) : onClose());
     };
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
@@ -107,7 +142,7 @@ export default function PhotoCompare({ data, photos, initialId, onClose }: Props
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [onClose]);
+  }, [onClose, zoomId]);
 
   const share = async () => {
     setStatus("Preparing your card…");
@@ -143,12 +178,13 @@ export default function PhotoCompare({ data, photos, initialId, onClose }: Props
       </div>
       {status && <p className="compare-status">{status}</p>}
       <div className={`compare-grid${single ? " single" : ""}`}>
-        {!single && <ComparePane data={data} photos={sorted} selectedId={beforeId} onSelect={setBeforeId} label="Before" />}
-        <ComparePane data={data} photos={sorted} selectedId={afterId} onSelect={setAfterId} label={single ? "Photo" : "After"} />
+        {!single && <ComparePane data={data} photos={sorted} selectedId={beforeId} onSelect={setBeforeId} onZoom={setZoomId} label="Before" />}
+        <ComparePane data={data} photos={sorted} selectedId={afterId} onSelect={setAfterId} onZoom={setZoomId} label={single ? "Photo" : "After"} />
       </div>
       {!single && beforeId !== afterId && (
         <p className="compare-summary">{summaryFor(data, sorted.find((p) => p.id === beforeId)!, sorted.find((p) => p.id === afterId)!)}</p>
       )}
+      {zoomId && <PhotoZoom data={data} photo={sorted.find((p) => p.id === zoomId)!} onClose={() => setZoomId(null)} />}
       <p className="compare-note compare-foot">The share card stamps the date, weight, and waist nearest each photo — nothing else leaves your device.</p>
     </div>,
     document.body
