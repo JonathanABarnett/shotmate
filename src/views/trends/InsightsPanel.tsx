@@ -15,8 +15,10 @@ import {
   sleepInsight,
   tapeVsScale,
   trendVsToday,
+  weekOverWeek,
 } from "../../lib/insights";
 import { FuelCard, OutlookCard, PaceCard, TapeCard, TrendCard, WaterWeightCard } from "./insights/weightInsights";
+import WeekOverWeekCard from "./insights/WeekOverWeekCard";
 import { ActivityPaceCard, AdherenceCard, CreepCard, MovementCard, SleepCard, TimeOfDayCard } from "./insights/habitInsights";
 import { DoseStepsCard, SitesCard } from "./insights/shotInsights";
 import AchievementsCard from "./insights/AchievementsCard";
@@ -59,6 +61,7 @@ export default function InsightsPanel({ data }: { data: AppData }) {
   const sleep = sleepInsight(data);
   const timeOfDay = hungerByTimeOfDay(data);
   const trend = trendVsToday(data);
+  const week = weekOverWeek(data);
   const fuel = fuelVsPace(data);
   const movement = movementHabit(data);
   const pace = paceShift(data);
@@ -76,6 +79,7 @@ export default function InsightsPanel({ data }: { data: AppData }) {
     ...(timeOfDay ? [] : [{ title: "Hunger through the day", needs: "a few days with morning and evening check-ins" }]),
     ...(pace ? [] : [{ title: "Pace & plateau check", needs: "3+ weeks of weigh-ins" }]),
     ...(trend ? [] : [{ title: "The trend vs. today", needs: "weigh-ins spread across two straight weeks" }]),
+    ...(week ? [] : [{ title: "Week over week", needs: "three weeks of weigh-ins, or any logged activity" }]),
     ...(fuel ? [] : [{ title: "Fuel vs. pace", needs: "10+ days of calories — type them in or import a Lose It CSV" }]),
     ...(tape ? [] : [{ title: "Tape vs. scale", needs: "two tape check-ins 2+ weeks apart" }]),
     ...(outlook ? [] : [{ title: "Milestones & outlook", needs: "a starting weight and a weigh-in below it" }]),
@@ -92,6 +96,7 @@ export default function InsightsPanel({ data }: { data: AppData }) {
       <AchievementsCard items={achievements(data)} />
       {outlook && <OutlookCard outlook={outlook} unit={unit} goalLbs={data.settings.goalLbs} />}
       {trend && <TrendCard trend={trend} unit={unit} />}
+      {week && <WeekOverWeekCard week={week} unit={unit} />}
       {fuel && <FuelCard fuel={fuel} unit={unit} />}
       {pace && <PaceCard pace={pace} unit={unit} />}
       {creep && <CreepCard creep={creep} />}

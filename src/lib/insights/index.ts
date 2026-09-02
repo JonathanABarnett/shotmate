@@ -15,3 +15,4 @@ export { movementHabit, type MovementHabit } from "./movement";
 export { trendVsToday, type TrendCheck } from "./noiseTrend";
 export { fuelVsPace, type FuelCheck } from "./fuel";
 export { hungerByTimeOfDay, type TimeOfDay, type SlotAverage } from "./timeOfDay";
+export { weekOverWeek, type WeekCompare } from "./weekOverWeek";
