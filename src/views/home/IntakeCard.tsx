@@ -88,7 +88,6 @@ export default function IntakeCard({ data, onLogCalories }: { data: AppData; onL
   const protein = today?.proteinG ?? 0;
   const water = today?.waterFlOz ?? 0;
   const kcal = today?.kcal ?? 0;
-  const unit = data.settings.unit;
 
   const add = (proteinG?: number, waterFlOz?: number) => dispatch({ type: "addIntake", ts: Date.now(), proteinG, waterFlOz });
 
@@ -104,18 +103,45 @@ export default function IntakeCard({ data, onLogCalories }: { data: AppData; onL
     if (fileRef.current) fileRef.current.value = "";
   };
 
+  const caloriesOnly = data.settings.calorieOnlyFuel ?? false;
+
   return (
     <section className="card intake-card">
       <div className="card-title-row">
         <div>
           <h3 className="card-title">Today's fuel</h3>
-          <div className="card-sub">{importNote ?? "Protein keeps muscle on board; calories can come straight from Lose It"}</div>
+          <div className="card-sub">
+            {importNote ?? (caloriesOnly ? "One number a day, straight from Lose It" : "Protein keeps muscle on board; calories can come straight from Lose It")}
+          </div>
         </div>
         <button className="link-btn" onClick={() => fileRef.current?.click()}>
           <Upload size={14} /> Import
         </button>
         <input ref={fileRef} type="file" accept=".csv,text/csv" hidden onChange={(e) => handleImport(e.target.files?.[0])} />
       </div>
+      {caloriesOnly ? (
+        <CaloriesRow kcal={kcal} budget={calorieBudget(data)} onEdit={onLogCalories} />
+      ) : (
+        <FullIntakeRows data={data} protein={protein} water={water} kcal={kcal} add={add} onLogCalories={onLogCalories} />
+      )}
+    </section>
+  );
+}
+
+interface FullRowsProps {
+  data: AppData;
+  protein: number;
+  water: number;
+  kcal: number;
+  add: (proteinG?: number, waterFlOz?: number) => void;
+  onLogCalories: () => void;
+}
+
+/** The classic three-meter layout — protein chips, calories, water. */
+function FullIntakeRows({ data, protein, water, kcal, add, onLogCalories }: FullRowsProps) {
+  const unit = data.settings.unit;
+  return (
+    <>
       <MeterRow
         icon={<Beef size={19} />}
         tone="coral"
@@ -170,6 +196,6 @@ export default function IntakeCard({ data, onLogCalories }: { data: AppData; onL
           </>
         }
       />
-    </section>
+    </>
   );
 }

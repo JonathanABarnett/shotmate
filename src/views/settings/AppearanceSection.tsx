@@ -19,9 +19,15 @@ const ORIENTATION_OPTIONS: { key: Orientation; label: string }[] = [
 const HOME_CARDS: { key: HomeCardKey; label: string }[] = [
   { key: "checkin", label: "Daily check-in" },
   { key: "cycle", label: "This cycle" },
-  { key: "intake", label: "Protein & water" },
+  { key: "intake", label: "Today's fuel" },
   { key: "goal", label: "Goal & milestones" },
   { key: "photos", label: "Progress photos" },
+];
+
+type FuelMode = "full" | "calories";
+const FUEL_OPTIONS: { key: FuelMode; label: string }[] = [
+  { key: "full", label: "Protein, calories & water" },
+  { key: "calories", label: "Calories only" },
 ];
 
 export default function AppearanceSection() {
@@ -78,6 +84,14 @@ export default function AppearanceSection() {
             </button>
           ))}
         </div>
+      </Field>
+      <Field label="Fuel card" hint="Not tracking protein or water right now? Slim the card to just the day's calories.">
+        <SegmentedControl
+          ariaLabel="Fuel card layout"
+          options={FUEL_OPTIONS}
+          value={settings.calorieOnlyFuel ? "calories" : "full"}
+          onChange={(value) => dispatch({ type: "updateSettings", patch: { calorieOnlyFuel: value === "calories" } })}
+        />
       </Field>
     </section>
   );

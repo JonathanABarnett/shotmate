@@ -153,6 +153,8 @@ export interface Settings {
   waterGoalFlOz?: number;
   /** daily calorie budget, e.g. from Lose It — display only */
   calorieBudgetKcal?: number;
+  /** slim the fuel card to just calories — for folks not tracking protein/water right now */
+  calorieOnlyFuel?: boolean;
 }
 
 export interface AppData {

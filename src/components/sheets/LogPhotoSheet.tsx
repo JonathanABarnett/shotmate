@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Camera, Images } from "lucide-react";
 import type { PhotoEntry, PhotoFocus } from "../../types";
+import { HOUR } from "../../lib/dates";
 import { uid } from "../../lib/ids";
 import { useStore } from "../../store/StoreProvider";
 import { preparePhotoBlob, savePhotoBlob } from "../../store/photoStore";
@@ -36,6 +37,8 @@ export default function LogPhotoSheet({ onClose, onDone, existing }: EntrySheetP
     setPending(blob);
     setPendingUrl(URL.createObjectURL(blob));
     setFocus(CENTER);
+    // a gallery pick of an older photo dates the entry when it was taken — still editable below
+    if (!existing && Date.now() - file.lastModified > HOUR) setTs(file.lastModified);
   };
 
   const previewUrl = pendingUrl ?? existingUrl;
