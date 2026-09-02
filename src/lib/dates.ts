@@ -53,6 +53,19 @@ export function greeting(now = new Date()): string {
   return "Good evening";
 }
 
+/** Longest run of consecutive days ever present in the set — a badge earned stays earned. */
+export function bestDayRun(days: Set<number>): number {
+  const sorted = [...days].sort((a, b) => a - b);
+  let best = 0;
+  let run = 0;
+  for (let i = 0; i < sorted.length; i++) {
+    // consecutive local midnights sit 23–25h apart (DST), never 46+
+    run = i > 0 && sorted[i] - sorted[i - 1] <= 30 * HOUR ? run + 1 : 1;
+    best = Math.max(best, run);
+  }
+  return best;
+}
+
 /** Consecutive days present in the set, ending today (or yesterday, so mornings don't zero it). */
 export function dayStreak(days: Set<number>, now = Date.now()): number {
   let day = startOfDay(now);
