@@ -11,6 +11,7 @@ export interface FigureShape {
   chest: number;
   waist: number;
   hip: number;
+  /** outer edge of the stance at the ankles */
   ankle: number;
 }
 
@@ -22,48 +23,94 @@ export const BODY_TYPES: { key: BodyType; label: string }[] = [
 ];
 
 const SHAPES: Record<BodyType, FigureShape> = {
-  neutral: { shoulder: 40, chest: 34, waist: 30, hip: 36, ankle: 32 },
-  slim: { shoulder: 36, chest: 30, waist: 25, hip: 31, ankle: 28 },
-  broad: { shoulder: 46, chest: 38, waist: 32, hip: 35, ankle: 32 },
-  curvy: { shoulder: 36, chest: 33, waist: 26, hip: 40, ankle: 30 },
+  neutral: { shoulder: 40, chest: 34, waist: 28, hip: 36, ankle: 22 },
+  slim: { shoulder: 36, chest: 30, waist: 24, hip: 31, ankle: 19 },
+  broad: { shoulder: 46, chest: 39, waist: 33, hip: 37, ankle: 24 },
+  curvy: { shoulder: 36, chest: 33, waist: 25, hip: 41, ankle: 21 },
 };
 
 export const figureShape = (type?: BodyType): FigureShape => SHAPES[type ?? "neutral"];
 
+type Pt = readonly [number, number];
+/** one cubic segment: control 1, control 2, end */
+type Seg = readonly [Pt, Pt, Pt];
+
+const round1 = (n: number) => Math.round(n * 10) / 10;
+const pt = ([x, y]: Pt) => `${round1(x)} ${round1(y)}`;
+const flip = ([x, y]: Pt): Pt => [200 - x, y];
+
+/** Trace the left-side outline (center-line start → center-line end), then mirror back up the right. */
+function mirrorClosed(start: Pt, segs: Seg[]): string {
+  let d = `M ${pt(start)}`;
+  for (const [a, b, e] of segs) d += ` C ${pt(a)} ${pt(b)} ${pt(e)}`;
+  for (let i = segs.length - 1; i >= 0; i--) {
+    const [a, b] = segs[i];
+    const prev = i === 0 ? start : segs[i - 1][2];
+    d += ` C ${pt(flip(b))} ${pt(flip(a))} ${pt(flip(prev))}`;
+  }
+  return `${d} Z`;
+}
+
+function closed(start: Pt, segs: Seg[]): string {
+  let d = `M ${pt(start)}`;
+  for (const [a, b, e] of segs) d += ` C ${pt(a)} ${pt(b)} ${pt(e)}`;
+  return `${d} Z`;
+}
+
+/** Head, neck, torso, and legs as one seamless silhouette. */
+function corePath({ shoulder: s, chest: c, waist: w, hip: h, ankle: a }: FigureShape): string {
+  const kneeOut = 100 - (h + a) / 2 - 1;
+  const ankleOut = 100 - a;
+  const ankleIn = ankleOut + 12;
+  const kneeIn = kneeOut + 22;
+  return mirrorClosed(
+    [100, 34],
+    [
+      [[96, 34.5], [94, 36], [93.5, 44]], // neck, tucked under the head
+      [[93, 52], [100 - s + 14, 57], [100 - s + 5, 61]], // trapezius
+      [[100 - s + 1, 62.5], [100 - s, 65], [100 - s, 70]], // shoulder point
+      [[100 - s + 1, 78], [100 - c - 2, 84], [100 - c, 94]], // into the chest
+      [[100 - c + 2, 106], [100 - w - 1, 114], [100 - w, 124]], // chest → waist
+      [[100 - w + 0.5, 134], [100 - h + 1, 142], [100 - h, 155]], // waist → hip
+      [[100 - h - 0.5, 174], [kneeOut - 3, 192], [kneeOut, 206]], // outer thigh → knee
+      [[kneeOut + 3, 220], [ankleOut - 1, 228], [ankleOut, 236]], // calf → ankle
+      [[ankleOut - 0.5, 240], [ankleOut - 3, 244], [ankleOut + 3, 244.8]], // foot, flared slightly out
+      [[ankleIn - 2, 244.8], [ankleIn, 242], [ankleIn, 236]],
+      [[ankleIn - 0.5, 226], [kneeIn - 1, 214], [kneeIn, 204]], // inner calf
+      [[kneeIn + 1.5, 188], [97, 172], [100, 162]], // inner thigh → crotch
+    ]
+  );
+}
+
+/** One arm, hanging naturally with a slight gap from the torso. */
+function armPath(shoulder: number, mirror: boolean): string {
+  const S = 100 - shoulder;
+  const raw: Seg[] = [
+    [[S - 4, 61.5], [S - 7, 66], [S - 7.5, 73]], // deltoid cap
+    [[S - 8.5, 86], [S - 9, 96], [S - 10, 106]], // upper arm → elbow
+    [[S - 11.5, 120], [S - 12.5, 134], [S - 13.5, 146]], // forearm → wrist
+    [[S - 14.5, 152], [S - 13.5, 158], [S - 9.5, 159]], // hand
+    [[S - 5.5, 159.5], [S - 4, 156], [S - 4.5, 150]],
+    [[S - 5, 138], [S - 4.5, 126], [S - 3, 114]], // inner forearm
+    [[S - 1.5, 102], [S + 0.5, 92], [S + 2, 84]], // inner upper arm
+    [[S + 3.5, 76], [S + 4, 68], [S + 3, 61]], // back to the cap
+  ];
+  const start: Pt = [S + 3, 61];
+  return mirror ? closed(flip(start), raw.map(([a, b, e]): Seg => [flip(a), flip(b), flip(e)])) : closed(start, raw);
+}
+
 export interface FigurePaths {
-  torso: string;
+  /** head + neck + torso + legs in one path */
+  core: string;
   leftArm: string;
   rightArm: string;
-  leftLeg: string;
-  rightLeg: string;
-}
-
-const mirrorX = (mirror: boolean) => (x: number) => (mirror ? 200 - x : x);
-
-function armPath(shoulder: number, mirror: boolean): string {
-  const x = mirrorX(mirror);
-  const o = 100 - shoulder;
-  return `M ${x(o)} 70 C ${x(o - 12)} 74 ${x(o - 20)} 90 ${x(o - 22)} 110 C ${x(o - 24)} 126 ${x(o - 24)} 140 ${x(o - 22)} 150 C ${x(o - 20)} 157 ${x(o - 8)} 157 ${x(o - 6)} 150 C ${x(o - 4)} 136 ${x(o - 4)} 120 ${x(o - 4)} 106 C ${x(o - 4)} 92 ${x(o)} 80 ${x(o + 6)} 70 Z`;
-}
-
-function legPath(hip: number, ankle: number, mirror: boolean): string {
-  const x = mirrorX(mirror);
-  const h = 100 - hip;
-  const a = 100 - ankle;
-  return `M ${x(h)} 150 C ${x(h - 2)} 176 ${x(a - 2)} 200 ${x(a)} 222 C ${x(a)} 238 ${x(a + 4)} 246 ${x(a + 14)} 246 C ${x(a + 24)} 246 ${x(a + 28)} 240 ${x(a + 28)} 230 C ${x(a + 28)} 210 ${x(99)} 180 ${x(99)} 152 Z`;
-}
-
-function torsoPath({ shoulder: s, chest: c, waist: w, hip: h }: FigureShape): string {
-  return `M 92 56 C 78 57 ${106 - s} 60 ${100 - s} 70 C ${98 - s} 78 ${100 - s} 92 ${100 - c} 104 C ${104 - c} 112 ${100 - w} 118 ${100 - w} 124 C ${100 - w} 134 ${100 - h} 142 ${100 - h} 152 L ${100 + h} 152 C ${100 + h} 142 ${100 + w} 134 ${100 + w} 124 C ${100 + w} 118 ${96 + c} 112 ${100 + c} 104 C ${100 + s} 92 ${102 + s} 78 ${100 + s} 70 C ${94 + s} 60 122 57 108 56 Z`;
 }
 
 export function figurePaths(shape: FigureShape): FigurePaths {
   return {
-    torso: torsoPath(shape),
+    core: corePath(shape),
     leftArm: armPath(shape.shoulder, false),
     rightArm: armPath(shape.shoulder, true),
-    leftLeg: legPath(shape.hip, shape.ankle, false),
-    rightLeg: legPath(shape.hip, shape.ankle, true),
   };
 }
 
@@ -77,30 +124,30 @@ export interface SiteZone {
 
 /** Tappable injection zones sized to the body (patient's left is the viewer's right). */
 export function siteZones({ shoulder: s, waist: w, hip: h }: FigureShape): SiteZone[] {
-  const abW = w - 6;
-  const abX = 100 - w + 2;
-  const thW = h - 9;
-  const thX = 100 - h + 6;
-  const armW = 19;
-  const armX = 100 - s - 21;
+  const abW = w - 5;
+  const abX = 100 - w + 3;
+  const thW = h - 8;
+  const thX = 100 - h + 5;
+  const armW = 14;
+  const armX = 100 - s - 12;
   return [
-    { id: "ab-r", x: abX, y: 106, w: abW, h: 27 },
-    { id: "ab-l", x: 200 - abX - abW, y: 106, w: abW, h: 27 },
-    { id: "th-r", x: thX, y: 160, w: thW, h: 38 },
-    { id: "th-l", x: 200 - thX - thW, y: 160, w: thW, h: 38 },
-    { id: "arm-r", x: armX, y: 76, w: armW, h: 30 },
-    { id: "arm-l", x: 200 - armX - armW, y: 76, w: armW, h: 30 },
+    { id: "ab-r", x: abX, y: 108, w: abW, h: 28 },
+    { id: "ab-l", x: 200 - abX - abW, y: 108, w: abW, h: 28 },
+    { id: "th-r", x: thX, y: 162, w: thW, h: 38 },
+    { id: "th-l", x: 200 - thX - thW, y: 162, w: thW, h: 38 },
+    { id: "arm-r", x: armX, y: 74, w: armW, h: 32 },
+    { id: "arm-l", x: 200 - armX - armW, y: 74, w: armW, h: 32 },
   ];
 }
 
 /** Where each measurement's callout dot sits on the body. */
 export function calloutAnchors({ shoulder: s, chest: c, waist: w, hip: h }: FigureShape): Record<MeasureKey, { x: number; y: number }> {
   return {
-    chest: { x: 100 - c + 14, y: 86 },
-    waist: { x: 100 + w - 2, y: 112 },
-    stomach: { x: 100 + w - 6, y: 134 },
-    hips: { x: 100 - h + 12, y: 140 },
-    thigh: { x: 100 - h + 19, y: 186 },
-    arm: { x: 100 + s + 12, y: 80 },
+    chest: { x: 100 - c + 10, y: 92 },
+    waist: { x: 100 + w - 2, y: 122 },
+    stomach: { x: 100 + w - 5, y: 136 },
+    hips: { x: 100 - h + 10, y: 148 },
+    thigh: { x: 100 - h + 16, y: 184 },
+    arm: { x: 100 + s + 8, y: 86 },
   };
 }

@@ -281,6 +281,23 @@
   color: var(--ink-3);
 }
 
+/* weight + tape readings under each compared photo */
+.compare-stats {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--ink-2);
+  line-height: 1.5;
+}
+
+/* the delta line between before & after */
+.compare-summary {
+  margin: 10px 0 0;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--accent-solid);
+}
+
 /* ------------------------------- pace insight ------------------------------- */
 
 .pace-row {

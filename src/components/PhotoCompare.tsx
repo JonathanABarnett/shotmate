@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Share2, X } from "lucide-react";
-import type { AppData, PhotoEntry } from "../types";
+import type { AppData, MeasureKey, PhotoEntry } from "../types";
 import { DAY, fmtDay, fmtDayFull } from "../lib/dates";
 import { signedLength, signedWeight } from "../lib/format";
 import { fmtLength, lengthUnit, nearestMeasureIn } from "../lib/measures";
@@ -10,14 +10,16 @@ import { loadPhotoBlob } from "../store/photoStore";
 import PhotoThumb from "./PhotoThumb";
 
 interface PaneProps {
+  data: AppData;
   photos: PhotoEntry[];
   selectedId: string;
   onSelect: (id: string) => void;
   label: string;
 }
 
-function ComparePane({ photos, selectedId, onSelect, label }: PaneProps) {
+function ComparePane({ data, photos, selectedId, onSelect, label }: PaneProps) {
   const photo = photos.find((p) => p.id === selectedId) ?? photos[0];
+  const details = detailsFor(data, photo.ts);
   return (
     <div className="compare-pane">
       <PhotoThumb photoId={photo.id} alt={`${label} photo`} className="compare-img"  focus={photo.focus} />
@@ -28,12 +30,32 @@ function ComparePane({ photos, selectedId, onSelect, label }: PaneProps) {
           </option>
         ))}
       </select>
+      <div className="compare-stats">{details.length > 0 ? details.join(" · ") : "No weigh-in or tape near this date"}</div>
       {photo.note && <div className="compare-note">{photo.note}</div>}
     </div>
   );
 }
 
-/** Weight and waist nearest a photo's date, as short stat strings. */
+const DETAIL_TAPES: { key: MeasureKey; label: string }[] = [
+  { key: "waist", label: "Waist" },
+  { key: "stomach", label: "Stomach" },
+  { key: "hips", label: "Hips" },
+  { key: "chest", label: "Chest" },
+];
+
+/** Weight plus every taped measure recorded near the photo's date. */
+function detailsFor(data: AppData, ts: number): string[] {
+  const unit = data.settings.unit;
+  const lbs = nearestWeightLbs(data.weights, ts);
+  const out = lbs != null ? [fmtWeight(lbs, unit)] : [];
+  for (const { key, label } of DETAIL_TAPES) {
+    const inches = nearestMeasureIn(data.measures, key, ts);
+    if (inches != null) out.push(`${label} ${fmtLength(inches, unit)} ${lengthUnit(unit)}`);
+  }
+  return out;
+}
+
+/** Weight and waist nearest a photo's date, as short stat strings — the share card's compact pair. */
 function statsFor(data: AppData, ts: number): { stats: string[]; lbs?: number; waistIn?: number } {
   const unit = data.settings.unit;
   const lbs = nearestWeightLbs(data.weights, ts);
@@ -106,9 +128,12 @@ export default function PhotoCompare({ data, photos, initialId, onClose }: Props
       </div>
       {status && <p className="compare-status">{status}</p>}
       <div className={`compare-grid${single ? " single" : ""}`}>
-        {!single && <ComparePane photos={sorted} selectedId={beforeId} onSelect={setBeforeId} label="Before" />}
-        <ComparePane photos={sorted} selectedId={afterId} onSelect={setAfterId} label={single ? "Photo" : "After"} />
+        {!single && <ComparePane data={data} photos={sorted} selectedId={beforeId} onSelect={setBeforeId} label="Before" />}
+        <ComparePane data={data} photos={sorted} selectedId={afterId} onSelect={setAfterId} label={single ? "Photo" : "After"} />
       </div>
+      {!single && beforeId !== afterId && (
+        <p className="compare-summary">{summaryFor(data, sorted.find((p) => p.id === beforeId)!, sorted.find((p) => p.id === afterId)!)}</p>
+      )}
       <p className="compare-note compare-foot">The share card stamps the date, weight, and waist nearest each photo — nothing else leaves your device.</p>
     </div>
   );
