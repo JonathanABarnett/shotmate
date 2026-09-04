@@ -49,6 +49,8 @@ export interface PhotoEntry {
   ts: number;
   note?: string;
   focus?: PhotoFocus;
+  /** crop zoom around the focal point (1 = plain cover crop) — for lining photos up between weeks */
+  zoom?: number;
 }
 
 /** A non-scale victory. */
@@ -155,6 +157,8 @@ export interface Settings {
   calorieBudgetKcal?: number;
   /** slim the fuel card to just calories — for folks not tracking protein/water right now */
   calorieOnlyFuel?: boolean;
+  /** weight chart y-axis anchored to the goal line (default: fit to the data, so progress is visible) */
+  weightChartGoal?: boolean;
 }
 
 export interface AppData {

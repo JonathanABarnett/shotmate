@@ -6,6 +6,8 @@ export interface SharePane {
   stats: string[];
   /** crop focal point, 0..1 per axis; center when absent */
   focus?: { x: number; y: number };
+  /** crop zoom around the focal point; 1/undefined = plain cover */
+  zoom?: number;
 }
 
 const WIDTH = 1080;
@@ -22,8 +24,10 @@ function drawCover(
   w: number,
   h: number,
   focus = { x: 0.5, y: 0.5 },
+  zoom = 1,
 ) {
-  const scale = Math.max(w / img.width, h / img.height);
+  // zoom multiplies the cover scale — the exact math the CSS crop uses, so cards match the app
+  const scale = Math.max(w / img.width, h / img.height) * Math.max(1, zoom);
   const dw = img.width * scale;
   const dh = img.height * scale;
   ctx.drawImage(img, x + (w - dw) * focus.x, y + (h - dh) * focus.y, dw, dh);
@@ -34,7 +38,7 @@ function drawPane(ctx: CanvasRenderingContext2D, pane: SharePane, img: ImageBitm
   ctx.beginPath();
   ctx.roundRect(x, PAD, w, IMAGE_HEIGHT, 28);
   ctx.clip();
-  drawCover(ctx, img, x, PAD, w, IMAGE_HEIGHT, pane.focus);
+  drawCover(ctx, img, x, PAD, w, IMAGE_HEIGHT, pane.focus, pane.zoom);
   const fade = ctx.createLinearGradient(0, PAD + IMAGE_HEIGHT - 260, 0, PAD + IMAGE_HEIGHT);
   fade.addColorStop(0, "rgba(10, 8, 24, 0)");
   fade.addColorStop(1, "rgba(10, 8, 24, 0.82)");

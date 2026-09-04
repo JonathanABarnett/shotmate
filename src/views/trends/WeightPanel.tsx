@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { AppData } from "../../types";
 import { DAY } from "../../lib/dates";
 import { bmi, latestWeight, sortedWeights, toDisplayWeight, weeklyRate } from "../../lib/weight";
+import { useStore } from "../../store/StoreProvider";
 import WeightChart from "../../components/charts/WeightChart";
 import EmptyState from "../../components/EmptyState";
 import ChartStats, { type ChartStat } from "../../components/ChartStats";
@@ -41,9 +42,11 @@ function buildStats(data: AppData, rangeDays: number | null): ChartStat[] {
 }
 
 export default function WeightPanel({ data }: { data: AppData }) {
+  const { dispatch } = useStore();
   const [range, setRange] = useState<RangeKey>("90");
   const rangeDays = range === "all" ? null : Number(range);
   const weights = rangeDays ? data.weights.filter((w) => w.ts >= Date.now() - rangeDays * DAY) : data.weights;
+  const toGoal = data.settings.weightChartGoal ?? false;
 
   return (
     <section className="card">
@@ -52,12 +55,21 @@ export default function WeightPanel({ data }: { data: AppData }) {
           <h3 className="card-title">Weight</h3>
           <div className="card-sub">Dots are weigh-ins · soft line is your 7-day average</div>
         </div>
+        {data.settings.goalLbs != null && (
+          <button
+            className={`chip${toGoal ? " active" : ""}`}
+            aria-pressed={toGoal}
+            onClick={() => dispatch({ type: "updateSettings", patch: { weightChartGoal: !toGoal } })}
+          >
+            🎯 To goal
+          </button>
+        )}
       </div>
       <div className="spacer-8" />
       <RangeChips options={RANGES.map((r) => ({ key: r.key as RangeKey, label: r.label }))} value={range} onChange={setRange} />
       {weights.length >= 2 ? (
         <>
-          <WeightChart weights={weights} unit={data.settings.unit} goalLbs={data.settings.goalLbs} />
+          <WeightChart weights={weights} unit={data.settings.unit} goalLbs={data.settings.goalLbs} includeGoal={toGoal} />
           <ChartStats stats={buildStats(data, rangeDays)} />
         </>
       ) : (

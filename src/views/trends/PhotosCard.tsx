@@ -43,7 +43,7 @@ export default function PhotosCard({ data, onAddPhoto }: Props) {
         <div className="photo-strip">
           {photos.map((p) => (
             <button key={p.id} className="photo-cell" onClick={() => setViewerId(p.id)}>
-              <PhotoThumb photoId={p.id} alt={`Photo from ${fmtDay(p.ts)}`} className="photo-cell-img"  focus={p.focus} />
+              <PhotoThumb photoId={p.id} alt={`Photo from ${fmtDay(p.ts)}`} className="photo-cell-img" focus={p.focus} zoom={p.zoom} />
               <span className="photo-cell-date">{fmtDay(p.ts)}</span>
             </button>
           ))}

@@ -10,6 +10,8 @@ interface Props {
   weights: WeightEntry[];
   unit: Unit;
   goalLbs?: number;
+  /** stretch the y-axis down to the goal line; off = fit to the data so progress is visible */
+  includeGoal?: boolean;
   height?: number;
 }
 
@@ -34,12 +36,13 @@ function valueDomain(values: number[], goal?: number): [number, number] {
   return [Math.floor(lo - pad), Math.ceil(hi + pad)];
 }
 
-export default function WeightChart({ weights, unit, goalLbs, height = 240 }: Props) {
+export default function WeightChart({ weights, unit, goalLbs, includeGoal = false, height = 240 }: Props) {
   const data = buildData(weights, unit);
   if (data.length === 0) return null;
 
   const goal = goalLbs != null ? toDisplayWeight(goalLbs, unit) : undefined;
-  const domain = valueDomain(data.map((d) => d.value), goal);
+  const domain = valueDomain(data.map((d) => d.value), includeGoal ? goal : undefined);
+  const goalVisible = goal != null && goal >= domain[0] && goal <= domain[1];
   const ticks = tsTicks(data[0].ts, data[data.length - 1].ts);
   const showDots = data.length <= MAX_DOTS;
 
@@ -56,7 +59,7 @@ export default function WeightChart({ weights, unit, goalLbs, height = 240 }: Pr
             ticks={niceTicks(domain[0], domain[1])}
             tickFormatter={(v: number) => `${Math.round(v)}`}
           />
-          {goal != null && (
+          {goalVisible && (
             <ReferenceLine
               y={goal}
               stroke={CHART.reference}

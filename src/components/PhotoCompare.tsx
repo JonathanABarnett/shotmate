@@ -25,7 +25,7 @@ function ComparePane({ data, photos, selectedId, onSelect, onZoom, label }: Pane
   return (
     <div className="compare-pane">
       <button className="compare-imgbtn" onClick={() => onZoom(photo.id)} aria-label={`Enlarge ${label.toLowerCase()} photo`}>
-        <PhotoThumb photoId={photo.id} alt={`${label} photo`} className="compare-img"  focus={photo.focus} />
+        <PhotoThumb photoId={photo.id} alt={`${label} photo`} className="compare-img" focus={photo.focus} zoom={photo.zoom} />
       </button>
       <select className="input compare-select" value={photo.id} onChange={(e) => onSelect(e.target.value)} aria-label={label}>
         {photos.map((p) => (
@@ -151,7 +151,7 @@ export default function PhotoCompare({ data, photos, initialId, onClose }: Props
       const panes: SharePane[] = [];
       for (const photo of chosen) {
         const image = await loadPhotoBlob(photo.id);
-        if (image) panes.push({ image, caption: fmtDay(photo.ts), stats: statsFor(data, photo.ts).stats, focus: photo.focus });
+        if (image) panes.push({ image, caption: fmtDay(photo.ts), stats: statsFor(data, photo.ts).stats, focus: photo.focus, zoom: photo.zoom });
       }
       if (panes.length === 0) throw new Error("no photos");
       const summary = chosen.length === 2 ? summaryFor(data, chosen[0], chosen[1]) : statsFor(data, chosen[0].ts).stats.join("  ·  ") || "My progress";

@@ -168,6 +168,62 @@
   right: 10px;
 }
 
+/* clipping wrap around every stored photo — lets crop zoom scale inside it */
+.photo-wrap {
+  display: block;
+  overflow: hidden;
+  position: relative;
+}
+
+.photo-wrap > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.zoom-img > img {
+  object-fit: contain;
+}
+
+/* zoom slider under the crop frame */
+.photo-zoom-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-3);
+}
+
+.photo-zoom-row input[type="range"] {
+  flex: 1;
+  accent-color: var(--accent-solid);
+}
+
+/* "match your last one" reference beside the picker */
+.photo-ref {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.photo-ref-img {
+  width: 62px;
+  aspect-ratio: 3 / 4;
+  border-radius: 10px;
+  flex: none;
+  border: 1px solid var(--hairline);
+}
+
+.photo-ref span {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
 .photo-strip {
   display: flex;
   gap: 10px;
