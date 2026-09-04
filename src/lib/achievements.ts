@@ -87,6 +87,16 @@ export function achievements(data: AppData): Achievement[] {
   const weighRun = bestDayRun(new Set(data.weights.map((w) => startOfDay(w.ts))));
   const moveRun = bestDayRun(new Set(data.activities.map((a) => startOfDay(a.ts))));
   const kcalDays = data.intake.filter((i) => (i.kcal ?? 0) > 0).length;
+  const runs = data.activities.filter((a) => a.type === "run");
+  const longestRunMin = Math.max(0, ...runs.map((r) => r.minutes));
+  const longestRunMi = Math.max(0, ...runs.map((r) => r.distanceMi ?? 0));
+  const typesUsed = new Set(data.activities.map((a) => a.type)).size;
+  const dayMinutes = new Map<number, number>();
+  for (const a of data.activities) {
+    const day = startOfDay(a.ts);
+    dayMinutes.set(day, (dayMinutes.get(day) ?? 0) + a.minutes);
+  }
+  const bestDayMinutes = Math.max(0, ...dayMinutes.values());
 
   return [
     make("first-shot", "💉", "First shot", "Logged your very first injection", shots, 1),
@@ -115,9 +125,19 @@ export function achievements(data: AppData): Achievement[] {
     make("move-1", "👟", "Moving", "First activity logged", data.activities.length, 1),
     make("move-500", "🏃", "500 active minutes", "500 minutes of movement logged", activeMinutes, 500),
     make("move-1000", "🚀", "A thousand minutes", "1,000 minutes of movement logged", activeMinutes, 1000),
+    make("move-2500", "🦾", "2,500 strong", "2,500 minutes of movement logged", activeMinutes, 2500),
     make("move-streak-7", "⚡", "A week in motion", "Moved 7 days in a row", moveRun, 7),
+    make("move-streak-14", "🌊", "Fortnight in motion", "Moved 14 days in a row", moveRun, 14),
+    make("move-streak-30", "🏔️", "Unstoppable month", "Moved 30 days in a row", moveRun, 30),
+    make("day-60", "⏰", "Hour of power", "60 active minutes in a single day", bestDayMinutes, 60),
     make("mi-26", "🎽", "Marathon distance", `${fmtDistance(26.2, unit)} of logged movement, all told`, totalMiles, 26.2),
+    make("mi-50", "🛣️", "Fifty miles", `${fmtDistance(50, unit)} of logged movement, all told`, totalMiles, 50),
     make("mi-100", "🗺️", "The long haul", `${fmtDistance(100, unit)} of logged movement, all told`, totalMiles, 100),
+    make("mi-250", "🛤️", "The long road", `${fmtDistance(250, unit)} of logged movement, all told`, totalMiles, 250),
+    make("run-1", "💨", "Runner now", "First run logged", runs.length, 1),
+    make("run-20", "⏱️", "Twenty nonstop", "A single run of 20+ minutes", longestRunMin, 20),
+    make("run-5k", "🏁", "The full 5K", `One run covering ${fmtDistance(3.1, unit)}`, longestRunMi, 3.1),
+    make("cross-3", "🤸", "Mix it up", "Three different activity types logged", typesUsed, 3),
     make("protein-7", "🥩", "Protein week", "Hit your protein goal 7 days", proteinDaysHit(data), 7),
     make("water-7", "💧", "Well watered", "Hit your water goal 7 days", waterDaysHit(data), 7),
     make("kcal-7", "📒", "Fuel ledger", "Calories logged 7 days", kcalDays, 7),
