@@ -47,7 +47,7 @@ export default function HomeView({ installPrompt, sync, showToast, onLogShot, on
       {!hidden.has("cycle") && <CycleReviewCard data={data} />}
       <SupplyCard data={data} />
       {!hidden.has("intake") && <IntakeCard data={data} onLogCalories={onLogCalories} />}
-      {!hidden.has("photos") && <PhotosCard data={data} onAddPhoto={onAddPhoto} />}
+      {!hidden.has("photos") && <PhotosCard data={data} onAddPhoto={onAddPhoto} onEditPhoto={(p) => onEdit({ kind: "photo", item: p })} />}
       <WeightTrendCard data={data} onSeeTrends={onSeeTrends} />
       {!hidden.has("goal") && <GoalCard data={data} onOpenSettings={onOpenSettings} />}
       <RecentActivity data={data} onEdit={onEdit} onSeeAll={onSeeHistory} />

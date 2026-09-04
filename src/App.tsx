@@ -108,7 +108,13 @@ export default function App() {
               onEdit={(entry) => setSheet(sheetForEntry(entry))}
             />
           )}
-          {tab === "trends" && <TrendsView onAddPhoto={() => setSheet({ kind: "photo" })} showToast={showToast} />}
+          {tab === "trends" && (
+            <TrendsView
+              onAddPhoto={() => setSheet({ kind: "photo" })}
+              onEditPhoto={(photo) => setSheet({ kind: "photo", existing: photo })}
+              showToast={showToast}
+            />
+          )}
           {tab === "history" && <HistoryView onEdit={(entry) => setSheet(sheetForEntry(entry))} />}
           {tab === "help" && <HelpView />}
         </>

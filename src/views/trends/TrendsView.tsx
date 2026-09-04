@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { PhotoEntry } from "../../types";
 import { useStore } from "../../store/StoreProvider";
 import SegmentedControl from "../../components/SegmentedControl";
 import WeightPanel from "./WeightPanel";
@@ -26,10 +27,11 @@ const PANELS = [
 
 interface Props {
   onAddPhoto: () => void;
+  onEditPhoto: (photo: PhotoEntry) => void;
   showToast: (message: string) => void;
 }
 
-export default function TrendsView({ onAddPhoto, showToast }: Props) {
+export default function TrendsView({ onAddPhoto, onEditPhoto, showToast }: Props) {
   const { data } = useStore();
   const [panel, setPanel] = useState<PanelKey>("weight");
 
@@ -57,7 +59,7 @@ export default function TrendsView({ onAddPhoto, showToast }: Props) {
         <>
           <BodySnapshot data={data} />
           <BodyPanel data={data} />
-          <PhotosCard data={data} onAddPhoto={onAddPhoto} />
+          <PhotosCard data={data} onAddPhoto={onAddPhoto} onEditPhoto={onEditPhoto} />
         </>
       )}
       {active === "vitals" && <VitalsPanel data={data} />}

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Camera } from "lucide-react";
-import type { AppData } from "../../types";
+import type { AppData, PhotoEntry } from "../../types";
 import { fmtDay } from "../../lib/dates";
 import PhotoThumb from "../../components/PhotoThumb";
 import PhotoCompare from "../../components/PhotoCompare";
@@ -9,9 +9,10 @@ import EmptyState from "../../components/EmptyState";
 interface Props {
   data: AppData;
   onAddPhoto: () => void;
+  onEditPhoto: (photo: PhotoEntry) => void;
 }
 
-export default function PhotosCard({ data, onAddPhoto }: Props) {
+export default function PhotosCard({ data, onAddPhoto, onEditPhoto }: Props) {
   const photos = [...data.photos].sort((a, b) => b.ts - a.ts);
   const [viewerId, setViewerId] = useState<string | null>(null);
 
@@ -50,10 +51,19 @@ export default function PhotosCard({ data, onAddPhoto }: Props) {
         </div>
       )}
       {viewerId && (
-        <PhotoCompare data={data} photos={data.photos} initialId={viewerId} onClose={() => setViewerId(null)} />
+        <PhotoCompare
+          data={data}
+          photos={data.photos}
+          initialId={viewerId}
+          onEdit={(photo) => {
+            setViewerId(null);
+            onEditPhoto(photo);
+          }}
+          onClose={() => setViewerId(null)}
+        />
       )}
       {photos.length > 0 && (
-        <p className="field-hint">Tap a photo to compare before &amp; after — edit or delete from History.</p>
+        <p className="field-hint">Tap a photo to compare, flip through them all, edit, or share.</p>
       )}
     </section>
   );
