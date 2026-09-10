@@ -159,6 +159,8 @@ export interface Settings {
   calorieOnlyFuel?: boolean;
   /** weight chart y-axis anchored to the goal line (default: fit to the data, so progress is visible) */
   weightChartGoal?: boolean;
+  /** the date the forecast card projects to — an event worth aiming at */
+  forecastDate?: number;
 }
 
 export interface AppData {

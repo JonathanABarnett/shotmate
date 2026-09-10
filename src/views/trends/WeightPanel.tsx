@@ -53,7 +53,7 @@ export default function WeightPanel({ data }: { data: AppData }) {
       <div className="card-title-row">
         <div>
           <h3 className="card-title">Weight</h3>
-          <div className="card-sub">Dots are weigh-ins · soft line is your 7-day average</div>
+          <div className="card-sub">Dots are weigh-ins · soft line is the 7-day average · dashes are shots</div>
         </div>
         {data.settings.goalLbs != null && (
           <button
@@ -69,7 +69,7 @@ export default function WeightPanel({ data }: { data: AppData }) {
       <RangeChips options={RANGES.map((r) => ({ key: r.key as RangeKey, label: r.label }))} value={range} onChange={setRange} />
       {weights.length >= 2 ? (
         <>
-          <WeightChart weights={weights} unit={data.settings.unit} goalLbs={data.settings.goalLbs} includeGoal={toGoal} />
+          <WeightChart weights={weights} unit={data.settings.unit} goalLbs={data.settings.goalLbs} includeGoal={toGoal} shots={data.shots} />
           <ChartStats stats={buildStats(data, rangeDays)} />
         </>
       ) : (

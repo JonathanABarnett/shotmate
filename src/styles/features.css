@@ -1040,6 +1040,45 @@
   margin-top: 8px;
 }
 
+/* forecast card — a date, then the two projections side by side */
+.forecast-date {
+  margin-top: 10px;
+}
+
+.forecast-when {
+  margin-top: 12px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ink-2);
+}
+
+.forecast-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.forecast-cell {
+  padding: 12px;
+  border-radius: 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--hairline);
+}
+
+.forecast-value {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.forecast-label {
+  margin-top: 2px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
 /* ------------------------------- photo share ------------------------------- */
 
 .compare-actions {

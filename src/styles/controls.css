@@ -150,6 +150,7 @@ textarea.input {
   font-size: 13px;
   font-weight: 700;
   padding: 8px 14px;
+  white-space: nowrap;
   border-radius: 999px;
   background: var(--surface);
   border: 1.5px solid var(--hairline-strong);

@@ -3,6 +3,7 @@ import type { PhotoEntry } from "../../types";
 import { useStore } from "../../store/StoreProvider";
 import SegmentedControl from "../../components/SegmentedControl";
 import WeightPanel from "./WeightPanel";
+import ForecastCard from "./ForecastCard";
 import InsightsPanel from "./InsightsPanel";
 import LevelPanel from "./LevelPanel";
 import DosePanel from "./DosePanel";
@@ -47,7 +48,12 @@ export default function TrendsView({ onAddPhoto, onEditPhoto, showToast }: Props
         value={active}
         onChange={setPanel}
       />
-      {active === "weight" && <WeightPanel data={data} />}
+      {active === "weight" && (
+        <>
+          <WeightPanel data={data} />
+          <ForecastCard data={data} />
+        </>
+      )}
       {active === "insights" && <InsightsPanel data={data} />}
       {active === "level" && (
         <>
