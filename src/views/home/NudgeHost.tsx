@@ -45,7 +45,7 @@ export default function NudgeHost({ data, sync, showToast, onOpenSettings, onLog
   };
 
   const act = () => {
-    if (nudge.key === "setup") onOpenSettings();
+    if (nudge.key === "setup" || nudge.key === "bud") onOpenSettings();
     else if (nudge.key === "tape") onLogMeasure();
     else if (nudge.key === "photo") onLogPhoto();
     else if (nudge.key === "backup") void saveBackup();
@@ -53,7 +53,7 @@ export default function NudgeHost({ data, sync, showToast, onOpenSettings, onLog
   };
 
   const dismiss = () => {
-    snoozeNudge(nudge.key, nudge.key === "tape" || nudge.key === "photo" ? 5 : 30);
+    snoozeNudge(nudge.key, nudge.key === "bud" ? 3 : nudge.key === "tape" || nudge.key === "photo" ? 5 : 30);
     refresh();
   };
 

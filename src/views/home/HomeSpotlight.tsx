@@ -3,6 +3,7 @@ import type { AppData } from "../../types";
 import type { SyncState } from "../../sync/useSync";
 import { uid } from "../../lib/ids";
 import { crossedMilestone } from "../../lib/milestones";
+import { topNudge } from "../../lib/nudges";
 import { monthStory } from "../../lib/story";
 import { dismissRecap, weeklyRecap } from "../../lib/weeklyRecap";
 import { markWinSuggestionHandled, suggestedWin } from "../../lib/winSuggestions";
@@ -22,7 +23,10 @@ interface Props {
   onLogPhoto: () => void;
 }
 
-/** One spotlight at a time: celebration, then story, then the Sunday letter, then a win suggestion, then a nudge. */
+/**
+ * One spotlight at a time: celebration, then story, then the Sunday letter, then a win suggestion, then a nudge —
+ * except a vial about to expire, which outranks everything but a celebration.
+ */
 export default function HomeSpotlight({ data, sync, showToast, onOpenSettings, onLogMeasure, onLogPhoto }: Props) {
   const { dispatch } = useStore();
   const [, setBumped] = useState(0);
@@ -48,6 +52,9 @@ export default function HomeSpotlight({ data, sync, showToast, onOpenSettings, o
       />
     );
   }
+
+  const nudgeHost = <NudgeHost data={data} sync={sync} showToast={showToast} onOpenSettings={onOpenSettings} onLogMeasure={onLogMeasure} onLogPhoto={onLogPhoto} />;
+  if (topNudge(data, Boolean(sync.userId))?.key === "bud") return nudgeHost;
 
   const story = monthStory(data);
   if (story) {
@@ -100,5 +107,5 @@ export default function HomeSpotlight({ data, sync, showToast, onOpenSettings, o
     );
   }
 
-  return <NudgeHost data={data} sync={sync} showToast={showToast} onOpenSettings={onOpenSettings} onLogMeasure={onLogMeasure} onLogPhoto={onLogPhoto} />;
+  return nudgeHost;
 }

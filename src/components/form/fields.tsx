@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { fromLocalInputValue, toLocalInputValue } from "../../lib/dates";
+import { fromLocalDateValue, fromLocalInputValue, toLocalDateValue, toLocalInputValue } from "../../lib/dates";
 
 interface FieldProps {
   label: string;
@@ -52,6 +52,27 @@ export function NoteField({ value, onChange }: NoteFieldProps) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         rows={2}
+      />
+    </Field>
+  );
+}
+
+interface DateFieldProps {
+  value?: number;
+  onChange: (ts: number | undefined) => void;
+  label: string;
+  hint?: string;
+}
+
+/** A calendar day stored as local noon, so it reads the same in any timezone; clearing the input clears the value. */
+export function DateField({ value, onChange, label, hint }: DateFieldProps) {
+  return (
+    <Field label={label} hint={hint}>
+      <input
+        type="date"
+        className="input"
+        value={value != null ? toLocalDateValue(value) : ""}
+        onChange={(e) => onChange(e.target.value ? fromLocalDateValue(e.target.value) : undefined)}
       />
     </Field>
   );

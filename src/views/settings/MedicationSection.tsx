@@ -3,7 +3,7 @@ import { useStore } from "../../store/StoreProvider";
 import { medFor } from "../../lib/meds";
 import { drawVolume, fmtDraw } from "../../lib/draw";
 import { DEFAULT_REORDER_LEAD_DAYS, fmtUsd, supplyStatus } from "../../lib/supply";
-import { Field } from "../../components/form/fields";
+import { DateField, Field } from "../../components/form/fields";
 import MedPicker from "../../components/form/MedPicker";
 import DosePicker from "../../components/form/DosePicker";
 import Stepper from "../../components/form/Stepper";
@@ -102,6 +102,12 @@ export default function MedicationSection() {
             value={settings.reorderLeadDays}
             onChange={(reorderLeadDays) => patch({ reorderLeadDays })}
             max={90}
+          />
+          <DateField
+            label="Vial beyond-use date (optional)"
+            hint="The BUD on the pharmacy label — past it the vial isn't reliable, whatever's left. You'll get a heads-up a week out."
+            value={settings.vialBudTs}
+            onChange={(vialBudTs) => patch({ vialBudTs })}
           />
         </>
       )}

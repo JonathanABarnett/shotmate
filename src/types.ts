@@ -119,7 +119,7 @@ export interface CheckinEntry {
 export type ThemePref = "auto" | "light" | "dark";
 
 /** Optional Home cards the user can hide in Settings → Appearance. */
-export type HomeCardKey = "checkin" | "cycle" | "intake" | "goal" | "photos";
+export type HomeCardKey = "checkin" | "cycle" | "intake" | "goal" | "photos" | "crew";
 
 export type BodyType = "neutral" | "slim" | "broad" | "curvy";
 
@@ -161,6 +161,8 @@ export interface Settings {
   weightChartGoal?: boolean;
   /** the date the forecast card projects to — an event worth aiming at */
   forecastDate?: number;
+  /** the vial's beyond-use date from the pharmacy label — not reliable past it, whatever's left */
+  vialBudTs?: number;
 }
 
 export interface AppData {

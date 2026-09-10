@@ -1348,3 +1348,115 @@
   color: var(--ink-2);
 }
 
+
+/* the crew — a cast of characters who react and comment, all computed on-device */
+.crew-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: #fff;
+  font-weight: 800;
+  flex: none;
+}
+
+.crew-list {
+  margin-top: 6px;
+}
+
+.crew-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.crew-item:last-child {
+  border-bottom: none;
+}
+
+.crew-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.crew-meta {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+.crew-name {
+  font-weight: 800;
+  color: var(--ink-2);
+}
+
+.crew-about {
+  font-style: italic;
+}
+
+.crew-text {
+  margin-top: 2px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+/* moments rows became buttons that open the crew's thread; the wrap carries the divider */
+.moment-row {
+  width: 100%;
+  text-align: left;
+  border-bottom: none;
+}
+
+.moment-row-wrap {
+  border-bottom: 1px solid var(--hairline);
+}
+
+.moment-row-wrap:last-child {
+  border-bottom: none;
+}
+
+.moment-reacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 5px;
+}
+
+.react-pill {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--ink-2);
+  background: var(--surface-2);
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+
+.crew-thread {
+  display: grid;
+  gap: 8px;
+  padding: 2px 0 12px 44px;
+}
+
+.crew-who {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+.crew-comment {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 13px;
+}
+
+.crew-comment .crew-text {
+  display: inline;
+  margin: 0;
+  font-size: 13px;
+}

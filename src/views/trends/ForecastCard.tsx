@@ -1,22 +1,10 @@
 import type { AppData } from "../../types";
-import { DAY, fmtDay, fmtDayFull, startOfDay } from "../../lib/dates";
+import { DAY, fmtDay, fmtDayFull, fromLocalDateValue, startOfDay, toLocalDateValue } from "../../lib/dates";
 import { forecast } from "../../lib/forecast";
 import { fmtWeight } from "../../lib/weight";
 import { useStore } from "../../store/StoreProvider";
 
 const DEFAULT_WEEKS_AHEAD = 6;
-
-const toInputDate = (ts: number) => {
-  const d = new Date(ts);
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-};
-
-/** Noon on the chosen calendar day, so the date reads the same in any timezone. */
-const fromInputDate = (value: string) => {
-  const [y, m, d] = value.split("-").map(Number);
-  return new Date(y, m - 1, d, 12).getTime();
-};
 
 /** "What will I weigh on …?" — the question every event on the calendar asks. */
 export default function ForecastCard({ data }: { data: AppData }) {
@@ -49,8 +37,8 @@ export default function ForecastCard({ data }: { data: AppData }) {
         type="date"
         className="input forecast-date"
         aria-label="Forecast date"
-        value={toInputDate(targetTs)}
-        onChange={(e) => e.target.value && dispatch({ type: "updateSettings", patch: { forecastDate: fromInputDate(e.target.value) } })}
+        value={toLocalDateValue(targetTs)}
+        onChange={(e) => e.target.value && dispatch({ type: "updateSettings", patch: { forecastDate: fromLocalDateValue(e.target.value) } })}
       />
       {!f ? (
         <p className="field-hint">Needs a couple of weeks of weigh-ins first.</p>

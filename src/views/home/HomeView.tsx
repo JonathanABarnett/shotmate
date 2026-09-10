@@ -14,6 +14,7 @@ import WeightTrendCard from "./WeightTrendCard";
 import GoalCard from "./GoalCard";
 import RecentActivity from "./RecentActivity";
 import PhotosCard from "../trends/PhotosCard";
+import CrewCard from "./CrewCard";
 
 interface Props {
   installPrompt: InstallPrompt;
@@ -48,6 +49,7 @@ export default function HomeView({ installPrompt, sync, showToast, onLogShot, on
       <SupplyCard data={data} />
       {!hidden.has("intake") && <IntakeCard data={data} onLogCalories={onLogCalories} />}
       {!hidden.has("photos") && <PhotosCard data={data} onAddPhoto={onAddPhoto} onEditPhoto={(p) => onEdit({ kind: "photo", item: p })} />}
+      {!hidden.has("crew") && <CrewCard data={data} />}
       <WeightTrendCard data={data} onSeeTrends={onSeeTrends} />
       {!hidden.has("goal") && <GoalCard data={data} onOpenSettings={onOpenSettings} />}
       <RecentActivity data={data} onEdit={onEdit} onSeeAll={onSeeHistory} />

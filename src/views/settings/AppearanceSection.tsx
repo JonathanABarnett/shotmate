@@ -23,6 +23,7 @@ const HOME_CARDS: { key: HomeCardKey; label: string }[] = [
   { key: "intake", label: "Today's fuel" },
   { key: "goal", label: "Goal & milestones" },
   { key: "photos", label: "Progress photos" },
+  { key: "crew", label: "Your crew" },
 ];
 
 type FuelMode = "full" | "calories";

@@ -2,9 +2,10 @@ import type { AppData, Shot } from "../types";
 import { DAY, HOUR } from "./dates";
 import { isCompoundedMed } from "./meds";
 import { sortedShots } from "./shots";
+import { BUD_WARN_DAYS } from "./supply";
 import { isPushSupported, remindersWanted } from "../sync/pushReminders";
 
-export type NudgeKey = "setup" | "reminders" | "tape" | "photo" | "backup";
+export type NudgeKey = "setup" | "bud" | "reminders" | "tape" | "photo" | "backup";
 
 export interface Nudge {
   key: NudgeKey;
@@ -89,10 +90,25 @@ function backupNudge(data: AppData, signedIn: boolean, now: number): Nudge | und
   return { key: "backup", emoji: "📦", text, cta: "Save backup" };
 }
 
+/** A vial near or past its beyond-use date outranks everything — the medicine in it is what's at stake. */
+function budNudge(budTs: number | undefined, now: number): Nudge | undefined {
+  if (budTs == null || snoozed("bud", now)) return undefined;
+  const daysLeft = Math.ceil((budTs - now) / DAY);
+  if (daysLeft > BUD_WARN_DAYS) return undefined;
+  const text =
+    daysLeft <= 0
+      ? "Your vial is past its beyond-use date. Once the new one's in hand, update the supply in Settings so the math stays honest."
+      : `Your vial's beyond-use date is in ${daysLeft} ${daysLeft === 1 ? "day" : "days"} — time to line up the next one.`;
+  return { key: "bud", emoji: "🧪", text, cta: "Update vial" };
+}
+
 /** The single most useful nudge right now, or nothing — never a stack of banners. */
 export function topNudge(data: AppData, signedIn: boolean, now = Date.now()): Nudge | undefined {
   if (data.sample || !data.onboarded) return undefined;
   const { settings, measures, shots } = data;
+
+  const bud = budNudge(settings.vialBudTs, now);
+  if (bud) return bud;
 
   if (!snoozed("setup", now) && isCompoundedMed(settings.medKey) && (settings.vialMgPerMl == null || settings.supplyMg == null)) {
     return {

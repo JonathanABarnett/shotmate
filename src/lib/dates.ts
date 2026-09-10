@@ -49,6 +49,19 @@ export function fromLocalInputValue(value: string): number {
   return Number.isFinite(t) ? t : Date.now();
 }
 
+/** yyyy-mm-dd for a date input, in local time. */
+export function toLocalDateValue(ts: number): string {
+  const d = new Date(ts);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+/** Local noon on the chosen calendar day, so the date reads the same in any timezone. */
+export function fromLocalDateValue(value: string): number {
+  const [y, m, d] = value.split("-").map(Number);
+  return new Date(y, m - 1, d, 12).getTime();
+}
+
 export function greeting(now = new Date()): string {
   const h = now.getHours();
   if (h < 5) return "Up late";
