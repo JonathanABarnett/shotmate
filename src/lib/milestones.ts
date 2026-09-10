@@ -1,5 +1,5 @@
 import type { AppData, Unit } from "../types";
-import { trendWeightLbs } from "./insights/noiseTrend";
+import { trendLossLbs } from "./insights/noiseTrend";
 import { startWeightLbs, toDisplayWeight } from "./weight";
 
 export interface Milestone {
@@ -43,21 +43,17 @@ export const MILESTONE_KEYS = new Set([
 
 const label = (lbs: number, unit: Unit) => `${Math.round(toDisplayWeight(lbs, unit))} ${unit}`;
 
-type Stop = Milestone & { atLostLbs: number };
+export type MilestoneStop = Milestone & { atLostLbs: number };
 
-/** The next uncelebrated weight milestone the 7-day trend has crossed — smallest first, so parties arrive in order. */
-export function crossedMilestone(data: AppData, now = Date.now()): Milestone | undefined {
-  if (data.sample || !data.onboarded) return undefined;
+/** Every weight milestone on the road, smallest first — the ones the user's start and goal define. */
+export function milestoneStops(data: AppData): MilestoneStop[] {
   const start = startWeightLbs(data);
-  const trend = trendWeightLbs(data, now);
-  if (start == null || trend == null) return undefined;
-  const lost = start - trend;
+  if (start == null) return [];
   const unit = data.settings.unit;
-  const seen = new Set(data.seenAchievements);
 
-  const stops: Stop[] = [
+  const stops: MilestoneStop[] = [
     ...LBS_MARKS.map(
-      ([lbs, emoji]): Stop => ({
+      ([lbs, emoji]): MilestoneStop => ({
         key: `lbs-${lbs}`,
         emoji,
         atLostLbs: lbs,
@@ -67,7 +63,7 @@ export function crossedMilestone(data: AppData, now = Date.now()): Milestone | u
       })
     ),
     ...PCT_MARKS.map(
-      ([mark, emoji, note]): Stop => ({
+      ([mark, emoji, note]): MilestoneStop => ({
         key: `pct-${mark}`,
         emoji,
         atLostLbs: (start * mark) / 100,
@@ -101,5 +97,14 @@ export function crossedMilestone(data: AppData, now = Date.now()): Milestone | u
     );
   }
 
-  return stops.sort((a, b) => a.atLostLbs - b.atLostLbs).find((s) => lost >= s.atLostLbs && !seen.has(s.key));
+  return stops.sort((a, b) => a.atLostLbs - b.atLostLbs);
+}
+
+/** The next uncelebrated weight milestone the 7-day trend has crossed — smallest first, so parties arrive in order. */
+export function crossedMilestone(data: AppData, now = Date.now()): Milestone | undefined {
+  if (data.sample || !data.onboarded) return undefined;
+  const lost = trendLossLbs(data, now);
+  if (lost == null) return undefined;
+  const seen = new Set(data.seenAchievements);
+  return milestoneStops(data).find((s) => lost >= s.atLostLbs && !seen.has(s.key));
 }

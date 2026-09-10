@@ -1,4 +1,5 @@
 import type { AppData, SiteId } from "../../types";
+import { DAY } from "../dates";
 import { siteLabel } from "../sites";
 import { sortedShots } from "../shots";
 
@@ -11,7 +12,23 @@ export interface SiteRednessCount {
 export interface SiteHealth {
   recentShots: number;
   distinctSites: number;
+  /** the same site used twice in a row — the one rotation habit that actually matters */
+  backToBack: boolean;
+  /** shortest gap before any site got reused, in days; undefined until a site repeats */
+  restDays?: number;
   redness: SiteRednessCount[];
+}
+
+/** Days between a site's reuse and its previous use, across the window — the tightest gap wins. */
+function shortestRest(shots: { site: SiteId; ts: number }[]): number | undefined {
+  let shortest: number | undefined;
+  for (let i = 1; i < shots.length; i++) {
+    const previous = shots.slice(0, i).reverse().find((s) => s.site === shots[i].site);
+    if (!previous) continue;
+    const days = (shots[i].ts - previous.ts) / DAY;
+    shortest = shortest == null ? days : Math.min(shortest, days);
+  }
+  return shortest == null ? undefined : Math.round(shortest);
 }
 
 const ROTATION_WINDOW = 6;
@@ -34,6 +51,8 @@ export function siteRotationHealth(data: AppData): SiteHealth | undefined {
   return {
     recentShots: recent.length,
     distinctSites: new Set(recent.map((s) => s.site)).size,
+    backToBack: recent.some((s, i) => i > 0 && s.site === recent[i - 1].site),
+    restDays: shortestRest(recent),
     redness: [...counts.entries()]
       .map(([site, count]) => ({ site, label: siteLabel(site), count }))
       .sort((a, b) => b.count - a.count),

@@ -27,12 +27,19 @@ export function lastUsedBySite(shots: Shot[]): Map<SiteId, number> {
   return map;
 }
 
-/** Least-recently-used site — the friendly rotation suggestion. */
+const MIN_SITES_FOR_HABIT = 2;
+
+/**
+ * Least-recently-used site — the friendly rotation suggestion. Once someone has settled
+ * into a set of sites, it rotates within that set (alternating two sides is a fine habit)
+ * instead of forever pushing the zones they never use.
+ */
 export function suggestedSite(shots: Shot[]): SiteId {
   const lastUsed = lastUsedBySite(shots);
-  let best = SITES[0].id;
+  const pool = lastUsed.size >= MIN_SITES_FOR_HABIT ? SITES.filter((s) => lastUsed.has(s.id)) : SITES;
+  let best = pool[0].id;
   let bestTs = Infinity;
-  for (const { id } of SITES) {
+  for (const { id } of pool) {
     const ts = lastUsed.get(id) ?? -1;
     if (ts < bestTs) {
       bestTs = ts;

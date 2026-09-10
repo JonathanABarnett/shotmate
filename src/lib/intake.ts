@@ -1,9 +1,20 @@
 import type { AppData, DailyIntake, Unit } from "../types";
-import { startOfDay } from "./dates";
+import { DAY, startOfDay } from "./dates";
 import { DEFAULT_PROTEIN_GOAL_G, DEFAULT_WATER_GOAL_FL_OZ } from "./defaults";
 
 export const GLASS_FL_OZ = 8;
 export const ML_PER_FL_OZ = 29.5735;
+const INFER_WINDOW_DAYS = 14;
+
+/** Calories-only fuel tracking: the explicit setting wins; otherwise recent calories with no protein or water says so. */
+export function caloriesOnly(data: AppData, now = Date.now()): boolean {
+  if (data.settings.calorieOnlyFuel != null) return data.settings.calorieOnlyFuel;
+  const since = startOfDay(now) - INFER_WINDOW_DAYS * DAY;
+  const recent = data.intake.filter((i) => i.day >= since);
+  const kcalLogged = recent.some((i) => (i.kcal ?? 0) > 0);
+  const macrosLogged = recent.some((i) => i.proteinG > 0 || i.waterFlOz > 0);
+  return kcalLogged && !macrosLogged;
+}
 
 export function todayIntake(data: AppData, now = Date.now()): DailyIntake | undefined {
   const day = startOfDay(now);

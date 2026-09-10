@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { DAY, startOfDay } from "../../lib/dates";
+import { fuelVsPace } from "../../lib/insights";
 import { calorieBudget, todayIntake } from "../../lib/intake";
 import { calorieReply } from "../../lib/logReplies";
 import { useStore } from "../../store/StoreProvider";
@@ -30,6 +31,12 @@ export default function LogCaloriesSheet({ onClose, onDone }: EntrySheetProps) {
   const [draft, setDraft] = useState(() => (kcalFor("today") > 0 ? String(kcalFor("today")) : ""));
   const current = kcalFor(day);
   const budget = calorieBudget(data);
+  const burn = fuelVsPace(data)?.impliedBurnKcal;
+  const hint = budget
+    ? `Your budget is ${budget} kcal — grab the day's total from Lose It.`
+    : burn
+      ? `Your own numbers say you burn about ${burn.toLocaleString()} kcal a day — grab the day's total from Lose It.`
+      : "Grab the day's total from Lose It (or wherever you count).";
   const parsed = Math.round(Number(draft));
   const valid = draft.trim() !== "" && Number.isFinite(parsed) && parsed >= 0 && parsed <= MAX_KCAL;
 
@@ -48,14 +55,7 @@ export default function LogCaloriesSheet({ onClose, onDone }: EntrySheetProps) {
   return (
     <Sheet title={day === "today" ? "Today's calories" : "Yesterday's calories"} icon={<EntryBadge kind="calories" />} onClose={onClose}>
       <SegmentedControl ariaLabel="Which day" options={DAY_OPTIONS} value={day} onChange={pickDay} />
-      <Field
-        label="Day's total"
-        hint={
-          budget
-            ? `Your budget is ${budget} kcal — grab the day's total from Lose It.`
-            : "Grab the day's total from Lose It (or wherever you count)."
-        }
-      >
+      <Field label="Day's total" hint={hint}>
         <input
           className="input"
           type="number"

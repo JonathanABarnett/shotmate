@@ -28,22 +28,27 @@ export function SitesCard({ health }: { health: SiteHealth }) {
     health.redness.length > 0
       ? ` ${health.redness[0].label} has ${health.redness[0].count} redness ${health.redness[0].count === 1 ? "note" : "notes"} — give it a rest for a cycle or two.`
       : "";
+  const rest = health.restDays != null ? `each one rests ${health.restDays} days before it's used again` : "no site has been reused yet";
+  const headline = perfect
+    ? `Your last ${health.recentShots} shots hit ${health.recentShots} different sites 👏 — textbook rotation.${rednessLine}`
+    : health.backToBack
+      ? `The same site twice running in your last ${health.recentShots} shots — swapping sides every time is the one rule that keeps skin happy.${rednessLine}`
+      : `Alternating across ${health.distinctSites} sites and ${rest} — that's what matters, not touring the whole map.${rednessLine}`;
   return (
     <InsightCard
       emoji="🔄"
       title="Injection sites"
-      stats={[{ value: `${health.distinctSites} of ${health.recentShots}`, label: "recent shots on distinct sites" }]}
+      stats={[
+        { value: `${health.distinctSites} of ${health.recentShots}`, label: "recent shots on distinct sites" },
+        ...(health.restDays != null ? [{ value: `${health.restDays}d`, label: "rest before a site is reused" }] : []),
+      ]}
       bars={health.redness.map((r) => ({
         label: r.label,
         pct: r.count / health.redness[0].count,
         display: `${r.count}`,
       }))}
       tone={health.redness.length > 0 ? "note" : "info"}
-      headline={
-        perfect
-          ? `Your last ${health.recentShots} shots hit ${health.recentShots} different sites 👏 — textbook rotation.${rednessLine}`
-          : `${health.distinctSites} distinct sites in your last ${health.recentShots} shots — following the ✦ next up tag spreads them evenly.${rednessLine}`
-      }
+      headline={headline}
     />
   );
 }

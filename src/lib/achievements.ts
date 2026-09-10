@@ -2,9 +2,9 @@ import type { AppData, Unit } from "../types";
 import { fmtDistance, weekStart } from "./activity";
 import { bestDayRun, DAY, dayStreak, HOUR, startOfDay } from "./dates";
 import { isFeelingFine } from "./effects";
-import { proteinGoal, waterGoalFlOz } from "./intake";
+import { caloriesOnly, proteinGoal, waterGoalFlOz } from "./intake";
 import { sortedShots, streak } from "./shots";
-import { trendWeightLbs } from "./insights/noiseTrend";
+import { trendLossLbs } from "./insights/noiseTrend";
 import { startWeightLbs, toDisplayWeight } from "./weight";
 
 export interface Achievement {
@@ -17,22 +17,22 @@ export interface Achievement {
   progress: number;
 }
 
-const ROTATION_WINDOW = 6;
+const ROTATION_RUN = 8;
+/** Badges that only make sense while protein and water are being tracked. */
+const MACRO_KEYS = new Set(["protein-7", "water-7"]);
 
 function make(key: string, emoji: string, title: string, desc: string, value: number, target: number): Achievement {
   return { key, emoji, title, desc, earned: value >= target, progress: Math.max(0, Math.min(1, value / target)) };
 }
 
 /** Loss measured on the 7-day trend, so a single light morning can't award a badge. */
-function lostLbs(data: AppData): number {
-  const start = startWeightLbs(data);
-  const current = trendWeightLbs(data);
-  return start != null && current != null ? Math.max(0, start - current) : 0;
+function lostLbs(data: AppData, now: number): number {
+  return Math.max(0, trendLossLbs(data, now) ?? 0);
 }
 
-function pctLost(data: AppData): number {
+function pctLost(data: AppData, now: number): number {
   const start = startWeightLbs(data);
-  return start ? (lostLbs(data) / start) * 100 : 0;
+  return start ? (lostLbs(data, now) / start) * 100 : 0;
 }
 
 /** Consecutive days with a weigh-in, ending today or yesterday. */
@@ -40,9 +40,17 @@ export function weighInDayStreak(data: AppData, now = Date.now()): number {
   return dayStreak(new Set(data.weights.map((w) => startOfDay(w.ts))), now);
 }
 
-function distinctRecentSites(data: AppData): number {
-  const recent = sortedShots(data.shots).slice(-ROTATION_WINDOW);
-  return recent.length === ROTATION_WINDOW ? new Set(recent.map((s) => s.site)).size : 0;
+/** Longest run of shots that each landed on a different site than the one before — alternating two sides counts. */
+function alternationRun(data: AppData): number {
+  const shots = sortedShots(data.shots);
+  let best = 0;
+  let run = 0;
+  for (let i = 0; i < shots.length; i++) {
+    const site = shots[i].site;
+    run = site && (i === 0 || site !== shots[i - 1].site) ? run + 1 : site ? 1 : 0;
+    best = Math.max(best, run);
+  }
+  return best;
 }
 
 function proteinDaysHit(data: AppData): number {
@@ -122,13 +130,13 @@ function ritualDays(data: AppData): number {
 
 const lbsLabel = (lbs: number, unit: Unit) => `${Math.round(toDisplayWeight(lbs, unit))} ${unit}`;
 
-/** Every badge with its current progress — derived, never stored. */
-export function achievements(data: AppData): Achievement[] {
+/** Every badge with its current progress — derived, never stored. `now` lets history be replayed. */
+export function achievements(data: AppData, now = Date.now()): Achievement[] {
   const unit = data.settings.unit;
   const shots = data.shots.length;
   const onTime = streak(data.shots, data.settings.scheduleDays);
-  const lost = lostLbs(data);
-  const pct = pctLost(data);
+  const lost = lostLbs(data, now);
+  const pct = pctLost(data, now);
   const activeMinutes = data.activities.reduce((s, a) => s + a.minutes, 0);
   const totalMiles = data.activities.reduce((s, a) => s + (a.distanceMi ?? 0), 0);
   const weighRun = bestDayRun(new Set(data.weights.map((w) => startOfDay(w.ts))));
@@ -147,7 +155,7 @@ export function achievements(data: AppData): Achievement[] {
   const fine = fineDays(data);
   const rituals = ritualDays(data);
   const firstTs = Math.min(...data.shots.map((s) => s.ts), ...data.weights.map((w) => w.ts));
-  const tenureDays = Number.isFinite(firstTs) ? Math.max(0, (Date.now() - firstTs) / DAY) : 0;
+  const tenureDays = Number.isFinite(firstTs) ? Math.max(0, (now - firstTs) / DAY) : 0;
   const kindsLogged = [
     shots,
     data.weights.length,
@@ -161,7 +169,7 @@ export function achievements(data: AppData): Achievement[] {
     data.vitals.length,
   ].filter((n) => n > 0).length;
 
-  return [
+  const all = [
     make("first-shot", "💉", "First shot", "Logged your very first injection", shots, 1),
     make("shots-10", "🔟", "Ten in", "Ten shots logged", shots, 10),
     make("shots-25", "🗓️", "Quarter year", "25 shots logged", shots, 25),
@@ -172,7 +180,7 @@ export function achievements(data: AppData): Achievement[] {
     make("streak-4", "🔥", "On a roll", "4 on-time shots in a row", onTime, 4),
     make("streak-12", "🏅", "Clockwork", "12 on-time shots in a row", onTime, 12),
     make("streak-26", "🎖️", "Half-year of on-time", "26 on-time shots in a row", onTime, 26),
-    make("rotation-6", "🔄", "Perfect rotation", "Six different sites in six shots", distinctRecentSites(data), ROTATION_WINDOW),
+    make("rotation-8", "🔄", "Rotation regular", "8 shots in a row, never the same site twice running", alternationRun(data), ROTATION_RUN),
     make("pct-5", "🌱", "Five percent", "5% of your starting weight", pct, 5),
     make("pct-10", "🌿", "Ten percent", "10% of your starting weight — a clinical milestone", pct, 10),
     make("pct-15", "🌳", "Fifteen percent", "15% of your starting weight", pct, 15),
@@ -223,6 +231,7 @@ export function achievements(data: AppData): Achievement[] {
     make("full-house", "🃏", "Full house", "Every log type used at least once — labs included", kindsLogged, 10),
     make("week-complete", "💎", "The complete week", "One week with a shot, daily weigh-ins & check-ins, 3 moves, tape, and photo", completeWeeks(data), 1),
   ];
+  return caloriesOnly(data, now) ? all.filter((a) => !MACRO_KEYS.has(a.key)) : all;
 }
 
 export function newlyEarned(all: Achievement[], seen: string[]): Achievement[] {

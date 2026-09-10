@@ -1,17 +1,27 @@
 import type { ActivityEntry, AppData, EffectEntry, Shot, WeightEntry } from "../types";
-import { DAY, startOfDay } from "./dates";
+import { DAY, fmtWeekday, startOfDay } from "./dates";
 import { isFeelingFine } from "./effects";
 import { effectTimingBuckets } from "./insights";
+import { trendWeightLbs } from "./insights/noiseTrend";
 import { cycleOffsetDays } from "./insights/shared";
+import { isLongestYet, isNewLow } from "./records";
 import { streak } from "./shots";
 import { fmtWeight } from "./weight";
+
+/** A morning this far above the 7-day trend is fluid, not fat — worth saying so before it stings. */
+const JUMP_ABOVE_TREND_LBS = 1.5;
+const MIN_WEIGHINS_FOR_TREND = 5;
 
 /** Toast copy that read what you just logged — always kind, never invented. */
 
 export function weightReply(data: AppData, entry: WeightEntry): string {
   const previous = data.weights.filter((w) => w.id !== entry.id);
-  if (previous.length >= 3 && entry.lbs < Math.min(...previous.map((w) => w.lbs))) {
+  if (isNewLow(previous, entry)) {
     return `New low: ${fmtWeight(entry.lbs, data.settings.unit)} — quietly amazing 📉`;
+  }
+  const trend = previous.length >= MIN_WEIGHINS_FOR_TREND ? trendWeightLbs({ ...data, weights: previous }, entry.ts) : undefined;
+  if (trend != null && entry.lbs - trend >= JUMP_ABOVE_TREND_LBS) {
+    return `${fmtWeekday(entry.ts)} jump — a one-day rise over your trend is almost always water, not fat. The 7-day line tells the truth ⚖️`;
   }
   return "Weight logged ⚖️";
 }
@@ -45,7 +55,6 @@ export function calorieReply(data: AppData, now = Date.now()): string {
 
 export function activityReply(data: AppData, entry: ActivityEntry): string {
   const others = data.activities.filter((a) => a.id !== entry.id);
-  const best = Math.max(0, ...others.map((a) => a.minutes));
-  if (entry.minutes >= 20 && entry.minutes > best) return `Longest one yet — ${entry.minutes} minutes 👟`;
+  if (isLongestYet(others, entry)) return `Longest one yet — ${entry.minutes} minutes 👟`;
   return "Nice moving! 🏃";
 }

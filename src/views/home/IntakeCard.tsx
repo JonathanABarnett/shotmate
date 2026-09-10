@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { Beef, Flame, GlassWater, Minus, Upload } from "lucide-react";
 import type { AppData } from "../../types";
-import { calorieBudget, fmtWater, GLASS_FL_OZ, proteinGoal, todayIntake, waterGoalFlOz } from "../../lib/intake";
+import { calorieBudget, caloriesOnly as caloriesOnlyMode, fmtWater, GLASS_FL_OZ, proteinGoal, todayIntake, waterGoalFlOz } from "../../lib/intake";
 import { parseLoseItCsv } from "../../lib/loseItImport";
 import { useStore } from "../../store/StoreProvider";
 
@@ -103,7 +103,7 @@ export default function IntakeCard({ data, onLogCalories }: { data: AppData; onL
     if (fileRef.current) fileRef.current.value = "";
   };
 
-  const caloriesOnly = data.settings.calorieOnlyFuel ?? false;
+  const caloriesOnly = caloriesOnlyMode(data);
 
   return (
     <section className="card intake-card">

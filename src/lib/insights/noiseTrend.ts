@@ -1,5 +1,6 @@
 import type { AppData } from "../../types";
 import { DAY } from "../dates";
+import { startWeightLbs } from "../weight";
 import { mean } from "./shared";
 
 export interface TrendCheck {
@@ -38,4 +39,11 @@ export function trendWeightLbs(data: AppData, now = Date.now()): number | undefi
   const recent = data.weights.filter((w) => w.ts >= now - 7 * DAY && w.ts <= now + 1).map((w) => w.lbs);
   if (recent.length >= 2) return mean(recent);
   return [...data.weights].sort((a, b) => a.ts - b.ts).at(-1)?.lbs;
+}
+
+/** Pounds below the starting weight on the 7-day trend — a light morning alone can't move it. */
+export function trendLossLbs(data: AppData, now = Date.now()): number | undefined {
+  const start = startWeightLbs(data);
+  const trend = trendWeightLbs(data, now);
+  return start != null && trend != null ? start - trend : undefined;
 }

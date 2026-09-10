@@ -1,6 +1,7 @@
 import type { BodyType, HomeCardKey, ThemePref } from "../../types";
 import { useStore } from "../../store/StoreProvider";
 import { BODY_TYPES } from "../../lib/figure";
+import { caloriesOnly } from "../../lib/intake";
 import { Field } from "../../components/form/fields";
 import SegmentedControl from "../../components/SegmentedControl";
 
@@ -85,11 +86,11 @@ export default function AppearanceSection() {
           ))}
         </div>
       </Field>
-      <Field label="Fuel card" hint="Not tracking protein or water right now? Slim the card to just the day's calories.">
+      <Field label="Fuel card" hint="Not tracking protein or water? The card slims to just calories on its own after two weeks without them — or pick here.">
         <SegmentedControl
           ariaLabel="Fuel card layout"
           options={FUEL_OPTIONS}
-          value={settings.calorieOnlyFuel ? "calories" : "full"}
+          value={caloriesOnly(data) ? "calories" : "full"}
           onChange={(value) => dispatch({ type: "updateSettings", patch: { calorieOnlyFuel: value === "calories" } })}
         />
       </Field>

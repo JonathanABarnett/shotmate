@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Lock } from "lucide-react";
 import type { AppData } from "../../types";
 import {
@@ -22,7 +23,9 @@ import WeekOverWeekCard from "./insights/WeekOverWeekCard";
 import { ActivityPaceCard, AdherenceCard, CreepCard, MovementCard, SleepCard, TimeOfDayCard } from "./insights/habitInsights";
 import { DoseStepsCard, SitesCard } from "./insights/shotInsights";
 import AchievementsCard from "./insights/AchievementsCard";
+import MomentsCard from "./insights/MomentsCard";
 import { achievements } from "../../lib/achievements";
+import { earnedDates, moments } from "../../lib/moments";
 
 interface Locked {
   title: string;
@@ -72,6 +75,8 @@ export default function InsightsPanel({ data }: { data: AppData }) {
   const activity = activityVsPace(data);
   const sites = siteRotationHealth(data);
   const adherence = adherenceStats(data);
+  // replays every day of history once per data change — cheap, and the only way badge dates stay honest
+  const feed = useMemo(() => moments(data), [data]);
 
   const locked: Locked[] = [
     ...(creep ? [] : [{ title: "Hunger & energy across your cycle", needs: "about 8 daily check-ins on Home" }]),
@@ -93,7 +98,8 @@ export default function InsightsPanel({ data }: { data: AppData }) {
 
   return (
     <>
-      <AchievementsCard items={achievements(data)} />
+      <AchievementsCard items={achievements(data)} earnedOn={earnedDates(feed)} />
+      <MomentsCard feed={feed} />
       {outlook && <OutlookCard outlook={outlook} unit={unit} goalLbs={data.settings.goalLbs} />}
       {trend && <TrendCard trend={trend} unit={unit} />}
       {week && <WeekOverWeekCard week={week} unit={unit} />}

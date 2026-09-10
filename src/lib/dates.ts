@@ -30,6 +30,10 @@ export function fmtDayFull(ts: number): string {
   });
 }
 
+export function fmtWeekday(ts: number): string {
+  return new Date(ts).toLocaleDateString(undefined, { weekday: "long" });
+}
+
 export function fmtTime(ts: number): string {
   return new Date(ts).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
 }
