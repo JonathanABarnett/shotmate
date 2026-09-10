@@ -5,7 +5,7 @@ import type { CrewId } from "./cast";
  * What each crew member says about a kind of moment. `{title}` and `{n}` (the first number in
  * the title) fill in from the moment. Specific and true beats cheerleading — no advice, no fluff.
  */
-export const VOICES: Record<CrewId, Record<MomentKind, string[]>> = {
+export const VOICES: Record<CrewId, Record<Exclude<MomentKind, "tape">, string[]>> = {
   dana: {
     milestone: [
       "{title} — I still remember mine. The mirror lags the scale by about a month; give it time.",
@@ -122,4 +122,33 @@ export const VOICES: Record<CrewId, Record<MomentKind, string[]>> = {
       "This is so good. What a thing to log.",
     ],
   },
+};
+/** Tape milestones come from the measuring tape, not the scale — the crew talks about them differently. */
+export const TAPE_VOICES: Record<CrewId, string[]> = {
+  dana: [
+    "The tape is the honest one — it can't hold water.",
+    "Inches are what your clothes notice. This is the one that changes your closet.",
+    "I kept every tape number in a notebook. This was the entry I reread most.",
+  ],
+  marcus: [
+    "Belt-notch energy. Respect.",
+    "The scale gets the headlines; the tape gets the pants. Congrats on the pants.",
+    "Okay, the tape thing is real. Buying one tomorrow.",
+  ],
+  priya: [
+    "Inches are what the mirror actually sees. The scale can't touch this.",
+    "Less around the middle means easier breathing on hills. You'll feel it Friday.",
+    "This is the number that changes how running feels.",
+  ],
+  walt: ["Tape doesn't lie. Good.", "Pants are next.", "Held it two weeks. That's real."],
+  lena: [
+    "In my data, inches lag pounds by about three weeks — this is the pounds catching up.",
+    "Two consecutive readings, so it's signal, not tape tension. Nice.",
+    "The tape has less noise than the scale. This one I'd frame.",
+  ],
+  theo: [
+    "I don't even own a tape yet. Buying one because of this.",
+    "Wait, the tape moved that much? Okay. Okay okay okay.",
+    "This is the first post that made me want to measure.",
+  ],
 };

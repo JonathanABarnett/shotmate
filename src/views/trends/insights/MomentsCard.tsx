@@ -11,6 +11,7 @@ const KIND_LABEL: Record<MomentKind, string> = {
   milestone: "Milestone",
   record: "Personal record",
   win: "Win",
+  tape: "Tape milestone",
 };
 
 /** emoji → how many of the crew used it */

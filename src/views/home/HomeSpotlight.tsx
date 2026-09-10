@@ -2,7 +2,8 @@ import { useState } from "react";
 import type { AppData } from "../../types";
 import type { SyncState } from "../../sync/useSync";
 import { uid } from "../../lib/ids";
-import { crossedMilestone } from "../../lib/milestones";
+import { crossedMilestone, type Milestone } from "../../lib/milestones";
+import { crossedTapeMilestone } from "../../lib/tapeMilestones";
 import { topNudge } from "../../lib/nudges";
 import { monthStory } from "../../lib/story";
 import { dismissRecap, weeklyRecap } from "../../lib/weeklyRecap";
@@ -34,14 +35,13 @@ export default function HomeSpotlight({ data, sync, showToast, onOpenSettings, o
   const saveWin = (text: string) =>
     dispatch({ type: "upsert", collection: "wins", item: { id: uid(), ts: Date.now(), text } });
 
-  const milestone = crossedMilestone(data);
-  if (milestone) {
-    const markSeen = () => dispatch({ type: "markAchievementsSeen", keys: [milestone.key] });
+  const celebrate = (m: Milestone) => {
+    const markSeen = () => dispatch({ type: "markAchievementsSeen", keys: [m.key] });
     return (
       <CelebrationCard
-        milestone={milestone}
+        milestone={m}
         onSaveWin={() => {
-          saveWin(milestone.winText);
+          saveWin(m.winText);
           markSeen();
           showToast("Saved to your wins 🎉");
         }}
@@ -51,7 +51,10 @@ export default function HomeSpotlight({ data, sync, showToast, onOpenSettings, o
         }}
       />
     );
-  }
+  };
+  // the scale first, then the tape — one party at a time
+  const milestone = crossedMilestone(data) ?? crossedTapeMilestone(data);
+  if (milestone) return celebrate(milestone);
 
   const nudgeHost = <NudgeHost data={data} sync={sync} showToast={showToast} onOpenSettings={onOpenSettings} onLogMeasure={onLogMeasure} onLogPhoto={onLogPhoto} />;
   if (topNudge(data, Boolean(sync.userId))?.key === "bud") return nudgeHost;

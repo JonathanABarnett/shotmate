@@ -5,8 +5,9 @@ import { DAY, HOUR, startOfDay } from "./dates";
 import { trendLossLbs } from "./insights/noiseTrend";
 import { MILESTONE_KEYS, milestoneStops } from "./milestones";
 import { isLongestYet } from "./records";
+import { reachedTapeStops } from "./tapeMilestones";
 
-export type MomentKind = "badge" | "milestone" | "record" | "win";
+export type MomentKind = "badge" | "milestone" | "tape" | "record" | "win";
 
 /** One entry in the trophy room — derived from the data, never stored, so dates are always right. */
 export interface Moment {
@@ -58,6 +59,11 @@ function replayedMoments(data: AppData, now: number): Moment[] {
       if (!a.earned || MILESTONE_KEYS.has(a.key) || seen.has(a.key)) continue;
       seen.add(a.key);
       out.push({ key: `badge:${a.key}`, ts: end, kind: "badge", emoji: a.emoji, title: a.title, detail: a.desc });
+    }
+    for (const s of reachedTapeStops(snapshot)) {
+      if (seen.has(s.key)) continue;
+      seen.add(s.key);
+      out.push({ key: `tape:${s.key}`, ts: end, kind: "tape", emoji: s.emoji, title: s.title, detail: "Held across two tape check-ins" });
     }
     const lost = trendLossLbs(snapshot, end);
     if (lost == null) continue;

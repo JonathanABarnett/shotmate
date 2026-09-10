@@ -4,7 +4,7 @@ import { moments, type Moment, type MomentKind } from "../moments";
 import { CREW, crewById, type CrewMember } from "./cast";
 import { POSTS } from "./posts";
 import { hashString, mulberry32, pickSome } from "./random";
-import { VOICES } from "./voices";
+import { TAPE_VOICES, VOICES } from "./voices";
 
 export interface CrewReaction {
   member: CrewMember;
@@ -20,9 +20,9 @@ export interface CrewComment {
   about?: string;
 }
 
-const REACT_COUNT: Record<MomentKind, [number, number]> = { milestone: [3, 5], badge: [1, 3], record: [1, 3], win: [2, 4] };
-const COMMENT_CHANCE: Record<MomentKind, number> = { milestone: 1, badge: 0.55, record: 0.7, win: 0.9 };
-const MAX_COMMENTS: Record<MomentKind, number> = { milestone: 2, badge: 1, record: 1, win: 2 };
+const REACT_COUNT: Record<MomentKind, [number, number]> = { milestone: [3, 5], tape: [3, 5], badge: [1, 3], record: [1, 3], win: [2, 4] };
+const COMMENT_CHANCE: Record<MomentKind, number> = { milestone: 1, tape: 1, badge: 0.55, record: 0.7, win: 0.9 };
+const MAX_COMMENTS: Record<MomentKind, number> = { milestone: 2, tape: 2, badge: 1, record: 1, win: 2 };
 /** comments trickle in over the hours after a moment, like people do */
 const MIN_DELAY_H = 1;
 const MAX_DELAY_H = 9;
@@ -44,7 +44,7 @@ export function crewComments(m: Moment): CrewComment[] {
   if (rng() > COMMENT_CHANCE[m.kind]) return [];
   const count = 1 + Math.floor(rng() * MAX_COMMENTS[m.kind]);
   return pickSome(rng, CREW, count).map((member, i) => {
-    const lines = VOICES[member.id][m.kind];
+    const lines = m.kind === "tape" ? TAPE_VOICES[member.id] : VOICES[member.id][m.kind];
     const delay = (MIN_DELAY_H + rng() * (MAX_DELAY_H - MIN_DELAY_H) + i) * HOUR;
     return { key: `${m.key}:${member.id}`, ts: m.ts + delay, member, text: fill(lines[Math.floor(rng() * lines.length)], m), about: m.title };
   });

@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Camera } from "lucide-react";
+import { Camera, Play } from "lucide-react";
 import type { AppData, PhotoEntry } from "../../types";
 import { fmtDay } from "../../lib/dates";
 import PhotoThumb from "../../components/PhotoThumb";
 import PhotoCompare from "../../components/PhotoCompare";
+import PhotoTimelapse from "../../components/PhotoTimelapse";
 import EmptyState from "../../components/EmptyState";
 
 interface Props {
@@ -15,6 +16,7 @@ interface Props {
 export default function PhotosCard({ data, onAddPhoto, onEditPhoto }: Props) {
   const photos = [...data.photos].sort((a, b) => b.ts - a.ts);
   const [viewerId, setViewerId] = useState<string | null>(null);
+  const [playing, setPlaying] = useState(false);
 
   return (
     <section className="card">
@@ -24,9 +26,16 @@ export default function PhotosCard({ data, onAddPhoto, onEditPhoto }: Props) {
           <div className="card-sub">Private — stored only on this device</div>
         </div>
         {photos.length > 0 && (
-          <button className="link-btn" onClick={onAddPhoto}>
-            <Camera size={15} /> Add
-          </button>
+          <div className="compare-actions">
+            {photos.length > 1 && (
+              <button className="link-btn" onClick={() => setPlaying(true)}>
+                <Play size={15} /> Play
+              </button>
+            )}
+            <button className="link-btn" onClick={onAddPhoto}>
+              <Camera size={15} /> Add
+            </button>
+          </div>
         )}
       </div>
       {photos.length === 0 ? (
@@ -50,6 +59,7 @@ export default function PhotosCard({ data, onAddPhoto, onEditPhoto }: Props) {
           ))}
         </div>
       )}
+      {playing && <PhotoTimelapse data={data} photos={data.photos} onClose={() => setPlaying(false)} />}
       {viewerId && (
         <PhotoCompare
           data={data}
@@ -63,7 +73,7 @@ export default function PhotosCard({ data, onAddPhoto, onEditPhoto }: Props) {
         />
       )}
       {photos.length > 0 && (
-        <p className="field-hint">Tap a photo to compare, flip through them all, edit, or share.</p>
+        <p className="field-hint">Tap a photo to compare, flip through, edit, or share · Play runs them all as a time-lapse.</p>
       )}
     </section>
   );

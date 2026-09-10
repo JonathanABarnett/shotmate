@@ -16,7 +16,7 @@ const FOOTER_HEIGHT = 170;
 const PAD = 44;
 const FONT = '"Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif';
 
-function drawCover(
+export function drawCover(
   ctx: CanvasRenderingContext2D,
   img: ImageBitmap,
   x: number,

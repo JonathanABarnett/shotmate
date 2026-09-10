@@ -1460,3 +1460,70 @@
   margin: 0;
   font-size: 13px;
 }
+/* the time-lapse player — a 3:4 stage of stacked frames, one visible at a time */
+.timelapse {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(11, 8, 24, 0.97);
+  display: grid;
+  grid-template-rows: 1fr auto auto;
+  gap: 12px;
+  padding: calc(60px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom));
+  animation: fade-in 0.15s ease both;
+}
+
+.timelapse-stage {
+  position: relative;
+  display: grid;
+  width: min(100%, calc((100vh - 230px) * 0.75));
+  aspect-ratio: 3 / 4;
+  margin: auto;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #000;
+}
+
+.timelapse-frame {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.timelapse-frame.active {
+  opacity: 1;
+}
+
+.timelapse-img,
+.timelapse-frame .photo-loading {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.timelapse-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.timelapse-btn {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.timelapse-status {
+  font-size: 13px;
+  font-weight: 700;
+  color: #e6e1fb;
+}
+
+.timelapse-note {
+  margin: 0;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+}

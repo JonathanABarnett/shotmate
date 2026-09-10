@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ChevronLeft, ChevronRight, Pencil, Share2, X } from "lucide-react";
-import type { AppData, MeasureKey, PhotoEntry } from "../types";
+import type { AppData, PhotoEntry } from "../types";
 import { DAY, fmtDay, fmtDayFull } from "../lib/dates";
 import { signedLength, signedWeight } from "../lib/format";
-import { fmtLength, lengthUnit, nearestMeasureIn } from "../lib/measures";
 import { renderShareCard, shareOrDownload, type SharePane } from "../lib/shareCard";
-import { fmtWeight, nearestWeightLbs } from "../lib/weight";
+import { photoDetails, photoStats } from "../lib/photoStats";
 import { loadPhotoBlob } from "../store/photoStore";
 import PhotoThumb from "./PhotoThumb";
 
@@ -22,7 +21,7 @@ interface PaneProps {
 
 function ComparePane({ data, photos, selectedId, onSelect, onZoom, onEdit, label }: PaneProps) {
   const photo = photos.find((p) => p.id === selectedId) ?? photos[0];
-  const details = detailsFor(data, photo.ts);
+  const details = photoDetails(data, photo.ts);
   return (
     <div className="compare-pane">
       <button className="compare-imgbtn" onClick={() => onZoom(photo.id)} aria-label={`Enlarge ${label.toLowerCase()} photo`}>
@@ -55,42 +54,10 @@ function ComparePane({ data, photos, selectedId, onSelect, onZoom, onEdit, label
   );
 }
 
-const DETAIL_TAPES: { key: MeasureKey; label: string }[] = [
-  { key: "waist", label: "Waist" },
-  { key: "stomach", label: "Stomach" },
-  { key: "hips", label: "Hips" },
-  { key: "chest", label: "Chest" },
-];
-
-/** Weight plus every taped measure recorded near the photo's date. */
-function detailsFor(data: AppData, ts: number): { weight?: string; tapes: string[] } {
-  const unit = data.settings.unit;
-  const lbs = nearestWeightLbs(data.weights, ts);
-  const mark = lengthUnit(unit) === "in" ? "″" : " cm";
-  const tapes: string[] = [];
-  for (const { key, label } of DETAIL_TAPES) {
-    const inches = nearestMeasureIn(data.measures, key, ts);
-    if (inches != null) tapes.push(`${label} ${fmtLength(inches, unit)}${mark}`);
-  }
-  return { weight: lbs != null ? fmtWeight(lbs, unit) : undefined, tapes };
-}
-
-/** Weight and waist nearest a photo's date, as short stat strings — the share card's compact pair. */
-function statsFor(data: AppData, ts: number): { stats: string[]; lbs?: number; waistIn?: number } {
-  const unit = data.settings.unit;
-  const lbs = nearestWeightLbs(data.weights, ts);
-  const waistIn = nearestMeasureIn(data.measures, "waist", ts);
-  const stats = [
-    ...(lbs != null ? [fmtWeight(lbs, unit)] : []),
-    ...(waistIn != null ? [`Waist ${fmtLength(waistIn, unit)} ${lengthUnit(unit)}`] : []),
-  ];
-  return { stats, lbs, waistIn };
-}
-
 function summaryFor(data: AppData, before: PhotoEntry, after: PhotoEntry): string {
   const unit = data.settings.unit;
-  const a = statsFor(data, before.ts);
-  const b = statsFor(data, after.ts);
+  const a = photoStats(data, before.ts);
+  const b = photoStats(data, after.ts);
   const parts: string[] = [];
   if (a.lbs != null && b.lbs != null) parts.push(signedWeight(b.lbs - a.lbs, unit));
   if (a.waistIn != null && b.waistIn != null) parts.push(`${signedLength(b.waistIn - a.waistIn, unit)} waist`);
@@ -111,7 +78,7 @@ interface ZoomProps {
 /** Full-screen gallery — swipe or use the arrows to flip through every photo, numbers along the bottom. */
 function PhotoZoom({ data, photos, index, onIndex, onEdit, onClose }: ZoomProps) {
   const photo = photos[index];
-  const details = detailsFor(data, photo.ts);
+  const details = photoDetails(data, photo.ts);
   const touch = useRef<{ x: number; y: number } | null>(null);
   const swiped = useRef(false);
 
@@ -251,10 +218,10 @@ export default function PhotoCompare({ data, photos, initialId, onEdit, onClose 
       const panes: SharePane[] = [];
       for (const photo of chosen) {
         const image = await loadPhotoBlob(photo.id);
-        if (image) panes.push({ image, caption: fmtDay(photo.ts), stats: statsFor(data, photo.ts).stats, focus: photo.focus, zoom: photo.zoom });
+        if (image) panes.push({ image, caption: fmtDay(photo.ts), stats: photoStats(data, photo.ts).stats, focus: photo.focus, zoom: photo.zoom });
       }
       if (panes.length === 0) throw new Error("no photos");
-      const summary = chosen.length === 2 ? summaryFor(data, chosen[0], chosen[1]) : statsFor(data, chosen[0].ts).stats.join("  ·  ") || "My progress";
+      const summary = chosen.length === 2 ? summaryFor(data, chosen[0], chosen[1]) : photoStats(data, chosen[0].ts).stats.join("  ·  ") || "My progress";
       const blob = await renderShareCard(panes, summary);
       const outcome = await shareOrDownload(blob, `shotmate-progress-${fmtDay(chosen.at(-1)!.ts).replace(/\W+/g, "-")}.png`);
       setStatus(outcome === "shared" ? "Shared 🎉" : "Saved to your downloads 🎉");
